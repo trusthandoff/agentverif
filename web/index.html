@@ -42,13 +42,61 @@
     }
     strong { font-weight: 700; }
 
+    /* ---- Section title accent ---- */
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 32px;
+      height: 3px;
+      background: var(--primary);
+      border-radius: 2px;
+      margin-top: 10px;
+    }
+    .section-header.centered .section-title::after { margin: 10px auto 0; }
+
     /* ---- Hero ---- */
+    @keyframes hero-gradient {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes beta-pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.45; transform: scale(0.75); }
+    }
     .hero {
       padding: 96px 0 80px;
-      background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 60%);
+      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 20%, #ffffff 55%, #f0fdf4 100%);
+      background-size: 400% 400%;
+      animation: hero-gradient 10s ease infinite;
       text-align: center;
       position: relative;
       overflow: hidden;
+    }
+    .hero-beta-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: #fff;
+      border: 1.5px solid var(--primary);
+      color: var(--primary);
+      padding: 5px 14px;
+      border-radius: 99px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 4px rgba(22,163,74,0.12);
+    }
+    .hero-beta-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--primary);
+      border-radius: 50%;
+      flex-shrink: 0;
+      animation: beta-pulse 2s ease infinite;
     }
     .hero > .container { position: relative; z-index: 1; }
     .hero-watermark {
@@ -308,7 +356,12 @@
       font-size: 0.84rem;
       color: var(--text);
       border: 1px solid var(--border);
-      word-break: break-all;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    @media (max-width: 640px) {
+      .pricing-badge-example { font-size: 13px; }
     }
     .pricing-badge-label {
       font-size: 0.72rem;
@@ -571,6 +624,7 @@
             <path d="M10 19l4.5 4.5 8-8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
+        <div class="hero-beta-badge" aria-label="Platform status">Now in public beta</div>
         <span class="section-tag">AI Agent Security</span>
         <h1 id="hero-heading">
           The certification standard<br>
@@ -694,7 +748,7 @@
                 <code><span class="cli-cmd">agentverif-sign sign ./agent.zip</span>
 <span class="cli-comment"># Signed successfully</span>
 <span class="cli-comment"># License: AV-84F2-91AB</span>
-<span class="cli-comment"># Tier:    indie</span></code>
+<span class="cli-comment"># Tier: indie</span></code>
               </div>
             </div>
             <div class="cli-col">
@@ -702,8 +756,8 @@
               <div class="cli-block">
                 <code><span class="cli-cmd">agentverif-sign verify ./agent.zip</span>
 <span class="cli-comment"># VERIFIED</span>
-<span class="cli-comment"># License:  AV-84F2-91AB</span>
-<span class="cli-comment"># Verify:   verify.agentverif.com/&hellip;</span></code>
+<span class="cli-comment"># License: AV-84F2-91AB</span>
+<span class="cli-comment"># Verify: verify.agentverif.com/&hellip;</span></code>
               </div>
             </div>
           </div>
@@ -722,9 +776,9 @@
       <div class="container">
         <header class="section-header centered">
           <span class="section-tag">Why it matters</span>
-          <h2 class="section-title" id="why-heading">Why agentverif?</h2>
+          <h2 class="section-title" id="why-heading">The window to set the standard is open. Not for long.</h2>
           <p class="section-subtitle">
-            The AI agent ecosystem has no verification standard. That gap is a security liability.
+            The AI agent marketplace is forming now. Certified agents will win by default.
           </p>
         </header>
 
@@ -739,10 +793,9 @@
                 <line x1="12" y1="17" x2="12.01" y2="17"/>
               </svg>
             </div>
-            <h3>One unverified agent is all it takes.</h3>
+            <h3>Your competitor is signing right now.</h3>
             <p>
-              Any agent without a verifiable provenance chain is a vector for supply chain compromise.
-              Without certification, there is no way to distinguish safe from tampered code.
+              First-mover advantage in trust is real. The agent marketplace is forming. Buyers will default to certified agents. Be the one they default to.
             </p>
           </article>
 
@@ -754,10 +807,9 @@
                 <circle cx="12" cy="12" r="3"/>
               </svg>
             </div>
-            <h3>Buyers are starting to ask for proof.</h3>
+            <h3>One incident ends the relationship.</h3>
             <p>
-              Enterprise buyers, security teams, and regulated industries cannot run unverified agents
-              in production. Certification gives them the assurance they need to proceed.
+              A single compromised agent wipes out user trust overnight. No patch fixes that. Certification is the only thing that proves you shipped clean.
             </p>
           </article>
 
@@ -770,10 +822,9 @@
                 <line x1="15" y1="9" x2="9" y2="15"/>
               </svg>
             </div>
-            <h3>Sign before your competitor does.</h3>
+            <h3>Enterprise buyers won&rsquo;t run unsigned agents.</h3>
             <p>
-              A single compromised agent incident can end a product&rsquo;s trust relationship with its users.
-              Certification is not overhead &mdash; it is a competitive signal.
+              Security teams are building approved agent registries. If you&rsquo;re not on the list, you don&rsquo;t ship. Get certified before the door closes.
             </p>
           </article>
 
@@ -847,7 +898,7 @@
             <div class="pricing-header">
               <p class="pricing-tier">Enterprise</p>
               <div class="pricing-price">
-                <span class="amount">$49</span>
+                <span class="amount">$79</span>
                 <span class="period">/month</span>
               </div>
               <p class="pricing-desc">For fleets, regulated industries, and critical infrastructure.</p>

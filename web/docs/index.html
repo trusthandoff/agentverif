@@ -303,6 +303,29 @@
       .footer-grid { grid-template-columns: 1fr; gap: 32px; }
       .footer-bottom { flex-direction: column; align-items: flex-start; }
     }
+    @media (max-width: 640px) {
+      /* Code blocks: scrollable, never overflow viewport */
+      .code-snippet {
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      .code-snippet code { white-space: pre; word-break: normal; }
+      /* FAQ answer text size */
+      .faq-item p { font-size: 15px; }
+      .faq-item { padding: 16px 0; }
+      /* README badge stacks vertically, full width */
+      .badge-samples { flex-direction: column; }
+      .badge-sample {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 13px;
+      }
+      /* Env table horizontal scroll */
+      .env-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    }
   </style>
 </head>
 <body>
@@ -320,10 +343,10 @@
         <span class="logo-wordmark">agentverif</span>
       </a>
       <nav class="site-nav" id="site-nav" role="navigation" aria-label="Main navigation">
-        <a href="/#how-it-works">How it works</a>
-        <a href="/#pricing">Pricing</a>
+        <a href="https://agentverif.com/#how-it-works">How it works</a>
+        <a href="https://agentverif.com/#pricing">Pricing</a>
         <a href="https://verify.agentverif.com" class="nav-cta">Verify</a>
-        <a href="/docs/" style="color:var(--primary);font-weight:600;">Docs</a>
+        <a href="/docs/" style="color:var(--primary);font-weight:700;">Docs</a>
       </nav>
       <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="site-nav">
         <span></span><span></span><span></span>
