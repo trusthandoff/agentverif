@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Documentation — agentverif</title>
+  <meta name="description" content="agentverif CLI documentation. Install, sign, verify, badge, and revoke AI agent packages.">
+  <meta name="author" content="agentverif.com">
+  <meta name="robots" content="index, follow">
+
+  <link rel="canonical" href="https://agentverif.com/docs/">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="/assets/style.css">
+
+  <style>
+    /* ---- Body ---- */
+    body { line-height: 1.7; }
+    p, li { font-weight: 500; }
+
+    /* ---- Docs layout ---- */
+    .docs-layout {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 0;
+      min-height: calc(100vh - var(--header-h));
+      align-items: start;
+    }
+
+    /* ---- Sidebar ---- */
+    .docs-sidebar {
+      position: sticky;
+      top: var(--header-h);
+      height: calc(100vh - var(--header-h));
+      overflow-y: auto;
+      border-right: 1px solid var(--border);
+      padding: 32px 0;
+      background: var(--surface);
+    }
+    .sidebar-group { margin-bottom: 28px; }
+    .sidebar-group-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 0 24px;
+      margin-bottom: 8px;
+    }
+    .sidebar-group ul { list-style: none; }
+    .sidebar-group ul li a {
+      display: block;
+      padding: 7px 24px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      border-left: 2px solid transparent;
+      transition: all 0.15s;
+    }
+    .sidebar-group ul li a:hover,
+    .sidebar-group ul li a.active {
+      color: var(--primary);
+      background: var(--accent);
+      border-left-color: var(--primary);
+    }
+
+    /* ---- Docs content ---- */
+    .docs-content {
+      padding: 48px 56px 80px;
+      max-width: 760px;
+    }
+
+    .docs-section {
+      margin-bottom: 72px;
+      scroll-margin-top: calc(var(--header-h) + 24px);
+    }
+
+    .docs-section h2 {
+      font-size: 1.625rem;
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      color: var(--text);
+      margin-bottom: 8px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .docs-section h3 {
+      font-size: 1.0625rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin: 28px 0 10px;
+    }
+    .docs-section p {
+      font-size: 0.9375rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .docs-section ul, .docs-section ol {
+      list-style: none;
+      margin-bottom: 16px;
+    }
+    .docs-section ul li, .docs-section ol li {
+      font-size: 0.9375rem;
+      color: var(--text-muted);
+      padding: 4px 0;
+      display: flex;
+      gap: 10px;
+    }
+    .docs-section ul li::before { content: "–"; color: var(--primary); font-weight: 700; flex-shrink: 0; }
+    .docs-section ol { counter-reset: ol-counter; }
+    .docs-section ol li { counter-increment: ol-counter; }
+    .docs-section ol li::before { content: counter(ol-counter) "."; color: var(--primary); font-weight: 700; flex-shrink: 0; min-width: 18px; }
+
+    /* ---- Code blocks ---- */
+    .code-snippet {
+      background: #0d1117;
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      margin: 12px 0 20px;
+      overflow-x: auto;
+    }
+    .code-snippet code {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 600;
+      color: #e2e8f0;
+      white-space: pre;
+      display: block;
+      line-height: 1.75;
+    }
+    .code-snippet .cmd { color: #4ade80; }
+    .code-snippet .comment { color: #64748b; }
+    .code-snippet .flag { color: #93c5fd; }
+    .code-snippet .str { color: #fde68a; }
+    .code-snippet .kw { color: #c4b5fd; }
+
+    /* Inline code */
+    .docs-section p code,
+    .docs-section li code {
+      font-family: var(--font-mono);
+      font-size: 0.84rem;
+      background: #f3f4f6;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 6px;
+      color: var(--text);
+    }
+
+    /* ---- Callout ---- */
+    .callout {
+      border-left: 3px solid var(--primary);
+      background: var(--accent);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 14px 18px;
+      margin: 16px 0;
+    }
+    .callout p { color: #166534; margin: 0; font-size: 0.9rem; }
+    .callout-warn {
+      border-left-color: #f59e0b;
+      background: #fffbeb;
+    }
+    .callout-warn p { color: #92400e; }
+
+    /* ---- Badge samples ---- */
+    .badge-samples {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .badge-sample {
+      background: #f3f4f6;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      color: var(--text);
+    }
+    .badge-tier {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    /* ---- Env table ---- */
+    .env-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      font-size: 0.9rem;
+    }
+    .env-table th {
+      text-align: left;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 8px 12px;
+      border-bottom: 2px solid var(--border);
+    }
+    .env-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .env-table td:first-child {
+      font-family: var(--font-mono);
+      font-size: 0.84rem;
+      color: var(--text);
+      white-space: nowrap;
+    }
+    .env-table tr:last-child td { border-bottom: none; }
+
+    /* ---- FAQ ---- */
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+      padding: 20px 0;
+    }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-item h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+    .faq-item p { margin: 0; }
+
+    /* ---- Footer redesign (same as index.html) ---- */
+    .site-footer {
+      background: #0d1117 !important;
+      border-top: 1px solid #1e2433 !important;
+      padding: 56px 0 0 !important;
+      text-align: left !important;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 48px;
+      padding-bottom: 48px;
+    }
+    .footer-col-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #4b5563;
+      margin-bottom: 16px;
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 10px; }
+    .footer-col ul li a {
+      font-size: 0.9375rem;
+      color: #6b7280 !important;
+      transition: color 0.15s;
+      text-decoration: none !important;
+    }
+    .footer-col ul li a:hover {
+      color: #d1d5db !important;
+      opacity: 1 !important;
+      text-decoration: none !important;
+    }
+    .footer-bottom {
+      border-top: 1px solid #1e2433;
+      padding: 20px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-bottom p {
+      font-size: 0.8125rem !important;
+      color: #4b5563 !important;
+      line-height: 1.5 !important;
+    }
+    .footer-bottom a {
+      color: #6b7280 !important;
+      text-decoration: none !important;
+    }
+    .footer-bottom a:hover {
+      color: #9ca3af !important;
+      opacity: 1 !important;
+      text-decoration: none !important;
+    }
+    html, body { margin-bottom: 0 !important; padding-bottom: 0 !important; }
+
+    @media (max-width: 900px) {
+      .docs-layout { grid-template-columns: 1fr; }
+      .docs-sidebar { display: none; }
+      .docs-content { padding: 32px 24px 64px; max-width: 100%; }
+    }
+    @media (max-width: 768px) {
+      .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ======================================================
+       HEADER
+       ====================================================== -->
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <a href="/" class="logo" aria-label="agentverif home">
+        <svg width="32" height="37" viewBox="0 0 32 37" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M16 1L2 6.5v13C2 28.1 8.3 35.4 16 38c7.7-2.6 14-9.9 14-18.5v-13L16 1z" fill="#16a34a"/>
+          <path d="M10 19l4.5 4.5 8-8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="logo-wordmark">agentverif</span>
+      </a>
+      <nav class="site-nav" id="site-nav" role="navigation" aria-label="Main navigation">
+        <a href="/#how-it-works">How it works</a>
+        <a href="/#pricing">Pricing</a>
+        <a href="https://verify.agentverif.com" class="nav-cta">Verify</a>
+        <a href="/docs/" style="color:var(--primary);font-weight:600;">Docs</a>
+      </nav>
+      <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="site-nav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <div class="docs-layout">
+
+      <!-- ======================================================
+           SIDEBAR
+           ====================================================== -->
+      <aside class="docs-sidebar" aria-label="Documentation navigation">
+        <div class="sidebar-group">
+          <p class="sidebar-group-title">Getting started</p>
+          <ul>
+            <li><a href="#install">Installation</a></li>
+            <li><a href="#sign">Sign an agent</a></li>
+            <li><a href="#verify">Verify an agent</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-group">
+          <p class="sidebar-group-title">Commands</p>
+          <ul>
+            <li><a href="#sign">agentverif sign</a></li>
+            <li><a href="#verify">agentverif verify</a></li>
+            <li><a href="#badge">agentverif badge</a></li>
+            <li><a href="#revoke">agentverif revoke</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-group">
+          <p class="sidebar-group-title">Reference</p>
+          <ul>
+            <li><a href="#env">Environment variables</a></li>
+            <li><a href="#badge-embed">README badge</a></li>
+            <li><a href="#faq">FAQ</a></li>
+          </ul>
+        </div>
+      </aside>
+
+      <!-- ======================================================
+           CONTENT
+           ====================================================== -->
+      <div class="docs-content">
+
+        <!-- Page header -->
+        <div style="margin-bottom:48px;">
+          <span class="section-tag">Documentation</span>
+          <h1 style="font-size:clamp(2rem,5vw,2.75rem);font-weight:800;letter-spacing:-0.04em;line-height:1.1;margin:12px 0 12px;">
+            agentverif CLI
+          </h1>
+          <p style="font-size:1.0625rem;color:var(--text-muted);max-width:560px;">
+            Scan, sign, verify, and revoke AI agent packages from the command line.
+          </p>
+        </div>
+
+        <!-- ===== INSTALL ===== -->
+        <section class="docs-section" id="install">
+          <h2>Getting started</h2>
+          <p>Install the CLI with pip. Python 3.9+ required.</p>
+          <div class="code-snippet">
+            <code><span class="cmd">pip install agentverif-sign</span></code>
+          </div>
+          <p>Verify the installation:</p>
+          <div class="code-snippet">
+            <code><span class="cmd">agentverif-sign --version</span>
+<span class="comment"># agentverif-sign 0.1.0</span></code>
+          </div>
+          <div class="callout">
+            <p>Set your API key before signing. Get one at <strong>agentverif.com/account</strong>. Free tier does not require a key for local-only operations.</p>
+          </div>
+        </section>
+
+        <!-- ===== SIGN ===== -->
+        <section class="docs-section" id="sign">
+          <h2>agentverif sign</h2>
+          <p>Sign an agent package. This runs the full OWASP LLM Top 10 scan, then registers a cryptographic hash and issues a License ID.</p>
+
+          <div class="code-snippet">
+            <code><span class="cmd">agentverif-sign sign</span> <span class="str">./agent.zip</span> [OPTIONS]</code>
+          </div>
+
+          <h3>What happens step by step</h3>
+          <ol>
+            <li>The CLI reads the agent package from the path you provide.</li>
+            <li>A <code>sha256</code> hash of the archive is computed locally.</li>
+            <li>The hash is sent to the agentverif API along with your API key and tier.</li>
+            <li>The OWASP LLM Top 10 scan runs server-side. If the score is below 70, signing is refused.</li>
+            <li>On success, a <code>SIGNATURE.json</code> is injected into your archive, containing the License ID, hash, timestamp, and tier.</li>
+            <li>The signed archive is written to <code>./agent.signed.zip</code> (or the path specified with <code>--output</code>).</li>
+          </ol>
+
+          <div class="code-snippet">
+            <code><span class="comment"># Basic sign</span>
+<span class="cmd">agentverif-sign sign</span> ./agent.zip
+
+<span class="comment"># Specify output path</span>
+<span class="cmd">agentverif-sign sign</span> ./agent.zip <span class="flag">--output</span> ./dist/agent.signed.zip
+
+<span class="comment"># Output JSON (for CI/CD)</span>
+<span class="cmd">agentverif-sign sign</span> ./agent.zip <span class="flag">--json</span>
+
+<span class="comment"># Example JSON output</span>
+<span class="comment"># {</span>
+<span class="comment">#   "license_id": "AV-84F2-91AB",</span>
+<span class="comment">#   "tier": "indie",</span>
+<span class="comment">#   "score": 87,</span>
+<span class="comment">#   "hash": "sha256:e3b0c44...",</span>
+<span class="comment">#   "signed_at": "2026-04-11T12:00:00Z"</span>
+<span class="comment"># }</span></code>
+          </div>
+
+          <div class="callout-warn callout">
+            <p>Packages scoring below 70 on the OWASP LLM Top 10 scan are refused. No exceptions. The scan result and score are included in <code>SIGNATURE.json</code>.</p>
+          </div>
+        </section>
+
+        <!-- ===== VERIFY ===== -->
+        <section class="docs-section" id="verify">
+          <h2>agentverif verify</h2>
+          <p>Verify a signed agent archive. Checks the <code>SIGNATURE.json</code>, recomputes the hash, and optionally checks the registry for revocation status.</p>
+
+          <div class="code-snippet">
+            <code><span class="cmd">agentverif-sign verify</span> <span class="str">./agent.zip</span> [OPTIONS]</code>
+          </div>
+
+          <div class="code-snippet">
+            <code><span class="comment"># Standard verify (local hash check only)</span>
+<span class="cmd">agentverif-sign verify</span> ./agent.zip
+
+<span class="comment"># VERIFIED</span>
+<span class="comment"># License:  AV-84F2-91AB</span>
+<span class="comment"># Tier:     indie</span>
+<span class="comment"># Score:    87/100</span>
+<span class="comment"># Verify:   https://verify.agentverif.com/AV-84F2-91AB</span>
+
+<span class="comment"># Also check registry (revocation, online record)</span>
+<span class="cmd">agentverif-sign verify</span> ./agent.zip <span class="flag">--registry</span>
+
+<span class="comment"># Machine-readable output</span>
+<span class="cmd">agentverif-sign verify</span> ./agent.zip <span class="flag">--json</span></code>
+          </div>
+
+          <h3>Exit codes</h3>
+          <ul>
+            <li><code>0</code> &mdash; verified successfully</li>
+            <li><code>1</code> &mdash; hash mismatch (tampered or corrupted)</li>
+            <li><code>2</code> &mdash; no <code>SIGNATURE.json</code> found</li>
+            <li><code>3</code> &mdash; license revoked</li>
+            <li><code>4</code> &mdash; registry unreachable (used with <code>--registry</code>)</li>
+          </ul>
+        </section>
+
+        <!-- ===== BADGE ===== -->
+        <section class="docs-section" id="badge">
+          <h2>agentverif badge</h2>
+          <p>Retrieve the badge string for a given License ID. Badge format depends on the tier the agent was signed under.</p>
+
+          <div class="code-snippet">
+            <code><span class="cmd">agentverif-sign badge</span> <span class="str">AV-XXXX-XXXX</span></code>
+          </div>
+
+          <h3>Badge formats by tier</h3>
+          <div class="badge-samples">
+            <div>
+              <div class="badge-tier">Indie</div>
+              <div class="badge-sample">&#x2705; Signed by agentverif</div>
+            </div>
+            <div>
+              <div class="badge-tier">Pro</div>
+              <div class="badge-sample">&#x2705; agentverif VERIFIED | AV-XXXX-XXXX</div>
+            </div>
+            <div>
+              <div class="badge-tier">Enterprise</div>
+              <div class="badge-sample">&#x1F512; agentverif ENTERPRISE CERTIFIED | AV-XXXX-XXXX | Ed25519</div>
+            </div>
+          </div>
+
+          <div class="callout">
+            <p>Embed the badge in your agent's README using the embed code shown in the <a href="#badge-embed" style="color:var(--primary);">README badge</a> section below.</p>
+          </div>
+        </section>
+
+        <!-- ===== REVOKE ===== -->
+        <section class="docs-section" id="revoke">
+          <h2>agentverif revoke</h2>
+          <p>Revoke a previously issued license. Only available on Pro and Enterprise tiers. Revocation is permanent and immediate — all future registry checks will return <code>REVOKED</code>.</p>
+
+          <div class="code-snippet">
+            <code><span class="cmd">agentverif-sign revoke</span> <span class="str">AV-XXXX-XXXX</span> [OPTIONS]</code>
+          </div>
+
+          <div class="code-snippet">
+            <code><span class="comment"># Revoke with reason (recommended)</span>
+<span class="cmd">agentverif-sign revoke</span> AV-84F2-91AB <span class="flag">--reason</span> <span class="str">"compromised key"</span>
+
+<span class="comment"># Confirmed. License AV-84F2-91AB is now REVOKED.</span>
+<span class="comment"># All verify --registry calls will return status: revoked.</span></code>
+          </div>
+
+          <div class="callout-warn callout">
+            <p>Revocation cannot be undone. If you need to re-certify the same agent, sign it again to obtain a new License ID.</p>
+          </div>
+        </section>
+
+        <!-- ===== ENV VARS ===== -->
+        <section class="docs-section" id="env">
+          <h2>Environment variables</h2>
+          <p>All CLI options can be set via environment variables. CLI flags take precedence.</p>
+
+          <table class="env-table">
+            <thead>
+              <tr>
+                <th>Variable</th>
+                <th>Description</th>
+                <th>Default</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>AGENTVERIF_API_KEY</td>
+                <td>Your agentverif API key. Required for Pro and Enterprise operations.</td>
+                <td>&mdash;</td>
+              </tr>
+              <tr>
+                <td>AGENTVERIF_SIGN_URL</td>
+                <td>Override the signing API endpoint. Useful for private deployments or CI environments.</td>
+                <td>https://api.agentverif.com</td>
+              </tr>
+              <tr>
+                <td>AGENTVERIF_TIER</td>
+                <td>Default tier to use when signing (<code>indie</code>, <code>pro</code>, <code>enterprise</code>).</td>
+                <td>indie</td>
+              </tr>
+              <tr>
+                <td>AGENTVERIF_JSON</td>
+                <td>Set to <code>1</code> to default all commands to JSON output mode.</td>
+                <td>0</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>CI/CD example (.env or GitHub Actions)</h3>
+          <div class="code-snippet">
+            <code><span class="comment"># .env</span>
+<span class="kw">AGENTVERIF_API_KEY</span>=av_live_xxxxxxxxxxxx
+<span class="kw">AGENTVERIF_TIER</span>=pro
+
+<span class="comment"># GitHub Actions step</span>
+- <span class="kw">name</span>: Sign agent
+  <span class="kw">run</span>: agentverif-sign sign ./dist/agent.zip --json
+  <span class="kw">env</span>:
+    AGENTVERIF_API_KEY: ${{ secrets.AGENTVERIF_API_KEY }}</code>
+          </div>
+        </section>
+
+        <!-- ===== BADGE EMBED ===== -->
+        <section class="docs-section" id="badge-embed">
+          <h2>README badge</h2>
+          <p>Add a verification badge to your agent&rsquo;s README. Replace <code>AV-XXXX-XXXX</code> with your License ID.</p>
+
+          <h3>Markdown</h3>
+          <div class="code-snippet">
+            <code>[![agentverif certified](https://img.shields.io/badge/agentverif-VERIFIED-16a34a?style=flat-square&logo=data:image/svg+xml;base64,...)](https://verify.agentverif.com/AV-XXXX-XXXX)</code>
+          </div>
+
+          <h3>Plain text (for README or agent manifest)</h3>
+          <div class="code-snippet">
+            <code>&#x2705; agentverif VERIFIED | AV-XXXX-XXXX
+Verify: https://verify.agentverif.com/AV-XXXX-XXXX</code>
+          </div>
+
+          <h3>JSON-LD (for agent metadata files)</h3>
+          <div class="code-snippet">
+            <code>{
+  <span class="str">"agentverif"</span>: {
+    <span class="str">"license_id"</span>: <span class="str">"AV-XXXX-XXXX"</span>,
+    <span class="str">"tier"</span>: <span class="str">"pro"</span>,
+    <span class="str">"verify_url"</span>: <span class="str">"https://verify.agentverif.com/AV-XXXX-XXXX"</span>
+  }
+}</code>
+          </div>
+        </section>
+
+        <!-- ===== FAQ ===== -->
+        <section class="docs-section" id="faq">
+          <h2>FAQ</h2>
+
+          <div class="faq-item">
+            <h4>What gets scanned?</h4>
+            <p>The entire agent archive — source code, dependencies, configuration files, and any embedded prompts — is analysed against the <a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/" rel="noopener" style="color:var(--primary)">OWASP LLM Top 10</a>. This includes checks for prompt injection risks, insecure output handling, excessive agency, and more.</p>
+          </div>
+
+          <div class="faq-item">
+            <h4>What score is required to pass?</h4>
+            <p>A minimum score of <strong>70 out of 100</strong> is required. Packages scoring below 70 are refused — no exceptions, no overrides. The score and per-category breakdown are included in <code>SIGNATURE.json</code> so you can see exactly where to improve.</p>
+          </div>
+
+          <div class="faq-item">
+            <h4>How long does a license last?</h4>
+            <p>Licenses do not expire automatically. They remain valid indefinitely unless you revoke them. If you update your agent and re-sign it, a new License ID is issued — the old one remains valid for the original version unless explicitly revoked.</p>
+          </div>
+
+          <div class="faq-item">
+            <h4>Can I verify without an internet connection?</h4>
+            <p>Yes. Running <code>agentverif-sign verify ./agent.zip</code> without the <code>--registry</code> flag performs a fully local hash check using only the <code>SIGNATURE.json</code> embedded in the archive. No network request is made.</p>
+          </div>
+
+          <div class="faq-item">
+            <h4>What is SIGNATURE.json?</h4>
+            <p>A file injected into your signed archive containing the License ID, sha256 hash, OWASP score, tier, signing timestamp, and a URL to the public registry entry (Pro/Enterprise). It is human-readable JSON and machine-parseable for CI/CD.</p>
+          </div>
+
+          <div class="faq-item">
+            <h4>What is Ed25519 signing (Enterprise)?</h4>
+            <p>Enterprise tier adds a cryptographic Ed25519 signature to <code>SIGNATURE.json</code>. This allows buyers to verify authenticity without trusting the agentverif registry — purely using public-key cryptography. The public key is published at <code>agentverif.com/.well-known/agentverif-public.pem</code>.</p>
+          </div>
+
+          <div class="faq-item">
+            <h4>Is the scan result stored?</h4>
+            <p>The scan score and a summary of findings are stored server-side and linked to your License ID on Pro and Enterprise tiers. On the free Indie tier, only the hash and License ID are registered — scan details are returned to you at signing time only.</p>
+          </div>
+        </section>
+
+      </div><!-- /docs-content -->
+    </div><!-- /docs-layout -->
+  </main>
+
+  <!-- ======================================================
+       FOOTER
+       ====================================================== -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+
+        <div class="footer-col">
+          <p class="footer-col-title">Product</p>
+          <ul>
+            <li><a href="/#how-it-works">How it works</a></li>
+            <li><a href="/#pricing">Pricing</a></li>
+            <li><a href="https://verify.agentverif.com">Verify</a></li>
+            <li><a href="/docs/">Docs</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <p class="footer-col-title">Resources</p>
+          <ul>
+            <li><a href="https://agentcop.live" rel="noopener">agentcop.live</a></li>
+            <li><a href="https://github.com/trusthandoff/agentverif" rel="noopener">GitHub</a></li>
+            <li><a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/" rel="noopener">OWASP LLM Top 10</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <p class="footer-col-title">Company</p>
+          <ul>
+            <li><a href="https://agentverif.com/about">About</a></li>
+            <li><a href="mailto:support@agentverif.com">Contact</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 agentverif.com &mdash; Powered by <a href="https://agentcop.live" rel="noopener">agentcop</a></p>
+        <p>
+          <a href="https://verify.agentverif.com">Verify</a>
+          &nbsp;&middot;&nbsp;
+          <a href="/docs/">Docs</a>
+          &nbsp;&middot;&nbsp;
+          <a href="mailto:support@agentverif.com">Support</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile nav toggle
+    var toggle = document.getElementById('menu-toggle');
+    var nav = document.getElementById('site-nav');
+    toggle.addEventListener('click', function() {
+      var isOpen = nav.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+
+    // Highlight active sidebar link based on scroll
+    var sections = document.querySelectorAll('.docs-section[id]');
+    var sidebarLinks = document.querySelectorAll('.docs-sidebar a');
+    window.addEventListener('scroll', function() {
+      var scrollPos = window.scrollY + 100;
+      sections.forEach(function(section) {
+        if (section.offsetTop <= scrollPos && (section.offsetTop + section.offsetHeight) > scrollPos) {
+          sidebarLinks.forEach(function(link) {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === '#' + section.id) {
+              link.classList.add('active');
+            }
+          });
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

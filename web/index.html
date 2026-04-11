@@ -35,12 +35,35 @@
 
   <!-- Page-specific styles -->
   <style>
+    /* ---- Global text weight ---- */
+    body { line-height: 1.7; }
+    p, li, .section-subtitle, .hero-lead, .pricing-desc, .step-card p, .why-card p {
+      font-weight: 500;
+    }
+    strong { font-weight: 700; }
+
     /* ---- Hero ---- */
     .hero {
       padding: 96px 0 80px;
       background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 60%);
       text-align: center;
+      position: relative;
+      overflow: hidden;
     }
+    .hero > .container { position: relative; z-index: 1; }
+    .hero-watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 600px;
+      pointer-events: none;
+      z-index: 0;
+      color: #16a34a;
+      opacity: 0.04;
+    }
+    .hero-watermark svg { width: 600px; height: 600px; }
     .hero-logo {
       display: flex;
       justify-content: center;
@@ -330,26 +353,43 @@
       .trusted-logos { gap: 28px; }
     }
 
-    /* ---- Trust bar ---- */
-    #trust { background: var(--accent); border-top: 1px solid var(--accent-mid); border-bottom: 1px solid var(--accent-mid); }
-    .trust-items {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 40px;
+    /* ---- CLI quickstart ---- */
+    .cli-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      align-items: stretch;
     }
-    .trust-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 0.9375rem;
-      font-weight: 500;
-      color: #166534;
+    .cli-col { display: flex; flex-direction: column; }
+    .cli-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
     }
-    .trust-icon { flex-shrink: 0; color: var(--primary); }
+    .cli-block {
+      background: #0d1117;
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
+    }
+    .cli-block code {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 600;
+      color: #e2e8f0;
+      white-space: pre-wrap;
+      display: block;
+      line-height: 1.8;
+    }
+    .cli-cmd { color: #4ade80; }
+    .cli-comment { color: #64748b; }
     @media (max-width: 640px) {
-      .trust-items { flex-direction: column; gap: 20px; text-align: center; }
+      .cli-grid { grid-template-columns: 1fr; }
     }
 
     /* ---- CTA section ---- */
@@ -428,6 +468,10 @@
       .footer-grid { grid-template-columns: 1fr; gap: 32px; }
       .footer-bottom { flex-direction: column; align-items: flex-start; }
     }
+
+    /* ---- Kill ghost space after footer ---- */
+    html, body { margin-bottom: 0 !important; padding-bottom: 0 !important; }
+    body > *:last-child { margin-bottom: 0 !important; }
   </style>
 
   <!-- Schema.org JSON-LD -->
@@ -500,7 +544,7 @@
         <a href="/#how-it-works">How it works</a>
         <a href="/#pricing">Pricing</a>
         <a href="https://verify.agentverif.com" class="nav-cta">Verify</a>
-        <a href="https://agentverif.com/docs">Docs</a>
+        <a href="/docs/">Docs</a>
       </nav>
       <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="site-nav">
         <span></span><span></span><span></span>
@@ -514,6 +558,12 @@
          HERO
          ====================================================== -->
     <section class="hero" aria-labelledby="hero-heading">
+      <!-- Background watermark -->
+      <div class="hero-watermark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+        </svg>
+      </div>
       <div class="container">
         <div class="hero-logo" aria-hidden="true">
           <svg class="hero-shield" width="80" height="92" viewBox="0 0 32 37" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -527,8 +577,7 @@
           for <span>AI agents.</span>
         </h1>
         <p class="hero-lead">
-          Every signed agent is scanned, verified, and traceable.
-          OWASP LLM Top 10 scanning before every signature.
+          Unsigned agents ship every day. Buyers don&rsquo;t know what they&rsquo;re running. agentverif changes that.
         </p>
         <div class="hero-install">
           <div class="code-block" role="region" aria-label="Installation command">
@@ -638,26 +687,27 @@
           <h3 style="font-size:1.0625rem;font-weight:700;margin-bottom:20px;letter-spacing:-0.02em;">
             CLI quickstart
           </h3>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-            <div>
-              <p style="font-size:0.78rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">As a vendor</p>
-              <div style="background:#1e2433;border-radius:var(--radius-sm);padding:14px 18px;">
-                <code style="font-family:var(--font-mono);font-size:0.875rem;color:#a3e635;white-space:pre-wrap;display:block;line-height:1.8;">agentverif-sign sign ./agent.zip
-<span style="color:#60a5fa"># Signed successfully
-# License: AV-84F2-91AB
-# Tier:    indie</span></code>
+          <div class="cli-grid">
+            <div class="cli-col">
+              <p class="cli-label">As a seller</p>
+              <div class="cli-block">
+                <code><span class="cli-cmd">agentverif-sign sign ./agent.zip</span>
+<span class="cli-comment"># Signed successfully</span>
+<span class="cli-comment"># License: AV-84F2-91AB</span>
+<span class="cli-comment"># Tier:    indie</span></code>
               </div>
             </div>
-            <div>
-              <p style="font-size:0.78rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">As a buyer</p>
-              <div style="background:#1e2433;border-radius:var(--radius-sm);padding:14px 18px;">
-                <code style="font-family:var(--font-mono);font-size:0.875rem;color:#a3e635;white-space:pre-wrap;display:block;line-height:1.8;">agentverif-sign verify ./agent.zip
-<span style="color:#60a5fa"># VERIFIED
-# Verify: verify.agentverif.com/&hellip;</span></code>
+            <div class="cli-col">
+              <p class="cli-label">As a buyer</p>
+              <div class="cli-block">
+                <code><span class="cli-cmd">agentverif-sign verify ./agent.zip</span>
+<span class="cli-comment"># VERIFIED</span>
+<span class="cli-comment"># License:  AV-84F2-91AB</span>
+<span class="cli-comment"># Verify:   verify.agentverif.com/&hellip;</span></code>
               </div>
             </div>
           </div>
-          <p style="margin-top:16px;font-size:0.875rem;color:var(--text-muted);">
+          <p style="margin-top:16px;font-size:0.875rem;color:var(--text-muted);font-weight:500;">
             Output is JSON-compatible for CI/CD pipelines, LLM tool calls, and MCP integrations
             (<code style="font-size:0.84rem;color:var(--text);">agentverif-sign verify --json</code>).
           </p>
@@ -689,7 +739,7 @@
                 <line x1="12" y1="17" x2="12.01" y2="17"/>
               </svg>
             </div>
-            <h3>Unsigned agents are a liability</h3>
+            <h3>One unverified agent is all it takes.</h3>
             <p>
               Any agent without a verifiable provenance chain is a vector for supply chain compromise.
               Without certification, there is no way to distinguish safe from tampered code.
@@ -704,7 +754,7 @@
                 <circle cx="12" cy="12" r="3"/>
               </svg>
             </div>
-            <h3>Buyers deserve to know what they're running</h3>
+            <h3>Buyers are starting to ask for proof.</h3>
             <p>
               Enterprise buyers, security teams, and regulated industries cannot run unverified agents
               in production. Certification gives them the assurance they need to proceed.
@@ -720,10 +770,10 @@
                 <line x1="15" y1="9" x2="9" y2="15"/>
               </svg>
             </div>
-            <h3>One breach from an unverified agent = reputational damage</h3>
+            <h3>Sign before your competitor does.</h3>
             <p>
-              A single compromised agent incident can end a product's trust relationship with its users.
-              Certification is not overhead — it is risk management.
+              A single compromised agent incident can end a product&rsquo;s trust relationship with its users.
+              Certification is not overhead &mdash; it is a competitive signal.
             </p>
           </article>
 
@@ -765,7 +815,7 @@
             </ul>
             <div class="pricing-badge-label">Badge</div>
             <div class="pricing-badge-example" aria-label="Example badge for Indie tier">&#x2705; Signed by agentverif</div>
-            <a href="https://agentverif.com/docs" class="btn btn-secondary btn-full" style="margin-top:24px;">Get started free</a>
+            <a href="/docs/" class="btn btn-secondary btn-full" style="margin-top:24px;">Start free &mdash; no credit card</a>
           </article>
 
           <!-- Pro (featured) -->
@@ -789,7 +839,7 @@
             </ul>
             <div class="pricing-badge-label">Badge</div>
             <div class="pricing-badge-example" aria-label="Example badge for Pro tier">&#x2705; agentverif VERIFIED | AV-XXXX</div>
-            <a href="https://agentverif.com/docs" class="btn btn-primary btn-full" style="margin-top:24px;">Start Pro</a>
+            <a href="/docs/" class="btn btn-primary btn-full" style="margin-top:24px;">Get verified &mdash; $9/mo</a>
           </article>
 
           <!-- Enterprise -->
@@ -836,46 +886,6 @@
     </section>
 
     <!-- ======================================================
-         TRUST SIGNALS
-         ====================================================== -->
-    <section id="trust" class="section-xs" aria-labelledby="trust-heading">
-      <div class="container">
-        <h2 id="trust-heading" class="hidden">Trust signals</h2>
-        <div class="trust-items">
-          <div class="trust-item">
-            <span class="trust-icon" aria-hidden="true">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 2L3 7v6c0 5.25 3.9 10.17 9 11.36C17.1 23.17 21 18.25 21 13V7L12 2z"/>
-                <polyline points="9 12 11 14 15 10"/>
-              </svg>
-            </span>
-            <span>Powered by agentcop &mdash; OWASP LLM Top 10 scan engine</span>
-          </div>
-          <div class="trust-item">
-            <span class="trust-icon" aria-hidden="true">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="7"/>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-              </svg>
-            </span>
-            <span>Every agent scanned before certification</span>
-          </div>
-          <div class="trust-item">
-            <span class="trust-icon" aria-hidden="true">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                <polyline points="14 2 14 8 20 8"/>
-                <line x1="9" y1="13" x2="15" y2="13"/>
-                <line x1="9" y1="17" x2="12" y2="17"/>
-              </svg>
-            </span>
-            <span>Registry: agentverif.com</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ======================================================
          CTA BANNER
          ====================================================== -->
     <section class="section-sm cta-section" aria-labelledby="cta-heading">
@@ -885,7 +895,7 @@
           Start signing in two minutes. Free tier, no credit card required.
         </p>
         <div class="cta-btns">
-          <a href="https://agentverif.com/docs" class="btn btn-primary btn-lg">Read the docs &rarr;</a>
+          <a href="/docs/" class="btn btn-primary btn-lg">Sign your first agent free &rarr;</a>
           <a href="https://verify.agentverif.com" class="btn btn-secondary btn-lg">Verify a license</a>
         </div>
       </div>
@@ -906,7 +916,7 @@
             <li><a href="/#how-it-works">How it works</a></li>
             <li><a href="/#pricing">Pricing</a></li>
             <li><a href="https://verify.agentverif.com">Verify</a></li>
-            <li><a href="https://agentverif.com/docs">Docs</a></li>
+            <li><a href="/docs/">Docs</a></li>
           </ul>
         </div>
 
@@ -934,7 +944,7 @@
         <p>
           <a href="https://verify.agentverif.com">Verify</a>
           &nbsp;&middot;&nbsp;
-          <a href="https://agentverif.com/docs">Docs</a>
+          <a href="/docs/">Docs</a>
           &nbsp;&middot;&nbsp;
           <a href="mailto:support@agentverif.com">Support</a>
         </p>
