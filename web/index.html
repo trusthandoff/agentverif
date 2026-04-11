@@ -539,6 +539,32 @@
     html, body { margin: 0; padding: 0; }
     .site-footer { margin-bottom: 0 !important; padding-bottom: 0 !important; }
     body > *:last-child { margin-bottom: 0 !important; padding-bottom: 0 !important; }
+
+    /* ---- Why sellers ---- */
+    .why-sellers-section { background: #fff; }
+    .why-sellers-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px 40px;
+      max-width: 480px;
+      margin: 32px auto 0;
+    }
+    .why-sellers-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #111;
+    }
+    .why-sellers-check {
+      color: #16a34a;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    @media (max-width: 480px) {
+      .why-sellers-grid { grid-template-columns: 1fr; max-width: 260px; }
+    }
   </style>
 
   <!-- Schema.org JSON-LD -->
@@ -645,7 +671,7 @@
           for <span>AI agents.</span>
         </h1>
         <p class="hero-lead">
-          Unsigned agents ship every day. Buyers don&rsquo;t know what they&rsquo;re running. agentverif changes that.
+          Sell verified agents. Buyers trust verified packages. Unsigned agents get ignored. Add verification to your agent in seconds.
         </p>
         <div class="hero-install">
           <div class="code-block" role="region" aria-label="Installation command">
@@ -669,6 +695,35 @@
           <div class="hero-stat" role="listitem">
             <div class="hero-stat-number">OWASP</div>
             <div class="hero-stat-label">LLM Top 10 compliance</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         WHY SELLERS
+         ====================================================== -->
+    <section class="section why-sellers-section" aria-labelledby="why-sellers-heading">
+      <div class="container">
+        <header class="section-header centered">
+          <h2 class="section-title" id="why-sellers-heading">Why sellers use agentverif</h2>
+        </header>
+        <div class="why-sellers-grid">
+          <div class="why-sellers-item">
+            <span class="why-sellers-check" aria-hidden="true">&#10004;</span>
+            <span>More trust</span>
+          </div>
+          <div class="why-sellers-item">
+            <span class="why-sellers-check" aria-hidden="true">&#10004;</span>
+            <span>Higher conversion</span>
+          </div>
+          <div class="why-sellers-item">
+            <span class="why-sellers-check" aria-hidden="true">&#10004;</span>
+            <span>Less refund</span>
+          </div>
+          <div class="why-sellers-item">
+            <span class="why-sellers-check" aria-hidden="true">&#10004;</span>
+            <span>Safer distribution</span>
           </div>
         </div>
       </div>
