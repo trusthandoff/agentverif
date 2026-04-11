@@ -202,23 +202,24 @@
     }
     .step-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); transition: all 0.15s ease; }
     .step-number {
-      width: 36px; height: 36px;
-      background: var(--accent);
-      color: var(--primary);
-      font-weight: 800;
-      font-size: 0.875rem;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      margin-bottom: 16px;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #16a34a;
+      line-height: 1;
+      margin-bottom: 14px;
     }
     .step-icon {
-      margin-bottom: 14px;
-      line-height: 1;
-      color: var(--primary);
-      min-height: 48px;
-      overflow: visible;
+      width: 44px;
+      height: 44px;
+      background: var(--accent);
+      border-radius: var(--radius-sm);
       display: flex;
-      align-items: flex-start;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      color: var(--primary);
+      overflow: visible;
+      flex-shrink: 0;
     }
     .step-icon svg { display: block; overflow: visible; }
     .step-card h3 {
@@ -256,14 +257,19 @@
       border-top: 3px solid var(--primary);
     }
     .why-icon {
-      width: 44px; height: 44px;
+      width: 44px;
+      height: 44px;
       background: var(--accent);
       border-radius: var(--radius-sm);
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       margin-bottom: 20px;
       color: var(--primary);
       flex-shrink: 0;
+      overflow: visible;
     }
+    .why-icon svg { display: block; overflow: visible; }
     .why-card h3 {
       font-size: 1.1875rem;
       font-weight: 800;
