@@ -97,7 +97,7 @@ agentverif-sign badge AC-84F2-91AB --format text|html|markdown|svg [--tier indie
   "tier": "indie",
   "issued_at": "2026-04-10T00:00:00Z",
   "expires_at": null,
-  "issuer": "agentcop.live",
+  "issuer": "agentverif.com",
   "issuer_version": "0.1.0",
   "file_list": ["agent.py", "config.json", "requirements.txt"],
   "file_count": 3,
@@ -159,6 +159,6 @@ pip install agentverif-sign[crypto]
 
 ---
 
-完整文档：[docs.agentcop.live/guides/agentverif-sign](https://docs.agentcop.live/guides/agentverif-sign)
+完整文档：[agentverif.com/docs](https://agentverif.com/docs)
 
 为什么要这样做：未签名的 Agent 不应被执行。

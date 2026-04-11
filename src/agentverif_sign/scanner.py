@@ -1,4 +1,4 @@
-"""agentcop.live scan integration."""
+"""agentverif.com scan integration."""
 
 from __future__ import annotations
 

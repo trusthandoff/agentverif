@@ -17,7 +17,7 @@ def _make_record() -> SignatureRecord:
         tier="indie",
         issued_at="2026-04-10T00:00:00Z",
         expires_at=None,
-        issuer="agentcop.live",
+        issuer="agentverif.com",
         issuer_version="0.1.0",
         file_list=["agent.py"],
         file_count=1,

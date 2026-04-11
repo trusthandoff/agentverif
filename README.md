@@ -113,7 +113,7 @@ Human-readable, auditable — no binary blobs:
   "tier": "indie",
   "issued_at": "2026-04-10T00:00:00Z",
   "expires_at": null,
-  "issuer": "agentcop.live",
+  "issuer": "agentverif.com",
   "issuer_version": "0.1.0",
   "file_list": ["agent.py", "config.json", "requirements.txt"],
   "file_count": 3,
@@ -175,6 +175,6 @@ pip install agentverif-sign[crypto]
 
 ---
 
-Full docs: [docs.agentcop.live/guides/agentverif-sign](https://docs.agentcop.live/guides/agentverif-sign)
+Full docs: [agentverif.com/docs](https://agentverif.com/docs)
 
 Why: unsigned agents shouldn't be executed.

@@ -101,7 +101,7 @@ def test_sign_zip_returns_record(tmp_zip: Path):
     record = signer.sign_zip(str(tmp_zip), tier="indie", scan_result=scan)
     assert record.tier == "indie"
     assert record.zip_hash.startswith("sha256:")
-    assert record.issuer == "agentcop.live"
+    assert record.issuer == "agentverif.com"
 
 
 def test_sign_zip_license_format_indie(tmp_zip: Path):

@@ -16,7 +16,7 @@ from agentverif_sign.models import ScanResult, SignatureRecord
 logger = logging.getLogger(__name__)
 
 _MAX_ZIP_BYTES = 100 * 1024 * 1024  # 100 MB
-_ISSUER = "agentcop.live"
+_ISSUER = "agentverif.com"
 _ISSUER_VERSION = "0.1.0"
 
 

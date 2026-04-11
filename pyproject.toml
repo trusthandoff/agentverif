@@ -9,7 +9,7 @@ description = "Sign and verify AI agent packages. The SSL certificate for agent 
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.11"
-authors = [{ name = "agentcop.live" }]
+authors = [{ name = "agentverif.com" }]
 keywords = [
   "agent security",
   "AI agents",
@@ -42,8 +42,8 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://agentcop.live"
-Documentation = "https://docs.agentcop.live/guides/agentverif-sign"
+Homepage = "https://agentverif.com"
+Documentation = "https://agentverif.com/docs"
 Repository = "https://github.com/agentcop/agentverif-sign"
 "Bug Tracker" = "https://github.com/agentcop/agentverif-sign/issues"
 
