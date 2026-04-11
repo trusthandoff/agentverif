@@ -522,9 +522,10 @@
       .footer-bottom { flex-direction: column; align-items: flex-start; }
     }
 
-    /* ---- Kill ghost space after footer ---- */
-    html, body { margin-bottom: 0 !important; padding-bottom: 0 !important; }
-    body > *:last-child { margin-bottom: 0 !important; }
+    /* ---- Kill ghost space after footer (all viewports) ---- */
+    html, body { margin: 0; padding: 0; }
+    .site-footer { margin-bottom: 0 !important; padding-bottom: 0 !important; }
+    body > *:last-child { margin-bottom: 0 !important; padding-bottom: 0 !important; }
   </style>
 
   <!-- Schema.org JSON-LD -->
@@ -866,7 +867,7 @@
             </ul>
             <div class="pricing-badge-label">Badge</div>
             <div class="pricing-badge-example" aria-label="Example badge for Indie tier">&#x2705; Signed by agentverif</div>
-            <a href="/docs/" class="btn btn-secondary btn-full" style="margin-top:24px;">Start free &mdash; no credit card</a>
+            <a href="https://github.com/trusthandoff/agentverif" class="btn btn-secondary btn-full" style="margin-top:24px;" rel="noopener">Start free &mdash; no credit card</a>
           </article>
 
           <!-- Pro (featured) -->
@@ -890,7 +891,7 @@
             </ul>
             <div class="pricing-badge-label">Badge</div>
             <div class="pricing-badge-example" aria-label="Example badge for Pro tier">&#x2705; agentverif VERIFIED | AV-XXXX</div>
-            <a href="/docs/" class="btn btn-primary btn-full" style="margin-top:24px;">Get verified &mdash; $9/mo</a>
+            <a href="https://buy.stripe.com/pro_agentverif" class="btn btn-primary btn-full" style="margin-top:24px;" rel="noopener">Get verified &mdash; $9/mo</a>
           </article>
 
           <!-- Enterprise -->
@@ -912,7 +913,7 @@
             </ul>
             <div class="pricing-badge-label">Badge</div>
             <div class="pricing-badge-example" aria-label="Example badge for Enterprise tier">&#x1F512; agentverif ENTERPRISE CERTIFIED</div>
-            <a href="mailto:enterprise@agentverif.com" class="btn btn-secondary btn-full" style="margin-top:24px;">Contact us</a>
+            <a href="mailto:enterprise@agentverif.com?subject=Enterprise%20plan" class="btn btn-secondary btn-full" style="margin-top:24px;">Contact us</a>
           </article>
 
         </div>

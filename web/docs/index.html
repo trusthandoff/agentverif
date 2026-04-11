@@ -25,7 +25,6 @@
       display: grid;
       grid-template-columns: 240px 1fr;
       gap: 0;
-      min-height: calc(100vh - var(--header-h));
       align-items: start;
     }
 
@@ -292,39 +291,57 @@
       opacity: 1 !important;
       text-decoration: none !important;
     }
-    html, body { margin-bottom: 0 !important; padding-bottom: 0 !important; }
+    /* ---- Kill ghost space after footer (all viewports) ---- */
+    html, body { margin: 0; padding: 0; }
+    .site-footer { margin-bottom: 0 !important; padding-bottom: 0 !important; }
+    body > *:last-child { margin-bottom: 0 !important; padding-bottom: 0 !important; }
 
     @media (max-width: 900px) {
       .docs-layout { grid-template-columns: 1fr; }
       .docs-sidebar { display: none; }
-      .docs-content { padding: 32px 24px 64px; max-width: 100%; }
+      .docs-content { padding: 32px 24px 64px; max-width: 100%; box-sizing: border-box; }
     }
     @media (max-width: 768px) {
       .footer-grid { grid-template-columns: 1fr; gap: 32px; }
       .footer-bottom { flex-direction: column; align-items: flex-start; }
     }
     @media (max-width: 640px) {
-      /* Code blocks: scrollable, never overflow viewport */
+      /* Section spacing */
+      .docs-section {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        margin-bottom: 32px;
+      }
+      /* Code blocks: wrap long lines, scroll if needed */
       .code-snippet {
         max-width: 100%;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
+        box-sizing: border-box;
       }
-      .code-snippet code { white-space: pre; word-break: normal; }
-      /* FAQ answer text size */
-      .faq-item p { font-size: 15px; }
-      .faq-item { padding: 16px 0; }
-      /* README badge stacks vertically, full width */
-      .badge-samples { flex-direction: column; }
-      .badge-sample {
+      .code-snippet code { white-space: pre-wrap; word-break: break-all; }
+      /* Tables: horizontal scroll */
+      .env-table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
         max-width: 100%;
+      }
+      /* FAQ */
+      .faq-item { padding: 16px 0; box-sizing: border-box; }
+      .faq-item p { font-size: 15px; }
+      /* README badge section: full-width vertical stack */
+      .badge-samples { flex-direction: column; width: 100%; }
+      .badge-sample {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
         font-size: 13px;
       }
-      /* Env table horizontal scroll */
-      .env-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
     }
   </style>
 </head>
