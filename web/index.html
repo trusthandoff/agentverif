@@ -215,8 +215,12 @@
       margin-bottom: 14px;
       line-height: 1;
       color: var(--primary);
+      min-height: 48px;
+      overflow: visible;
+      display: flex;
+      align-items: flex-start;
     }
-    .step-icon svg { display: block; }
+    .step-icon svg { display: block; overflow: visible; }
     .step-card h3 {
       font-size: 1.0625rem;
       font-weight: 700;
@@ -693,6 +697,9 @@
               Your agent package is automatically scanned against the
               <strong>OWASP LLM Top 10</strong>. A score below 70 is refused —
               no exceptions.
+            </p>
+            <p>
+              If your agent scores below 70, you receive a detailed report showing exactly which checks failed and how to fix them &mdash; before you can sign.
             </p>
             <span class="step-badge" aria-label="Minimum score required">score &ge; 70 required</span>
           </article>
