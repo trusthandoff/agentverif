@@ -116,9 +116,12 @@
       display: flex;
       justify-content: center;
       margin-bottom: 32px;
+      padding-bottom: 4px;
+      overflow: visible;
     }
     .hero-shield {
       filter: drop-shadow(0 12px 32px rgba(22,163,74,0.25));
+      overflow: visible;
     }
     .hero h1 {
       font-size: clamp(2.75rem, 7vw, 4.25rem);
@@ -541,29 +544,44 @@
     body > *:last-child { margin-bottom: 0 !important; padding-bottom: 0 !important; }
 
     /* ---- Why sellers ---- */
-    .why-sellers-section { background: #fff; }
+    .why-sellers-section {
+      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    }
     .why-sellers-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 20px 40px;
-      max-width: 480px;
-      margin: 32px auto 0;
+      gap: 24px 32px;
+      max-width: 720px;
+      margin: 36px auto 0;
     }
     .why-sellers-item {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 12px;
-      font-size: 1.05rem;
+      font-size: 1rem;
       font-weight: 600;
       color: #111;
+      background: #fff;
+      border-top: 3px solid #16a34a;
+      border-radius: 0 0 8px 8px;
+      padding: 16px 18px;
+      box-shadow: 0 1px 6px rgba(22,163,74,0.07);
     }
+    .why-sellers-icons {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+      padding-top: 1px;
+    }
+    .why-sellers-shield { color: #16a34a; }
     .why-sellers-check {
       color: #16a34a;
-      font-size: 1.1rem;
+      font-size: 1rem;
       flex-shrink: 0;
     }
-    @media (max-width: 480px) {
-      .why-sellers-grid { grid-template-columns: 1fr; max-width: 260px; }
+    @media (max-width: 600px) {
+      .why-sellers-grid { grid-template-columns: 1fr; max-width: 400px; }
     }
   </style>
 
@@ -626,8 +644,8 @@
        ====================================================== -->
   <header class="site-header" role="banner">
     <div class="container header-inner">
-      <a href="/" class="logo" aria-label="agentverif home">
-        <svg width="32" height="37" viewBox="0 0 32 37" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <a href="/" class="logo" aria-label="agentverif home" style="padding-bottom:4px;overflow:visible;">
+        <svg width="32" height="37" viewBox="0 0 32 37" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="overflow:visible;">
           <path d="M16 1L2 6.5v13C2 28.1 8.3 35.4 16 38c7.7-2.6 14-9.9 14-18.5v-13L16 1z" fill="#16a34a"/>
           <path d="M10 19l4.5 4.5 8-8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -659,7 +677,7 @@
       </div>
       <div class="container">
         <div class="hero-logo" aria-hidden="true">
-          <svg class="hero-shield" width="80" height="92" viewBox="0 0 32 37" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg class="hero-shield" width="80" height="92" viewBox="0 0 32 37" fill="none" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;">
             <path d="M16 1L2 6.5v13C2 28.1 8.3 35.4 16 38c7.7-2.6 14-9.9 14-18.5v-13L16 1z" fill="#16a34a"/>
             <path d="M10 19l4.5 4.5 8-8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -706,24 +724,36 @@
     <section class="section why-sellers-section" aria-labelledby="why-sellers-heading">
       <div class="container">
         <header class="section-header centered">
-          <h2 class="section-title" id="why-sellers-heading">Why sellers use agentverif</h2>
+          <h2 class="section-title" id="why-sellers-heading">Why sellers use AgentVerif</h2>
         </header>
         <div class="why-sellers-grid">
           <div class="why-sellers-item">
-            <span class="why-sellers-check" aria-hidden="true">&#10004;</span>
-            <span>More trust</span>
+            <span class="why-sellers-icons" aria-hidden="true">
+              <svg class="why-sellers-shield" width="16" height="18" viewBox="0 0 32 37" fill="none" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;"><path d="M16 1L2 6.5v13C2 28.1 8.3 35.4 16 38c7.7-2.6 14-9.9 14-18.5v-13L16 1z" fill="#16a34a"/><path d="M10 19l4.5 4.5 8-8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="why-sellers-check">&#10004;</span>
+            </span>
+            <span>Buyers trust certified agents&nbsp;&mdash; unsigned ones get skipped</span>
           </div>
           <div class="why-sellers-item">
-            <span class="why-sellers-check" aria-hidden="true">&#10004;</span>
-            <span>Higher conversion</span>
+            <span class="why-sellers-icons" aria-hidden="true">
+              <svg class="why-sellers-shield" width="16" height="18" viewBox="0 0 32 37" fill="none" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;"><path d="M16 1L2 6.5v13C2 28.1 8.3 35.4 16 38c7.7-2.6 14-9.9 14-18.5v-13L16 1z" fill="#16a34a"/><path d="M10 19l4.5 4.5 8-8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="why-sellers-check">&#10004;</span>
+            </span>
+            <span>Verified agents convert better&nbsp;&mdash; proof closes the deal</span>
           </div>
           <div class="why-sellers-item">
-            <span class="why-sellers-check" aria-hidden="true">&#10004;</span>
-            <span>Less refund</span>
+            <span class="why-sellers-icons" aria-hidden="true">
+              <svg class="why-sellers-shield" width="16" height="18" viewBox="0 0 32 37" fill="none" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;"><path d="M16 1L2 6.5v13C2 28.1 8.3 35.4 16 38c7.7-2.6 14-9.9 14-18.5v-13L16 1z" fill="#16a34a"/><path d="M10 19l4.5 4.5 8-8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="why-sellers-check">&#10004;</span>
+            </span>
+            <span>Certification cuts disputes and refund requests</span>
           </div>
           <div class="why-sellers-item">
-            <span class="why-sellers-check" aria-hidden="true">&#10004;</span>
-            <span>Safer distribution</span>
+            <span class="why-sellers-icons" aria-hidden="true">
+              <svg class="why-sellers-shield" width="16" height="18" viewBox="0 0 32 37" fill="none" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;"><path d="M16 1L2 6.5v13C2 28.1 8.3 35.4 16 38c7.7-2.6 14-9.9 14-18.5v-13L16 1z" fill="#16a34a"/><path d="M10 19l4.5 4.5 8-8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="why-sellers-check">&#10004;</span>
+            </span>
+            <span>Signed packages resist tampering in distribution</span>
           </div>
         </div>
       </div>
