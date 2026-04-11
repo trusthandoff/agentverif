@@ -1,22 +1,22 @@
-"""Click CLI entry point for agentcop-sign."""
+"""Click CLI entry point for agentverif-sign."""
+
 from __future__ import annotations
 
-import json
 import logging
 import sys
 
 import click
 
-from agentcop_sign.config import Config
+from agentverif_sign.config import Config
 
 logger = logging.getLogger(__name__)
 
 
 @click.group()
-@click.version_option(package_name="agentcop-sign")
+@click.version_option(package_name="agentverif-sign")
 @click.option("--debug", is_flag=True, help="Enable debug logging")
 def main(debug: bool) -> None:
-    """agentcop-sign — sign and verify AI agent packages."""
+    """agentverif-sign — sign and verify AI agent packages."""
     level = logging.DEBUG if debug else logging.WARNING
     logging.basicConfig(level=level, format="%(levelname)s %(name)s: %(message)s")
 
@@ -24,6 +24,7 @@ def main(debug: bool) -> None:
 # ---------------------------------------------------------------------------
 # sign
 # ---------------------------------------------------------------------------
+
 
 @main.command("sign")
 @click.argument("zip_path", metavar="ZIP")
@@ -34,12 +35,12 @@ def main(debug: bool) -> None:
     show_default=True,
     help="Signing tier",
 )
-@click.option("--api-key", envvar="AGENTCOP_API_KEY", default=None, help="API key")
+@click.option("--api-key", envvar="AGENTVERIF_API_KEY", default=None, help="API key")
 @click.option("--offline", is_flag=True, default=False, help="Skip registry")
 def sign_cmd(zip_path: str, tier: str, api_key: str | None, offline: bool) -> None:
     """Sign an agent ZIP package."""
-    from agentcop_sign import scanner, signer, client as registry_client
-    from agentcop_sign.config import Config
+    from agentverif_sign import client as registry_client
+    from agentverif_sign import scanner, signer
 
     cfg = Config.from_env(api_key=api_key)
     offline = offline or cfg.offline
@@ -75,6 +76,7 @@ def sign_cmd(zip_path: str, tier: str, api_key: str | None, offline: bool) -> No
             registered_id = registry_client.register(record, cfg.sign_url, api_key=cfg.api_key)
             # Update license_id if registry assigned one
             from dataclasses import replace
+
             record = replace(record, license_id=registered_id)
         except Exception as exc:
             logger.warning("Registry unavailable, proceeding locally: %s", exc)
@@ -84,19 +86,21 @@ def sign_cmd(zip_path: str, tier: str, api_key: str | None, offline: bool) -> No
     signer.inject_signature(zip_path, record)
 
     # Step 6 — output
-    from agentcop_sign.badges import render_badge
+    from agentverif_sign.badges import render_badge
+
     badge = render_badge(record.tier, record.license_id)
     click.echo("\u2705 Signed successfully")
     click.echo(f"License: {record.license_id}")
     click.echo(f"Tier:    {record.tier}")
     click.echo(f"Hash:    {record.zip_hash}")
     click.echo(f"\nEmbed badge:\n{badge}")
-    click.echo(f"\nVerify at: https://verify.agentcop.live/{record.license_id}")
+    click.echo(f"\nVerify at: https://verify.agentverif.com/{record.license_id}")
 
 
 # ---------------------------------------------------------------------------
 # verify
 # ---------------------------------------------------------------------------
+
 
 @main.command("verify")
 @click.argument("zip_path", metavar="ZIP")
@@ -104,8 +108,7 @@ def sign_cmd(zip_path: str, tier: str, api_key: str | None, offline: bool) -> No
 @click.option("--json", "output_json", is_flag=True, default=False, help="JSON output")
 def verify_cmd(zip_path: str, offline: bool, output_json: bool) -> None:
     """Verify a signed agent ZIP package."""
-    from agentcop_sign import verifier
-    from agentcop_sign.config import Config
+    from agentverif_sign import verifier
 
     cfg = Config.from_env()
     offline = offline or cfg.offline
@@ -137,13 +140,13 @@ def verify_cmd(zip_path: str, offline: bool, output_json: bool) -> None:
 # revoke
 # ---------------------------------------------------------------------------
 
+
 @main.command("revoke")
 @click.argument("license_id")
-@click.option("--api-key", envvar="AGENTCOP_API_KEY", required=True, help="API key")
+@click.option("--api-key", envvar="AGENTVERIF_API_KEY", required=True, help="API key")
 def revoke_cmd(license_id: str, api_key: str) -> None:
     """Revoke a license ID."""
-    from agentcop_sign import client as registry_client
-    from agentcop_sign.config import Config
+    from agentverif_sign import client as registry_client
 
     cfg = Config.from_env(api_key=api_key)
     try:
@@ -157,6 +160,7 @@ def revoke_cmd(license_id: str, api_key: str) -> None:
 # ---------------------------------------------------------------------------
 # badge
 # ---------------------------------------------------------------------------
+
 
 @main.command("badge")
 @click.argument("license_id")
@@ -176,7 +180,7 @@ def revoke_cmd(license_id: str, api_key: str) -> None:
 @click.option("--expires-at", default=None, help="Expiry date (ISO format)")
 def badge_cmd(license_id: str, fmt: str, tier: str, expires_at: str | None) -> None:
     """Print the badge for a license ID."""
-    from agentcop_sign.badges import render_badge
+    from agentverif_sign.badges import render_badge
 
     badge = render_badge(tier, license_id=license_id, expires_at=expires_at, fmt=fmt)
     click.echo(badge)

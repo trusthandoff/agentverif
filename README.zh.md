@@ -1,19 +1,19 @@
-# agentcop-sign
+# agentverif-sign
 
 AI Agent 分发的信任层。
 
-[![PyPI version](https://img.shields.io/pypi/v/agentcop-sign.svg)](https://pypi.org/project/agentcop-sign/)
-[![CI](https://github.com/agentcop/agentcop-sign/actions/workflows/ci.yml/badge.svg)](https://github.com/agentcop/agentcop-sign/actions/workflows/ci.yml)
+[![PyPI version](https://img.shields.io/pypi/v/agentverif-sign.svg)](https://pypi.org/project/agentverif-sign/)
+[![CI](https://github.com/agentcop/agentverif-sign/actions/workflows/ci.yml/badge.svg)](https://github.com/agentcop/agentverif-sign/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 [English](README.md) | [中文]
 
 ---
 
-**agentcop-sign** 是 AI Agent 分发的 SSL 证书。供应商签名，买家验证，注册表是唯一可信来源。
+**agentverif-sign** 是 AI Agent 分发的 SSL 证书。供应商签名，买家验证，注册表是唯一可信来源。
 
 ```bash
-pip install agentcop-sign
+pip install agentverif-sign
 ```
 
 ## 快速开始
@@ -21,7 +21,7 @@ pip install agentcop-sign
 **作为供应商——为您的 Agent 签名：**
 
 ```bash
-agentcop-sign sign ./my-agent.zip
+agentverif-sign sign ./my-agent.zip
 # ✅ 签名成功
 # License: AC-84F2-91AB
 # Tier:    indie
@@ -30,23 +30,23 @@ agentcop-sign sign ./my-agent.zip
 **作为买家——执行前先验证：**
 
 ```bash
-agentcop-sign verify ./agent.zip
+agentverif-sign verify ./agent.zip
 # ✅ UNREGISTERED — 本地签名有效；未查询注册表
-# 在线验证：https://verify.agentcop.live/AC-84F2-91AB
+# 在线验证：https://verify.agentverif.com/AC-84F2-91AB
 ```
 
-**无需 CLI 验证：** [verify.agentcop.live](https://verify.agentcop.live)
+**无需 CLI 验证：** [verify.agentverif.com](https://verify.agentverif.com)
 
 ---
 
 ## 命令
 
-### `agentcop-sign sign <ZIP>`
+### `agentverif-sign sign <ZIP>`
 
 对 Agent ZIP 包进行签名。运行安全扫描，生成 `SIGNATURE.json` 并注入 zip 包中。
 
 ```bash
-agentcop-sign sign ./agent.zip [--tier indie|pro|enterprise] [--api-key KEY] [--offline]
+agentverif-sign sign ./agent.zip [--tier indie|pro|enterprise] [--api-key KEY] [--offline]
 ```
 
 **等级说明：**
@@ -56,32 +56,32 @@ agentcop-sign sign ./agent.zip [--tier indie|pro|enterprise] [--api-key KEY] [--
 | pro | 付费 | 哈希 + 注册表 | 是 | 否 |
 | enterprise | 付费 | 哈希 + 注册表 | 是 | 是 |
 
-### `agentcop-sign verify <ZIP>`
+### `agentverif-sign verify <ZIP>`
 
 验证已签名的 Agent zip 包。本地检查哈希；可选查询注册表。
 
 ```bash
-agentcop-sign verify ./agent.zip [--offline] [--json]
+agentverif-sign verify ./agent.zip [--offline] [--json]
 ```
 
 退出码：`0` = VERIFIED 或 UNREGISTERED，`1` = MODIFIED、REVOKED 或 UNSIGNED。
 
 使用 `--json` 标志输出机器可读的 JSON，适用于 CI/CD 流水线和 MCP 工具调用。
 
-### `agentcop-sign revoke <LICENSE_ID>`
+### `agentverif-sign revoke <LICENSE_ID>`
 
 撤销许可证（需要 API 密钥）。
 
 ```bash
-agentcop-sign revoke AC-84F2-91AB --api-key KEY
+agentverif-sign revoke AC-84F2-91AB --api-key KEY
 ```
 
-### `agentcop-sign badge <LICENSE_ID>`
+### `agentverif-sign badge <LICENSE_ID>`
 
 以多种格式输出许可证徽章。
 
 ```bash
-agentcop-sign badge AC-84F2-91AB --format text|html|markdown|svg [--tier indie|pro|enterprise]
+agentverif-sign badge AC-84F2-91AB --format text|html|markdown|svg [--tier indie|pro|enterprise]
 ```
 
 ---
@@ -114,15 +114,15 @@ agentcop-sign badge AC-84F2-91AB --format text|html|markdown|svg [--tier indie|p
 
 ```bash
 # 签名
-docker run --rm -v $(pwd):/work agentcop/agentcop-sign sign /work/agent.zip
+docker run --rm -v $(pwd):/work agentcop/agentverif-sign sign /work/agent.zip
 
 # 验证
-docker run --rm -v $(pwd):/work agentcop/agentcop-sign verify /work/agent.zip
+docker run --rm -v $(pwd):/work agentcop/agentverif-sign verify /work/agent.zip
 ```
 
 ## AWS Bedrock / Claude / MCP 集成
 
-`agentcop-sign verify --json` 返回 JSON 格式的输出，适用于 LLM 工具调用和 MCP 集成。
+`agentverif-sign verify --json` 返回 JSON 格式的输出，适用于 LLM 工具调用和 MCP 集成。
 
 ---
 
@@ -130,10 +130,10 @@ docker run --rm -v $(pwd):/work agentcop/agentcop-sign verify /work/agent.zip
 
 | 变量 | 默认值 | 说明 |
 |------|--------|------|
-| `AGENTCOP_API_KEY` | — | Pro/Enterprise API 密钥 |
-| `AGENTCOP_SIGN_URL` | `https://sign.agentcop.live` | 注册表 URL |
-| `AGENTCOP_SCAN_URL` | `https://agentcop.live/api/scan` | 扫描器 URL |
-| `AGENTCOP_OFFLINE` | — | 设置任意值以跳过所有注册表调用 |
+| `AGENTVERIF_API_KEY` | — | Pro/Enterprise API 密钥 |
+| `AGENTVERIF_SIGN_URL` | `https://sign.agentverif.com` | 注册表 URL |
+| `AGENTVERIF_SCAN_URL` | `https://api.agentverif.com/scan` | 扫描器 URL |
+| `AGENTVERIF_OFFLINE` | — | 设置任意值以跳过所有注册表调用 |
 
 ---
 
@@ -151,14 +151,14 @@ docker run --rm -v $(pwd):/work agentcop/agentcop-sign verify /work/agent.zip
 
 ```bash
 # 基础安装
-pip install agentcop-sign
+pip install agentverif-sign
 
 # 含 Ed25519 支持（Pro/Enterprise）
-pip install agentcop-sign[crypto]
+pip install agentverif-sign[crypto]
 ```
 
 ---
 
-完整文档：[docs.agentcop.live/guides/agentcop-sign](https://docs.agentcop.live/guides/agentcop-sign)
+完整文档：[docs.agentcop.live/guides/agentverif-sign](https://docs.agentcop.live/guides/agentverif-sign)
 
 为什么要这样做：未签名的 Agent 不应被执行。

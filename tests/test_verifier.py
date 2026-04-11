@@ -1,13 +1,12 @@
 """Tests for verifier.py."""
+
 from __future__ import annotations
 
 import zipfile
 from pathlib import Path
 
-import pytest
-
-from agentcop_sign import signer, verifier
-from agentcop_sign.models import ScanResult
+from agentverif_sign import signer, verifier
+from agentverif_sign.models import ScanResult
 
 
 def _make_signed_zip(tmp_path: Path, tier: str = "indie") -> Path:
@@ -23,6 +22,7 @@ def _make_signed_zip(tmp_path: Path, tier: str = "indie") -> Path:
 # ---------------------------------------------------------------------------
 # extract_signature
 # ---------------------------------------------------------------------------
+
 
 def test_extract_signature_returns_record(signed_zip: Path):
     record = verifier.extract_signature(str(signed_zip))
@@ -46,6 +46,7 @@ def test_extract_signature_none_when_malformed(tmp_path: Path):
 # ---------------------------------------------------------------------------
 # verify_zip — offline / local
 # ---------------------------------------------------------------------------
+
 
 def test_verify_zip_unregistered_offline(tmp_path: Path):
     p = _make_signed_zip(tmp_path)
@@ -74,7 +75,7 @@ def test_verify_zip_verify_url_present(tmp_path: Path):
     p = _make_signed_zip(tmp_path)
     result = verifier.verify_zip(str(p), offline=True)
     assert result.verify_url is not None
-    assert "verify.agentcop.live" in result.verify_url
+    assert "verify.agentverif.com" in result.verify_url
 
 
 def test_verify_zip_badge_present_when_valid(tmp_path: Path):

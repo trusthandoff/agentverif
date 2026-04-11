@@ -1,9 +1,9 @@
 """Pure dataclasses — no external dependencies."""
+
 from __future__ import annotations
 
 import json
 from dataclasses import asdict, dataclass, field
-from typing import Optional
 
 
 @dataclass
@@ -12,7 +12,7 @@ class SignatureRecord:
     license_id: str
     tier: str
     issued_at: str
-    expires_at: Optional[str]
+    expires_at: str | None
     issuer: str
     issuer_version: str
     file_list: list[str]
@@ -20,7 +20,7 @@ class SignatureRecord:
     zip_hash: str
     manifest_hash: str
     scan_passed: bool
-    signature: Optional[str]
+    signature: str | None
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -29,7 +29,7 @@ class SignatureRecord:
         return json.dumps(self.to_dict(), indent=indent)
 
     @classmethod
-    def from_dict(cls, data: dict) -> "SignatureRecord":
+    def from_dict(cls, data: dict) -> SignatureRecord:
         return cls(
             schema_version=data["schema_version"],
             license_id=data["license_id"],
@@ -47,19 +47,19 @@ class SignatureRecord:
         )
 
     @classmethod
-    def from_json(cls, text: str) -> "SignatureRecord":
+    def from_json(cls, text: str) -> SignatureRecord:
         return cls.from_dict(json.loads(text))
 
 
 @dataclass
 class VerifyResult:
     status: str  # VERIFIED | MODIFIED | REVOKED | UNREGISTERED | UNSIGNED
-    license_id: Optional[str]
-    tier: Optional[str]
-    badge: Optional[str]
+    license_id: str | None
+    tier: str | None
+    badge: str | None
     message: str
     offline: bool
-    verify_url: Optional[str] = None
+    verify_url: str | None = None
 
     def to_dict(self) -> dict:
         return asdict(self)

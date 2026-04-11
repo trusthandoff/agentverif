@@ -1,7 +1,7 @@
-"""Shared fixtures for agentcop-sign tests."""
+"""Shared fixtures for agentverif-sign tests."""
+
 from __future__ import annotations
 
-import io
 import zipfile
 from pathlib import Path
 
@@ -30,8 +30,8 @@ def empty_zip(tmp_path: Path) -> Path:
 @pytest.fixture
 def signed_zip(tmp_path: Path) -> Path:
     """A zip that has already been signed."""
-    from agentcop_sign.models import ScanResult
-    from agentcop_sign.signer import sign_zip, inject_signature
+    from agentverif_sign.models import ScanResult
+    from agentverif_sign.signer import inject_signature, sign_zip
 
     p = tmp_path / "signed.zip"
     with zipfile.ZipFile(p, "w") as zf:

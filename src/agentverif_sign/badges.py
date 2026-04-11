@@ -1,15 +1,15 @@
 """Badge rendering for three tiers and four formats."""
+
 from __future__ import annotations
 
 import html
 from datetime import datetime
-from typing import Optional
 
 
 def render_badge(
-    tier: Optional[str],
-    license_id: Optional[str] = None,
-    expires_at: Optional[str] = None,
+    tier: str | None,
+    license_id: str | None = None,
+    expires_at: str | None = None,
     fmt: str = "text",
 ) -> str:
     """Return a badge string for the given tier and format.
@@ -28,6 +28,7 @@ def render_badge(
 # Indie
 # ---------------------------------------------------------------------------
 
+
 def _indie_badge(fmt: str) -> str:
     text = "Signed by agentcop"
     icon = "\u2705"  # ✅
@@ -36,11 +37,11 @@ def _indie_badge(fmt: str) -> str:
     if fmt == "html":
         return (
             f'<span class="agentcop-badge agentcop-indie">'
-            f'{html.escape(icon)} {html.escape(text)}'
+            f"{html.escape(icon)} {html.escape(text)}"
             f"</span>"
         )
     if fmt == "markdown":
-        return f"![{text}](https://img.shields.io/badge/agentcop-signed-green)"
+        return f"![{text}](https://img.shields.io/badge/agentverif-signed-green)"
     if fmt == "svg":
         return _svg_badge("agentcop", "signed", "4c1")
     raise ValueError(f"Unknown format: {fmt}")
@@ -50,7 +51,8 @@ def _indie_badge(fmt: str) -> str:
 # Pro
 # ---------------------------------------------------------------------------
 
-def _pro_badge(license_id: Optional[str], fmt: str) -> str:
+
+def _pro_badge(license_id: str | None, fmt: str) -> str:
     icon = "\u2705"
     label = "agentcop VERIFIED"
     detail = f"License: {license_id}" if license_id else ""
@@ -61,13 +63,11 @@ def _pro_badge(license_id: Optional[str], fmt: str) -> str:
         return "\n".join(lines)
     if fmt == "html":
         detail_html = (
-            f'<br><small class="agentcop-license">{html.escape(detail)}</small>'
-            if detail
-            else ""
+            f'<br><small class="agentcop-license">{html.escape(detail)}</small>' if detail else ""
         )
         return (
             f'<span class="agentcop-badge agentcop-pro">'
-            f'{html.escape(icon)} {html.escape(label)}'
+            f"{html.escape(icon)} {html.escape(label)}"
             f"{detail_html}"
             f"</span>"
         )
@@ -83,9 +83,8 @@ def _pro_badge(license_id: Optional[str], fmt: str) -> str:
 # Enterprise
 # ---------------------------------------------------------------------------
 
-def _enterprise_badge(
-    license_id: Optional[str], expires_at: Optional[str], fmt: str
-) -> str:
+
+def _enterprise_badge(license_id: str | None, expires_at: str | None, fmt: str) -> str:
     icon = "\U0001f510"  # 🔐
     label = "agentcop ENTERPRISE CERTIFIED"
     parts = [f"{icon} {label}"]
@@ -115,6 +114,7 @@ def _enterprise_badge(
 # SVG helper (shields.io flat style)
 # ---------------------------------------------------------------------------
 
+
 def _svg_badge(label: str, message: str, color: str) -> str:
     label_width = max(len(label) * 7, 60)
     msg_width = max(len(message) * 7, 50)
@@ -134,6 +134,6 @@ def _svg_badge(label: str, message: str, color: str) -> str:
         f'    <text x="{label_x}" y="14">{html.escape(label)}</text>\n'
         f'    <text x="{msg_x}" y="15" fill="#010101" fill-opacity=".3">{html.escape(message)}</text>\n'
         f'    <text x="{msg_x}" y="14">{html.escape(message)}</text>\n'
-        f'  </g>\n'
-        f'</svg>'
+        f"  </g>\n"
+        f"</svg>"
     )

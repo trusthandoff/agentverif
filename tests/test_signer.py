@@ -1,4 +1,5 @@
 """Tests for signer.py."""
+
 from __future__ import annotations
 
 import json
@@ -7,13 +8,13 @@ from pathlib import Path
 
 import pytest
 
-from agentcop_sign.models import ScanResult
-from agentcop_sign import signer
-
+from agentverif_sign import signer
+from agentverif_sign.models import ScanResult
 
 # ---------------------------------------------------------------------------
 # validate_zip
 # ---------------------------------------------------------------------------
+
 
 def test_validate_zip_valid(tmp_zip: Path):
     signer.validate_zip(str(tmp_zip))  # should not raise
@@ -47,6 +48,7 @@ def test_validate_zip_empty_archive(empty_zip: Path):
 # compute_zip_hash
 # ---------------------------------------------------------------------------
 
+
 def test_compute_zip_hash_format(tmp_zip: Path):
     h = signer.compute_zip_hash(str(tmp_zip))
     assert h.startswith("sha256:")
@@ -77,6 +79,7 @@ def test_compute_zip_hash_changes_on_modification(tmp_path: Path):
 # compute_manifest_hash
 # ---------------------------------------------------------------------------
 
+
 def test_compute_manifest_hash_format():
     h = signer.compute_manifest_hash(["a.py", "b.json"])
     assert h.startswith("sha256:")
@@ -91,6 +94,7 @@ def test_compute_manifest_hash_order_invariant():
 # ---------------------------------------------------------------------------
 # sign_zip
 # ---------------------------------------------------------------------------
+
 
 def test_sign_zip_returns_record(tmp_zip: Path):
     scan = ScanResult(score=90, passed=True)
@@ -134,6 +138,7 @@ def test_sign_zip_file_list_excludes_signature(tmp_zip: Path):
 # ---------------------------------------------------------------------------
 # inject_signature
 # ---------------------------------------------------------------------------
+
 
 def test_inject_signature_adds_to_zip(tmp_zip: Path):
     scan = ScanResult(score=90, passed=True)

@@ -1,14 +1,15 @@
 """Tests for badges.py — all 3 tiers × 4 formats."""
+
 from __future__ import annotations
 
 import pytest
 
-from agentcop_sign.badges import render_badge
-
+from agentverif_sign.badges import render_badge
 
 # ---------------------------------------------------------------------------
 # Indie
 # ---------------------------------------------------------------------------
+
 
 def test_indie_text():
     b = render_badge("indie", fmt="text")
@@ -37,6 +38,7 @@ def test_indie_svg():
 # ---------------------------------------------------------------------------
 # Pro
 # ---------------------------------------------------------------------------
+
 
 def test_pro_text_no_license():
     b = render_badge("pro", fmt="text")
@@ -71,6 +73,7 @@ def test_pro_svg():
 # Enterprise
 # ---------------------------------------------------------------------------
 
+
 def test_enterprise_text_no_extras():
     b = render_badge("enterprise", fmt="text")
     assert "ENTERPRISE" in b
@@ -87,7 +90,9 @@ def test_enterprise_text_with_expiry():
 
 
 def test_enterprise_html():
-    b = render_badge("enterprise", license_id="AC-ENT-X", expires_at="2027-01-01T00:00:00Z", fmt="html")
+    b = render_badge(
+        "enterprise", license_id="AC-ENT-X", expires_at="2027-01-01T00:00:00Z", fmt="html"
+    )
     assert "agentcop-enterprise" in b
     assert "AC-ENT-X" in b
 
@@ -107,6 +112,7 @@ def test_enterprise_svg():
 # ---------------------------------------------------------------------------
 # Default tier
 # ---------------------------------------------------------------------------
+
 
 def test_none_tier_defaults_to_indie():
     b = render_badge(None, fmt="text")

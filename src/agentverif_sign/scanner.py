@@ -1,7 +1,7 @@
 """agentcop.live scan integration."""
+
 from __future__ import annotations
 
-import io
 import logging
 import zipfile
 from typing import TYPE_CHECKING
@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     pass
 
-from agentcop_sign.models import ScanResult
+from agentverif_sign.models import ScanResult
 
 logger = logging.getLogger(__name__)
 
@@ -17,13 +17,12 @@ _MIN_SCORE = 70
 
 
 def scan_zip(zip_path: str, scan_url: str) -> ScanResult:
-    """POST zip contents to agentcop.live/api/scan and return ScanResult."""
+    """POST zip contents to api.agentverif.com/scan and return ScanResult."""
     try:
         import requests
     except ImportError as exc:
         raise RuntimeError(
-            "requests is required for scanning. "
-            "pip install agentcop-sign"
+            "requests is required for scanning. pip install agentverif-sign"
         ) from exc
 
     logger.debug("Scanning %s via %s", zip_path, scan_url)
@@ -58,6 +57,4 @@ def scan_zip(zip_path: str, scan_url: str) -> ScanResult:
 def list_zip_files(zip_path: str) -> list[str]:
     """Return sorted list of member filenames in the zip (excluding SIGNATURE.json)."""
     with zipfile.ZipFile(zip_path, "r") as zf:
-        return sorted(
-            name for name in zf.namelist() if name != "SIGNATURE.json"
-        )
+        return sorted(name for name in zf.namelist() if name != "SIGNATURE.json")

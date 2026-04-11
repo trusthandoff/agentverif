@@ -1,19 +1,19 @@
-# agentcop-sign
+# agentverif-sign
 
 The trust layer for AI agent distribution.
 
-[![PyPI version](https://img.shields.io/pypi/v/agentcop-sign.svg)](https://pypi.org/project/agentcop-sign/)
-[![CI](https://github.com/agentcop/agentcop-sign/actions/workflows/ci.yml/badge.svg)](https://github.com/agentcop/agentcop-sign/actions/workflows/ci.yml)
+[![PyPI version](https://img.shields.io/pypi/v/agentverif-sign.svg)](https://pypi.org/project/agentverif-sign/)
+[![CI](https://github.com/agentcop/agentverif-sign/actions/workflows/ci.yml/badge.svg)](https://github.com/agentcop/agentverif-sign/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 [English] | [中文](README.zh.md)
 
 ---
 
-**agentcop-sign** is the SSL certificate for AI agent distribution. Vendors sign. Buyers verify. The registry is the source of truth.
+**agentverif-sign** is the SSL certificate for AI agent distribution. Vendors sign. Buyers verify. The registry is the source of truth.
 
 ```bash
-pip install agentcop-sign
+pip install agentverif-sign
 ```
 
 ## Quick start
@@ -21,7 +21,7 @@ pip install agentcop-sign
 **As a vendor — sign your agent:**
 
 ```bash
-agentcop-sign sign ./my-agent.zip
+agentverif-sign sign ./my-agent.zip
 # ✅ Signed successfully
 # License: AC-84F2-91AB
 # Tier:    indie
@@ -30,27 +30,27 @@ agentcop-sign sign ./my-agent.zip
 **As a buyer — verify before executing:**
 
 ```bash
-agentcop-sign verify ./agent.zip
+agentverif-sign verify ./agent.zip
 # ✅ UNREGISTERED — Signature valid locally; registry not checked
-# Verify online: https://verify.agentcop.live/AC-84F2-91AB
+# Verify online: https://verify.agentverif.com/AC-84F2-91AB
 ```
 
-**Verify without CLI:** [verify.agentcop.live](https://verify.agentcop.live)
+**Verify without CLI:** [verify.agentverif.com](https://verify.agentverif.com)
 
 ---
 
 ## Commands
 
-### `agentcop-sign sign <ZIP>`
+### `agentverif-sign sign <ZIP>`
 
 Signs an agent ZIP package. Runs a security scan, generates `SIGNATURE.json`, and injects it into the zip.
 
 ```bash
-agentcop-sign sign ./agent.zip [--tier indie|pro|enterprise] [--api-key KEY] [--offline]
+agentverif-sign sign ./agent.zip [--tier indie|pro|enterprise] [--api-key KEY] [--offline]
 ```
 
 - `--tier` — signing tier (default: `indie`)
-- `--api-key` — Pro/Enterprise API key (also via `AGENTCOP_API_KEY` env var)
+- `--api-key` — Pro/Enterprise API key (also via `AGENTVERIF_API_KEY` env var)
 - `--offline` — skip registry registration
 
 **Tiers:**
@@ -60,12 +60,12 @@ agentcop-sign sign ./agent.zip [--tier indie|pro|enterprise] [--api-key KEY] [--
 | pro | paid | hash + registry | yes | no |
 | enterprise | paid | hash + registry | yes | yes |
 
-### `agentcop-sign verify <ZIP>`
+### `agentverif-sign verify <ZIP>`
 
 Verifies a signed agent zip. Checks the hash locally; optionally checks the registry.
 
 ```bash
-agentcop-sign verify ./agent.zip [--offline] [--json]
+agentverif-sign verify ./agent.zip [--offline] [--json]
 ```
 
 Exit codes: `0` = VERIFIED or UNREGISTERED, `1` = MODIFIED, REVOKED, or UNSIGNED.
@@ -80,24 +80,24 @@ The `--json` flag emits machine-readable output for CI/CD pipelines and MCP tool
   "badge": "✅ Signed by agentcop",
   "message": "Signature valid locally; registry not checked",
   "offline": true,
-  "verify_url": "https://verify.agentcop.live/AC-84F2-91AB"
+  "verify_url": "https://verify.agentverif.com/AC-84F2-91AB"
 }
 ```
 
-### `agentcop-sign revoke <LICENSE_ID>`
+### `agentverif-sign revoke <LICENSE_ID>`
 
 Revokes a license (requires API key).
 
 ```bash
-agentcop-sign revoke AC-84F2-91AB --api-key KEY
+agentverif-sign revoke AC-84F2-91AB --api-key KEY
 ```
 
-### `agentcop-sign badge <LICENSE_ID>`
+### `agentverif-sign badge <LICENSE_ID>`
 
 Prints the badge for a license in multiple formats.
 
 ```bash
-agentcop-sign badge AC-84F2-91AB --format text|html|markdown|svg [--tier indie|pro|enterprise]
+agentverif-sign badge AC-84F2-91AB --format text|html|markdown|svg [--tier indie|pro|enterprise]
 ```
 
 ---
@@ -130,15 +130,15 @@ Human-readable, auditable — no binary blobs:
 
 ```bash
 # Sign
-docker run --rm -v $(pwd):/work agentcop/agentcop-sign sign /work/agent.zip
+docker run --rm -v $(pwd):/work agentcop/agentverif-sign sign /work/agent.zip
 
 # Verify
-docker run --rm -v $(pwd):/work agentcop/agentcop-sign verify /work/agent.zip
+docker run --rm -v $(pwd):/work agentcop/agentverif-sign verify /work/agent.zip
 ```
 
 ## AWS Bedrock / Claude / MCP
 
-`agentcop-sign verify --json` returns JSON-parseable output suitable for LLM tool calls and MCP integrations.
+`agentverif-sign verify --json` returns JSON-parseable output suitable for LLM tool calls and MCP integrations.
 
 ---
 
@@ -146,10 +146,10 @@ docker run --rm -v $(pwd):/work agentcop/agentcop-sign verify /work/agent.zip
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `AGENTCOP_API_KEY` | — | Pro/Enterprise API key |
-| `AGENTCOP_SIGN_URL` | `https://sign.agentcop.live` | Registry URL |
-| `AGENTCOP_SCAN_URL` | `https://agentcop.live/api/scan` | Scanner URL |
-| `AGENTCOP_OFFLINE` | — | Set to any value to skip all registry calls |
+| `AGENTVERIF_API_KEY` | — | Pro/Enterprise API key |
+| `AGENTVERIF_SIGN_URL` | `https://sign.agentverif.com` | Registry URL |
+| `AGENTVERIF_SCAN_URL` | `https://api.agentverif.com/scan` | Scanner URL |
+| `AGENTVERIF_OFFLINE` | — | Set to any value to skip all registry calls |
 
 ---
 
@@ -167,14 +167,14 @@ docker run --rm -v $(pwd):/work agentcop/agentcop-sign verify /work/agent.zip
 
 ```bash
 # Basic
-pip install agentcop-sign
+pip install agentverif-sign
 
 # With Ed25519 support (Pro/Enterprise)
-pip install agentcop-sign[crypto]
+pip install agentverif-sign[crypto]
 ```
 
 ---
 
-Full docs: [docs.agentcop.live/guides/agentcop-sign](https://docs.agentcop.live/guides/agentcop-sign)
+Full docs: [docs.agentcop.live/guides/agentverif-sign](https://docs.agentcop.live/guides/agentverif-sign)
 
 Why: unsigned agents shouldn't be executed.

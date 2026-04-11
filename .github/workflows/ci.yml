@@ -38,4 +38,4 @@ jobs:
           pip install -e ".[dev,crypto]"
       - name: Run tests
         run: |
-          pytest --cov=agentcop_sign --cov-report=term-missing
+          pytest --cov=agentverif_sign --cov-report=term-missing

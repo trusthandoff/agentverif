@@ -1,16 +1,16 @@
 """Tests for Docker-readiness and MCP/JSON interface compatibility."""
+
 from __future__ import annotations
 
 import json
 import zipfile
 from pathlib import Path
 
-import pytest
 from click.testing import CliRunner
 
-from agentcop_sign import signer
-from agentcop_sign.cli import main
-from agentcop_sign.models import ScanResult
+from agentverif_sign import signer
+from agentverif_sign.cli import main
+from agentverif_sign.models import ScanResult
 
 
 def _signed_zip(tmp_path: Path) -> Path:
@@ -45,9 +45,16 @@ def test_signature_json_required_fields(tmp_path: Path):
     with zipfile.ZipFile(str(p), "r") as zf:
         data = json.loads(zf.read("SIGNATURE.json"))
     required = {
-        "schema_version", "license_id", "tier", "issued_at",
-        "issuer", "file_list", "file_count", "zip_hash",
-        "manifest_hash", "scan_passed",
+        "schema_version",
+        "license_id",
+        "tier",
+        "issued_at",
+        "issuer",
+        "file_list",
+        "file_count",
+        "zip_hash",
+        "manifest_hash",
+        "scan_passed",
     }
     assert required.issubset(data.keys())
 
@@ -80,4 +87,4 @@ def test_verify_url_in_json_output(tmp_path: Path):
     result = runner.invoke(main, ["verify", str(p), "--offline", "--json"])
     data = json.loads(result.output)
     assert data.get("verify_url") is not None
-    assert "verify.agentcop.live" in data["verify_url"]
+    assert "verify.agentverif.com" in data["verify_url"]

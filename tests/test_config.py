@@ -1,26 +1,24 @@
 """Tests for config.py."""
-from __future__ import annotations
 
-import os
+from __future__ import annotations
 
 import pytest
 
-from agentcop_sign.config import Config
+from agentverif_sign.config import Config
 
 
 def test_config_defaults():
-    env = {k: v for k, v in os.environ.items() if not k.startswith("AGENTCOP_")}
     cfg = Config.from_env()
-    assert cfg.sign_url == "https://sign.agentcop.live"
-    assert cfg.scan_url == "https://agentcop.live/api/scan"
+    assert cfg.sign_url == "https://sign.agentverif.com"
+    assert cfg.scan_url == "https://api.agentverif.com/scan"
     assert cfg.offline is False
 
 
 def test_config_from_env(monkeypatch):
-    monkeypatch.setenv("AGENTCOP_API_KEY", "test-key")
-    monkeypatch.setenv("AGENTCOP_SIGN_URL", "https://custom.sign")
-    monkeypatch.setenv("AGENTCOP_SCAN_URL", "https://custom.scan")
-    monkeypatch.setenv("AGENTCOP_OFFLINE", "1")
+    monkeypatch.setenv("AGENTVERIF_API_KEY", "test-key")
+    monkeypatch.setenv("AGENTVERIF_SIGN_URL", "https://custom.sign")
+    monkeypatch.setenv("AGENTVERIF_SCAN_URL", "https://custom.scan")
+    monkeypatch.setenv("AGENTVERIF_OFFLINE", "1")
     cfg = Config.from_env()
     assert cfg.api_key == "test-key"
     assert cfg.sign_url == "https://custom.sign"
@@ -29,13 +27,13 @@ def test_config_from_env(monkeypatch):
 
 
 def test_config_api_key_override(monkeypatch):
-    monkeypatch.setenv("AGENTCOP_API_KEY", "env-key")
+    monkeypatch.setenv("AGENTVERIF_API_KEY", "env-key")
     cfg = Config.from_env(api_key="cli-key")
     assert cfg.api_key == "cli-key"
 
 
 def test_config_offline_absent(monkeypatch):
-    monkeypatch.delenv("AGENTCOP_OFFLINE", raising=False)
+    monkeypatch.delenv("AGENTVERIF_OFFLINE", raising=False)
     cfg = Config.from_env()
     assert cfg.offline is False
 

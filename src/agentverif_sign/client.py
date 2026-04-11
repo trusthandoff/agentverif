@@ -1,4 +1,5 @@
-"""Backend API client for sign.agentcop.live."""
+"""Backend API client for sign.agentverif.com."""
+
 from __future__ import annotations
 
 import logging
@@ -6,9 +7,9 @@ import time
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from agentcop_sign.models import SignatureRecord, VerifyResult
+    from agentverif_sign.models import SignatureRecord, VerifyResult
 
-from agentcop_sign.models import VerifyResult
+from agentverif_sign.models import VerifyResult
 
 logger = logging.getLogger(__name__)
 
@@ -20,15 +21,15 @@ _BACKOFF_BASE = 0.5
 def _get_requests():
     try:
         import requests
+
         return requests
     except ImportError as exc:
         raise RuntimeError(
-            "requests is required for registry operations. "
-            "pip install agentcop-sign"
+            "requests is required for registry operations. pip install agentverif-sign"
         ) from exc
 
 
-def _request_with_retry(method: str, url: str, **kwargs) -> "requests.Response":
+def _request_with_retry(method: str, url: str, **kwargs):
     requests = _get_requests()
     kwargs.setdefault("timeout", _TIMEOUT)
     last_exc: Exception | None = None
@@ -43,14 +44,14 @@ def _request_with_retry(method: str, url: str, **kwargs) -> "requests.Response":
         except requests.exceptions.Timeout as exc:
             last_exc = exc
             logger.debug("Timeout on attempt %d: %s", attempt + 1, exc)
-        except requests.exceptions.HTTPError as exc:
+        except requests.exceptions.HTTPError:
             raise
         if attempt < _MAX_RETRIES:
-            time.sleep(_BACKOFF_BASE * (2 ** attempt))
+            time.sleep(_BACKOFF_BASE * (2**attempt))
     raise last_exc  # type: ignore[misc]
 
 
-def register(signature: "SignatureRecord", sign_url: str, api_key: str | None = None) -> str:
+def register(signature: SignatureRecord, sign_url: str, api_key: str | None = None) -> str:
     """Register a signature on the registry; return license_id."""
     headers = {}
     if api_key:
@@ -68,7 +69,7 @@ def register(signature: "SignatureRecord", sign_url: str, api_key: str | None = 
 
 def verify(license_id: str, zip_hash: str, sign_url: str) -> VerifyResult:
     """Verify a license ID and hash against the registry."""
-    from agentcop_sign.badges import render_badge
+    from agentverif_sign.badges import render_badge
 
     response = _request_with_retry(
         "POST",
@@ -78,7 +79,7 @@ def verify(license_id: str, zip_hash: str, sign_url: str) -> VerifyResult:
     data = response.json()
     status = data.get("status", "UNREGISTERED")
     tier = data.get("tier")
-    verify_url = f"https://verify.agentcop.live/{license_id}"
+    verify_url = f"https://verify.agentverif.com/{license_id}"
     badge = render_badge(tier, license_id) if tier else None
     return VerifyResult(
         status=status,

@@ -1,9 +1,10 @@
 """Tests for crypto.py — Ed25519 abstraction."""
+
 from __future__ import annotations
 
 import pytest
 
-from agentcop_sign import crypto
+from agentverif_sign import crypto
 
 
 def test_is_available_returns_bool():
@@ -48,11 +49,11 @@ def test_verify_signature_bad_prefix():
 
 def test_generate_keypair_raises_without_crypto(monkeypatch):
     monkeypatch.setattr(crypto, "_CRYPTO_AVAILABLE", False)
-    with pytest.raises(RuntimeError, match="agentcop-sign\\[crypto\\]"):
+    with pytest.raises(RuntimeError, match="agentverif-sign\\[crypto\\]"):
         crypto.generate_keypair()
 
 
 def test_sign_raises_without_crypto(monkeypatch):
     monkeypatch.setattr(crypto, "_CRYPTO_AVAILABLE", False)
-    with pytest.raises(RuntimeError, match="agentcop-sign\\[crypto\\]"):
+    with pytest.raises(RuntimeError, match="agentverif-sign\\[crypto\\]"):
         crypto.sign(b"data", b"\x00" * 32)

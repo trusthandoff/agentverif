@@ -1,18 +1,18 @@
 """Verification logic — extracts, hashes, checks, optionally queries registry."""
+
 from __future__ import annotations
 
 import json
 import logging
 import zipfile
-from typing import Optional
 
-from agentcop_sign.models import SignatureRecord, VerifyResult
-from agentcop_sign.signer import compute_zip_hash
+from agentverif_sign.models import SignatureRecord, VerifyResult
+from agentverif_sign.signer import compute_zip_hash
 
 logger = logging.getLogger(__name__)
 
 
-def extract_signature(zip_path: str) -> Optional[SignatureRecord]:
+def extract_signature(zip_path: str) -> SignatureRecord | None:
     """Return SignatureRecord from zip, or None if not present."""
     try:
         with zipfile.ZipFile(zip_path, "r") as zf:
@@ -32,10 +32,10 @@ def extract_signature(zip_path: str) -> Optional[SignatureRecord]:
 def verify_zip(
     zip_path: str,
     offline: bool = False,
-    sign_url: str = "https://sign.agentcop.live",
+    sign_url: str = "https://sign.agentverif.com",
 ) -> VerifyResult:
     """Verify a signed zip and return a VerifyResult."""
-    from agentcop_sign.badges import render_badge
+    from agentverif_sign.badges import render_badge
 
     # Step 1 — extract signature
     record = extract_signature(zip_path)
@@ -60,15 +60,16 @@ def verify_zip(
             badge=None,
             message="Package was changed after signing",
             offline=offline,
-            verify_url=f"https://verify.agentcop.live/{record.license_id}",
+            verify_url=f"https://verify.agentverif.com/{record.license_id}",
         )
 
-    verify_url = f"https://verify.agentcop.live/{record.license_id}"
+    verify_url = f"https://verify.agentverif.com/{record.license_id}"
 
     # Step 4 — registry check (optional)
     if not offline:
         try:
-            from agentcop_sign import client
+            from agentverif_sign import client
+
             return client.verify(record.license_id, record.zip_hash, sign_url)
         except Exception as exc:
             logger.warning("Registry unreachable, falling back to offline: %s", exc)
