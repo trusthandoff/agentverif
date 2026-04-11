@@ -238,7 +238,8 @@
     .site-footer {
       background: #0d1117 !important;
       border-top: 1px solid #1e2433 !important;
-      padding: 56px 0 0 !important;
+      padding: 56px 0 0 !important;  /* bottom is 0 — no trailing space */
+      margin-bottom: 0 !important;
       text-align: left !important;
     }
     .footer-grid {
@@ -291,57 +292,122 @@
       opacity: 1 !important;
       text-decoration: none !important;
     }
-    /* ---- Kill ghost space after footer (all viewports) ---- */
+    /* ---- Base reset: no ghost space anywhere ---- */
     html, body { margin: 0; padding: 0; }
-    .site-footer { margin-bottom: 0 !important; padding-bottom: 0 !important; }
-    body > *:last-child { margin-bottom: 0 !important; padding-bottom: 0 !important; }
+    /* Target footer directly — script tag is last body child, not footer */
+    footer.site-footer {
+      margin-bottom: 0 !important;
+      padding-bottom: 0 !important;
+    }
 
+    /* ---- Tablet / 900px ---- */
     @media (max-width: 900px) {
       .docs-layout { grid-template-columns: 1fr; }
       .docs-sidebar { display: none; }
-      .docs-content { padding: 32px 24px 64px; max-width: 100%; box-sizing: border-box; }
+      .docs-content {
+        padding: 32px 24px 48px;
+        max-width: 100%;
+        width: 100%;
+        box-sizing: border-box;
+      }
     }
+
+    /* ---- iPad / 768px ---- */
     @media (max-width: 768px) {
+      /* Footer columns to single column */
       .footer-grid { grid-template-columns: 1fr; gap: 32px; }
       .footer-bottom { flex-direction: column; align-items: flex-start; }
+      /* Reduce docs bottom gap — this was causing the apparent whitespace */
+      .docs-content { padding-bottom: 32px; }
     }
+
+    /* ---- Mobile / 640px ---- */
     @media (max-width: 640px) {
-      /* Section spacing */
+
+      /* Every section: block, full-width, contained */
       .docs-section {
         display: block;
         width: 100%;
         box-sizing: border-box;
         margin-bottom: 32px;
       }
-      /* Code blocks: wrap long lines, scroll if needed */
+
+      /* Code blocks: wrap long lines, horizontal-scroll fallback */
       .code-snippet {
         max-width: 100%;
+        width: 100%;
+        box-sizing: border-box;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
-        box-sizing: border-box;
       }
-      .code-snippet code { white-space: pre-wrap; word-break: break-all; }
-      /* Tables: horizontal scroll */
+      .code-snippet code {
+        white-space: pre-wrap;
+        word-break: break-all;
+        overflow-wrap: break-word;
+      }
+
+      /* Inline code in paragraphs and list items must not overflow */
+      .docs-section p code,
+      .docs-section li code {
+        word-break: break-all;
+        overflow-wrap: break-word;
+        white-space: normal;
+      }
+
+      /* List items: flex children must not overflow viewport */
+      .docs-section ul li,
+      .docs-section ol li {
+        min-width: 0;
+        word-break: break-word;
+        overflow-wrap: break-word;
+      }
+
+      /* Env table: horizontal scroll as a block */
       .env-table {
         display: block;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
-        max-width: 100%;
       }
-      /* FAQ */
-      .faq-item { padding: 16px 0; box-sizing: border-box; }
-      .faq-item p { font-size: 15px; }
-      /* README badge section: full-width vertical stack */
-      .badge-samples { flex-direction: column; width: 100%; }
+
+      /* FAQ: clean block stacking, no overlap */
+      .faq-item {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 16px 0;
+      }
+      .faq-item h4 {
+        word-break: break-word;
+        overflow-wrap: break-word;
+      }
+      .faq-item p {
+        font-size: 15px;
+        word-break: break-word;
+        overflow-wrap: break-word;
+      }
+
+      /* README badge section: stack vertically, wrap text — NOT clip */
+      .badge-samples {
+        flex-direction: column;
+        width: 100%;
+        gap: 12px;
+      }
       .badge-sample {
         display: block;
         width: 100%;
         box-sizing: border-box;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        white-space: normal;
+        word-break: break-all;
+        overflow-wrap: break-word;
+        overflow: visible;
         font-size: 13px;
       }
+
+      /* Content bottom padding on smallest screens */
+      .docs-content { padding-bottom: 24px; }
     }
   </style>
 </head>
