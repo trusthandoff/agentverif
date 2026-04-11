@@ -21,6 +21,10 @@ class SignatureRecord:
     manifest_hash: str
     scan_passed: bool
     signature: str | None
+    license_type: str = "single_use"
+    transferable: bool = False
+    max_activations: int | None = None
+    buyer_id: str | None = None
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -44,6 +48,10 @@ class SignatureRecord:
             manifest_hash=data["manifest_hash"],
             scan_passed=data["scan_passed"],
             signature=data.get("signature"),
+            license_type=data.get("license_type", "single_use"),
+            transferable=data.get("transferable", False),
+            max_activations=data.get("max_activations"),
+            buyer_id=data.get("buyer_id"),
         )
 
     @classmethod

@@ -117,7 +117,13 @@ def sign_zip(
     api_key: str | None = None,
     scan_result: ScanResult | None = None,
     private_key_bytes: bytes | None = None,
+    license_type: str = "single_use",
+    max_activations: int | None = None,
+    buyer_id: str | None = None,
 ) -> SignatureRecord:
+    # CLI flags: --license single_use (default)
+    #            --license multi_use --max-activations N
+    #            --license enterprise_custom
     """Build and return a SignatureRecord (does NOT inject into zip)."""
     from agentverif_sign.scanner import list_zip_files
 
@@ -148,4 +154,7 @@ def sign_zip(
         manifest_hash=manifest_hash,
         scan_passed=scan_result.passed if scan_result else True,
         signature=signature,
+        license_type=license_type,
+        max_activations=max_activations,
+        buyer_id=buyer_id,
     )

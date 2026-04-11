@@ -169,6 +169,21 @@
       .verify-btn { width: 100%; justify-content: center; }
       .verify-box h1 { font-size: 1.5rem; }
     }
+
+    /* License type badge */
+    .license-badge-block { margin-top: 6px; }
+    .license-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 99px;
+    }
+    .license-badge-single     { background: #fff7ed; color: #c2410c; border: 1.5px solid #fed7aa; }
+    .license-badge-multi      { background: #f0fdf4; color: #166534; border: 1.5px solid #bbf7d0; }
+    .license-badge-enterprise { background: #eff6ff; color: #1d4ed8; border: 1.5px solid #bfdbfe; }
   </style>
 
   <!-- Schema.org JSON-LD: WebApplication -->
@@ -290,6 +305,7 @@
               </div>
             </div>
             <div id="r-badge-block" class="result-badge-block" aria-label="Certificate badge"></div>
+            <div id="r-license-badge-block" class="license-badge-block" aria-label="License type" style="display:none;"></div>
           </div>
 
           <!-- ---- RESULT: REVOKED ---- -->
@@ -406,6 +422,23 @@
         $('r-badge-block').style.display = 'block';
       } else {
         $('r-badge-block').style.display = 'none';
+      }
+      var lb = $('r-license-badge-block');
+      var lt = data.license_type || '';
+      if (lt === 'single_use') {
+        lb.innerHTML = '<span class="license-badge license-badge-single">\uD83D\uDD12 Single Use \u2014 not for redistribution</span>';
+        lb.style.display = 'block';
+      } else if (lt === 'multi_use') {
+        var rem = data.max_activations != null
+          ? (data.max_activations - (data.activation_count || 0)) + ' activations'
+          : 'activations';
+        lb.innerHTML = '<span class="license-badge license-badge-multi">\u2705 Multi Use \u2014 ' + rem + '</span>';
+        lb.style.display = 'block';
+      } else if (lt === 'enterprise_custom') {
+        lb.innerHTML = '<span class="license-badge license-badge-enterprise">\uD83D\uDD10 Enterprise License</span>';
+        lb.style.display = 'block';
+      } else {
+        lb.style.display = 'none';
       }
       $('result-verified').classList.add('visible');
     }
