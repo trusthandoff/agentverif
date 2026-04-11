@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Primary SEO -->
+  <title>Verify Agent License — agentverif</title>
+  <meta name="description" content="Verify an AI agent package certificate. Paste your License ID to confirm authenticity, integrity and certification tier on the agentverif registry.">
+  <meta name="keywords" content="verify AI agent, agent license verification, agentverif certificate, AI package integrity">
+  <meta name="author" content="agentverif.com">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://verify.agentverif.com">
+  <meta property="og:title" content="Verify Agent License — agentverif">
+  <meta property="og:description" content="Verify an AI agent package certificate. Paste your License ID to confirm authenticity, integrity and certification tier.">
+  <meta property="og:site_name" content="agentverif">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Verify Agent License — agentverif">
+  <meta name="twitter:description" content="Verify an AI agent package certificate. Paste your License ID to confirm authenticity and certification tier.">
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://verify.agentverif.com">
+
+  <!-- Google Fonts preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Shared stylesheet (absolute path for subdomain) -->
+  <link rel="stylesheet" href="https://agentverif.com/assets/style.css">
+
+  <!-- Page-specific styles -->
+  <style>
+    .verify-page {
+      min-height: calc(100vh - var(--header-h) - 97px);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      padding: 72px 0 80px;
+    }
+    .verify-box {
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 48px;
+      max-width: 600px;
+      width: 100%;
+      margin: 0 auto;
+      box-shadow: var(--shadow-lg);
+    }
+    .verify-box h1 {
+      font-size: 1.875rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .verify-box .verify-lead {
+      font-size: 0.9375rem;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+    .verify-form { display: flex; flex-direction: column; gap: 0; }
+    .input-row {
+      display: flex;
+      gap: 10px;
+    }
+    .input-row .form-input {
+      flex: 1;
+      font-family: var(--font-mono);
+      font-size: 1.0625rem;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+    .input-row .form-input::placeholder { text-transform: none; font-family: var(--font); font-size: 0.9375rem; letter-spacing: 0; }
+    .verify-btn {
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 13px 22px;
+      white-space: nowrap;
+    }
+    .verify-hint {
+      margin-top: 8px;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+    }
+    /* Result card inner layout */
+    .result-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .result-title { font-size: 1.1875rem; font-weight: 700; color: var(--text); }
+    .result-message { font-size: 0.9375rem; color: var(--text-muted); margin-bottom: 20px; }
+    .verify-divider { border: none; border-top: 1px solid rgba(0,0,0,0.08); margin: 20px 0; }
+
+    /* Tier chip */
+    .tier-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      padding: 4px 12px;
+      border-radius: 99px;
+      text-transform: capitalize;
+    }
+    .tier-indie      { background: #f3f4f6; color: #374151; }
+    .tier-pro        { background: var(--accent); color: #166534; }
+    .tier-enterprise { background: #1e1e2e; color: #a3e635; }
+
+    /* Verify URL link */
+    .verify-url-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-top: 16px;
+    }
+    .verify-url-link:hover { text-decoration: underline; }
+
+    /* Examples */
+    .verify-examples {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+    .verify-examples h2 {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .example-ids {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .example-id {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--primary);
+      background: var(--accent);
+      padding: 4px 12px;
+      border-radius: 99px;
+      cursor: pointer;
+      border: none;
+      font-weight: 600;
+      transition: background 0.15s;
+    }
+    .example-id:hover { background: var(--accent-mid); }
+
+    @media (max-width: 640px) {
+      .verify-box { padding: 32px 24px; }
+      .input-row { flex-direction: column; }
+      .verify-btn { width: 100%; justify-content: center; }
+      .verify-box h1 { font-size: 1.5rem; }
+    }
+  </style>
+
+  <!-- Schema.org JSON-LD: WebApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "agentverif Certificate Verification",
+    "description": "Verify an AI agent package certificate. Confirm authenticity, integrity and certification tier on the agentverif registry.",
+    "url": "https://verify.agentverif.com",
+    "applicationCategory": "SecurityApplication",
+    "operatingSystem": "Any",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "provider": {
+      "@type": "Organization",
+      "name": "agentverif",
+      "url": "https://agentverif.com"
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <!-- ======================================================
+       HEADER (shared)
+       ====================================================== -->
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <a href="https://agentverif.com" class="logo" aria-label="agentverif home">
+        <svg width="32" height="37" viewBox="0 0 32 37" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M16 1L2 6.5v13C2 28.1 8.3 35.4 16 38c7.7-2.6 14-9.9 14-18.5v-13L16 1z" fill="#16a34a"/>
+          <path d="M10 19l4.5 4.5 8-8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="logo-wordmark">agentverif</span>
+      </a>
+      <nav class="site-nav" id="site-nav" role="navigation" aria-label="Main navigation">
+        <a href="https://agentverif.com/#how-it-works">How it works</a>
+        <a href="https://agentverif.com/#pricing">Pricing</a>
+        <a href="https://verify.agentverif.com" class="nav-cta" aria-current="page">Verify</a>
+        <a href="https://agentverif.com/docs">Docs</a>
+      </nav>
+      <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="site-nav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <div class="verify-page">
+      <div class="container">
+
+        <div class="verify-box" role="main">
+
+          <!-- Heading -->
+          <h1>Verify Agent Certificate</h1>
+          <p class="verify-lead">
+            Paste a License ID to confirm the package's authenticity, integrity,
+            and certification tier against the agentverif registry.
+          </p>
+
+          <!-- Verification form -->
+          <form class="verify-form" id="verify-form" novalidate aria-label="License verification form">
+            <div class="form-group">
+              <label class="form-label" for="license-input">License ID</label>
+              <div class="input-row">
+                <input
+                  type="text"
+                  id="license-input"
+                  class="form-input"
+                  placeholder="AV-XXXX-XXXX"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="characters"
+                  spellcheck="false"
+                  aria-describedby="license-hint"
+                  maxlength="32"
+                />
+                <button type="submit" class="btn btn-primary verify-btn" id="verify-btn" aria-label="Verify license">
+                  <span id="verify-btn-text">Verify</span>
+                </button>
+              </div>
+              <p class="verify-hint" id="license-hint">
+                Format: <code>AV-XXXX-XXXX</code> or <code>AV-ENT-XXXX-XXXX</code>
+              </p>
+            </div>
+          </form>
+
+          <!-- ---- RESULT: VERIFIED ---- -->
+          <div id="result-verified" class="result-card result-verified" role="region" aria-label="Verification result: verified" aria-live="polite">
+            <div class="result-header">
+              <div>
+                <span class="status-pill status-verified-pill" id="r-status-pill">✅ VERIFIED</span>
+              </div>
+              <span id="r-tier-chip" class="tier-chip tier-pro"></span>
+            </div>
+            <h2 class="result-title" id="r-title">Certificate valid</h2>
+            <p class="result-message" id="r-message"></p>
+            <hr class="verify-divider">
+            <div class="result-meta">
+              <div class="meta-item">
+                <div class="meta-label">License ID</div>
+                <div class="meta-value" id="r-license-id"></div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">Issuer</div>
+                <div class="meta-value" id="r-issuer"></div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">Issued</div>
+                <div class="meta-value" id="r-issued-at"></div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">Files certified</div>
+                <div class="meta-value" id="r-file-count"></div>
+              </div>
+            </div>
+            <div id="r-badge-block" class="result-badge-block" aria-label="Certificate badge"></div>
+          </div>
+
+          <!-- ---- RESULT: REVOKED ---- -->
+          <div id="result-revoked" class="result-card result-revoked" role="region" aria-label="Verification result: revoked" aria-live="polite">
+            <span class="status-pill status-revoked-pill">🚫 REVOKED</span>
+            <h2 class="result-title" style="color:var(--danger)">Certificate revoked</h2>
+            <p class="result-message" id="r-revoke-message"></p>
+            <div class="result-meta">
+              <div class="meta-item">
+                <div class="meta-label">License ID</div>
+                <div class="meta-value" id="r-revoke-id"></div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">Revoked at</div>
+                <div class="meta-value" id="r-revoked-at"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ---- RESULT: NOT FOUND ---- -->
+          <div id="result-notfound" class="result-card result-notfound" role="region" aria-label="Verification result: not found" aria-live="polite">
+            <span class="status-pill status-notfound-pill">— NOT FOUND</span>
+            <h2 class="result-title">License not found in registry</h2>
+            <p class="result-message">
+              This License ID does not exist in the agentverif registry.
+              The package may have been signed with <code>--offline</code> (Indie tier, local verification only),
+              or the ID is incorrect.
+            </p>
+          </div>
+
+          <!-- ---- RESULT: ERROR ---- -->
+          <div id="result-error" class="result-card result-error" role="alert" aria-live="assertive">
+            <span class="status-pill status-error-pill">⚠ ERROR</span>
+            <h2 class="result-title">Could not reach registry</h2>
+            <p class="result-message">
+              The agentverif registry is temporarily unreachable. Please try again in a moment.
+            </p>
+          </div>
+
+          <!-- Example IDs -->
+          <div class="verify-examples">
+            <h2>Example IDs to try</h2>
+            <div class="example-ids">
+              <button class="example-id" type="button" aria-label="Try example ID AV-84F2-91AB">AV-84F2-91AB</button>
+              <button class="example-id" type="button" aria-label="Try example ID AV-ENT-7C3A-12BB">AV-ENT-7C3A-12BB</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER (shared) -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <p>
+        <a href="https://agentverif.com" aria-label="agentverif home">agentverif.com</a>
+        — The certification standard for AI agent packages
+        &nbsp;|&nbsp;
+        Powered by <a href="https://agentcop.com" rel="noopener">agentcop</a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // ─── Utilities ──────────────────────────────────────────────────────────
+    var API = 'https://api.agentverif.com';
+
+    function $(id) { return document.getElementById(id); }
+
+    function hideAll() {
+      ['result-verified','result-revoked','result-notfound','result-error'].forEach(function(id) {
+        $(id).classList.remove('visible');
+      });
+    }
+
+    function formatDate(isoStr) {
+      if (!isoStr) return '—';
+      try { return new Date(isoStr).toLocaleDateString('en-US', {year:'numeric',month:'short',day:'numeric'}); }
+      catch(e) { return isoStr; }
+    }
+
+    function tierChipClass(tier) {
+      if (tier === 'enterprise') return 'tier-enterprise';
+      if (tier === 'pro') return 'tier-pro';
+      return 'tier-indie';
+    }
+
+    function tierLabel(tier) {
+      if (tier === 'enterprise') return '🔐 Enterprise';
+      if (tier === 'pro') return '✅ Pro';
+      return '✅ Indie';
+    }
+
+    // ─── Render results ─────────────────────────────────────────────────────
+    function showVerified(data) {
+      hideAll();
+      $('r-status-pill').textContent = data.status === 'UNREGISTERED' ? '⚠ UNREGISTERED' : '✅ VERIFIED';
+      $('r-status-pill').className = 'status-pill ' + (data.status === 'VERIFIED' ? 'status-verified-pill' : 'status-notfound-pill');
+      $('r-title').textContent = data.status === 'VERIFIED' ? 'Certificate valid' : 'Signed locally — not in registry';
+      $('r-message').textContent = data.status === 'VERIFIED'
+        ? 'This agent package is certified and registered on agentverif.com.'
+        : 'The package has a valid local signature but was not registered in the public registry.';
+      $('r-license-id').textContent = data.license_id || '—';
+      $('r-issuer').textContent = data.issuer || 'agentverif.com';
+      $('r-issued-at').textContent = formatDate(data.issued_at);
+      $('r-file-count').textContent = data.file_count != null ? data.file_count + ' file' + (data.file_count !== 1 ? 's' : '') : '—';
+      var chip = $('r-tier-chip');
+      chip.textContent = tierLabel(data.tier);
+      chip.className = 'tier-chip ' + tierChipClass(data.tier);
+      if (data.badge) {
+        $('r-badge-block').textContent = data.badge;
+        $('r-badge-block').style.display = 'block';
+      } else {
+        $('r-badge-block').style.display = 'none';
+      }
+      $('result-verified').classList.add('visible');
+    }
+
+    function showRevoked(data) {
+      hideAll();
+      $('r-revoke-id').textContent = data.license_id || '—';
+      $('r-revoked-at').textContent = formatDate(data.revoked_at);
+      $('r-revoke-message').textContent = data.revoked_reason
+        ? 'Reason: ' + data.revoked_reason
+        : 'This certificate has been revoked by the issuer.';
+      $('result-revoked').classList.add('visible');
+    }
+
+    function showNotFound() {
+      hideAll();
+      $('result-notfound').classList.add('visible');
+    }
+
+    function showError() {
+      hideAll();
+      $('result-error').classList.add('visible');
+    }
+
+    // ─── API call ────────────────────────────────────────────────────────────
+    function verifyLicense(licenseId) {
+      var btn = $('verify-btn');
+      var btnText = $('verify-btn-text');
+      btn.disabled = true;
+      btnText.innerHTML = '<span class="spinner" aria-hidden="true"></span>';
+
+      fetch(API + '/verify/' + encodeURIComponent(licenseId), {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' }
+      })
+      .then(function(res) {
+        if (res.status === 404) { showNotFound(); return null; }
+        if (!res.ok) { showError(); return null; }
+        return res.json();
+      })
+      .then(function(data) {
+        if (!data) return;
+        if (data.status === 'REVOKED') {
+          showRevoked(data);
+        } else {
+          showVerified(data);
+        }
+      })
+      .catch(function() { showError(); })
+      .finally(function() {
+        btn.disabled = false;
+        btnText.textContent = 'Verify';
+      });
+    }
+
+    // ─── Form submit ─────────────────────────────────────────────────────────
+    $('verify-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var val = $('license-input').value.trim().toUpperCase().replace(/\s+/g, '');
+      if (!val) { $('license-input').focus(); return; }
+      verifyLicense(val);
+    });
+
+    // ─── Example IDs ─────────────────────────────────────────────────────────
+    document.querySelectorAll('.example-id').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        $('license-input').value = btn.textContent;
+        $('verify-form').dispatchEvent(new Event('submit'));
+      });
+    });
+
+    // ─── Pre-fill from URL ?id= ───────────────────────────────────────────────
+    (function() {
+      var params = new URLSearchParams(window.location.search);
+      var id = params.get('id');
+      if (id) {
+        $('license-input').value = id.toUpperCase();
+        verifyLicense(id.toUpperCase());
+      }
+    })();
+
+    // ─── Mobile nav ──────────────────────────────────────────────────────────
+    var toggle = document.getElementById('menu-toggle');
+    var nav = document.getElementById('site-nav');
+    toggle.addEventListener('click', function() {
+      var isOpen = nav.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+  </script>
+
+</body>
+</html>

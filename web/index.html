@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Primary SEO -->
+  <title>agentverif — The Certification Standard for AI Agent Packages</title>
+  <meta name="description" content="Scan, sign and certify your AI agent packages. OWASP LLM Top 10 scanning before every signature. Trusted badges for Indie, Pro and Enterprise tiers.">
+  <meta name="keywords" content="AI agent security, agent certification, package signing, OWASP LLM, agent verification, agentverif">
+  <meta name="author" content="agentverif.com">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://agentverif.com">
+  <meta property="og:title" content="agentverif — The Certification Standard for AI Agent Packages">
+  <meta property="og:description" content="Scan, sign and certify your AI agent packages. OWASP LLM Top 10 scanning before every signature. Trusted badges for Indie, Pro and Enterprise tiers.">
+  <meta property="og:site_name" content="agentverif">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="agentverif — The Certification Standard for AI Agent Packages">
+  <meta name="twitter:description" content="Scan, sign and certify your AI agent packages. OWASP LLM Top 10 scanning before every signature.">
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://agentverif.com">
+
+  <!-- Google Fonts preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Shared stylesheet -->
+  <link rel="stylesheet" href="/assets/style.css">
+
+  <!-- Page-specific styles -->
+  <style>
+    /* ---- Hero ---- */
+    .hero {
+      padding: 96px 0 80px;
+      background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 60%);
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: clamp(2.25rem, 6vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      color: var(--text);
+      max-width: 760px;
+      margin: 0 auto 20px;
+    }
+    .hero h1 span { color: var(--primary); }
+    .hero-lead {
+      font-size: clamp(1rem, 2vw, 1.1875rem);
+      color: var(--text-muted);
+      max-width: 520px;
+      margin: 0 auto 36px;
+      line-height: 1.65;
+    }
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 36px;
+    }
+    .hero-install {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 0;
+    }
+
+    /* ---- Step cards ---- */
+    .step-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 32px 28px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+    .step-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); transition: all 0.15s ease; }
+    .step-number {
+      width: 36px; height: 36px;
+      background: var(--accent);
+      color: var(--primary);
+      font-weight: 800;
+      font-size: 0.875rem;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px;
+    }
+    .step-icon {
+      font-size: 2rem;
+      margin-bottom: 14px;
+      line-height: 1;
+    }
+    .step-card h3 {
+      font-size: 1.0625rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    .step-card p {
+      font-size: 0.9375rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .step-badge {
+      margin-top: 14px;
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      background: var(--accent);
+      color: var(--primary);
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+    }
+
+    /* ---- Pricing ---- */
+    #pricing { background: var(--surface); }
+    .pricing-card {
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 36px 32px;
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow 0.15s, transform 0.15s;
+    }
+    .pricing-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-3px); }
+    .pricing-card.featured {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(22,163,74,0.08), var(--shadow-md);
+    }
+    .pricing-header { margin-bottom: 28px; }
+    .pricing-recommend {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: var(--primary);
+      color: #fff;
+      padding: 3px 10px;
+      border-radius: 99px;
+      margin-bottom: 14px;
+    }
+    .pricing-tier {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .pricing-price {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+    .pricing-price .amount {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--text);
+      line-height: 1;
+    }
+    .pricing-price .period {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .pricing-desc {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+    .pricing-features {
+      flex: 1;
+      margin: 24px 0;
+    }
+    .pricing-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.9375rem;
+      color: var(--text);
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .pricing-features li:last-child { border-bottom: none; }
+    .feat-check { color: var(--primary); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+    .pricing-badge-example {
+      margin-top: 20px;
+      background: #f3f4f6;
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-family: var(--font-mono);
+      font-size: 0.84rem;
+      color: var(--text);
+      border: 1px solid var(--border);
+      word-break: break-all;
+    }
+    .pricing-badge-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      font-family: var(--font);
+    }
+
+    /* ---- Trust bar ---- */
+    #trust { background: var(--accent); border-top: 1px solid var(--accent-mid); border-bottom: 1px solid var(--accent-mid); }
+    .trust-items {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 40px;
+    }
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: #166534;
+    }
+    .trust-icon { font-size: 1.375rem; flex-shrink: 0; }
+    @media (max-width: 640px) {
+      .trust-items { flex-direction: column; gap: 20px; text-align: center; }
+    }
+
+    /* ---- CTA section ---- */
+    .cta-section { background: var(--text); color: #fff; }
+    .cta-section .section-title { color: #fff; }
+    .cta-section .section-subtitle { color: rgba(255,255,255,0.7); }
+    .cta-section .btn-secondary {
+      border-color: rgba(255,255,255,0.4);
+      color: #fff;
+    }
+    .cta-section .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+    .cta-btns {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+  </style>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "name": "agentverif",
+        "description": "The certification standard for AI agent packages",
+        "url": "https://agentverif.com",
+        "applicationCategory": "SecurityApplication",
+        "operatingSystem": "Any",
+        "offers": [
+          {
+            "@type": "Offer",
+            "name": "Indie",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          {
+            "@type": "Offer",
+            "name": "Pro",
+            "price": "9",
+            "priceCurrency": "USD"
+          },
+          {
+            "@type": "Offer",
+            "name": "Enterprise",
+            "price": "49",
+            "priceCurrency": "USD"
+          }
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "name": "agentverif",
+        "url": "https://agentverif.com",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://verify.agentverif.com/?id={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "Organization",
+        "name": "agentverif",
+        "url": "https://agentverif.com"
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- ======================================================
+       HEADER (shared)
+       ====================================================== -->
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <a href="/" class="logo" aria-label="agentverif home">
+        <!-- Shield SVG logo -->
+        <svg width="32" height="37" viewBox="0 0 32 37" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M16 1L2 6.5v13C2 28.1 8.3 35.4 16 38c7.7-2.6 14-9.9 14-18.5v-13L16 1z" fill="#16a34a"/>
+          <path d="M10 19l4.5 4.5 8-8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="logo-wordmark">agentverif</span>
+      </a>
+      <nav class="site-nav" id="site-nav" role="navigation" aria-label="Main navigation">
+        <a href="/#how-it-works">How it works</a>
+        <a href="/#pricing">Pricing</a>
+        <a href="https://verify.agentverif.com" class="nav-cta">Verify</a>
+        <a href="https://agentverif.com/docs">Docs</a>
+      </nav>
+      <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="site-nav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ======================================================
+         HERO
+         ====================================================== -->
+    <section class="hero" aria-labelledby="hero-heading">
+      <div class="container">
+        <span class="section-tag">AI Agent Security</span>
+        <h1 id="hero-heading">
+          The certification standard<br>
+          for <span>AI agent packages.</span>
+        </h1>
+        <p class="hero-lead">
+          Every signed agent is scanned, verified, and traceable.
+          OWASP LLM Top 10 scanning before every signature.
+        </p>
+        <div class="hero-install">
+          <div class="code-block" role="region" aria-label="Installation command">
+            <code id="install-cmd">pip install agentverif-sign</code>
+            <button class="copy-btn" id="copy-install" aria-label="Copy pip install command">Copy</button>
+          </div>
+        </div>
+        <div class="hero-actions">
+          <a href="/#how-it-works" class="btn btn-primary btn-lg">Get started →</a>
+          <a href="https://verify.agentverif.com" class="btn btn-secondary btn-lg">Verify a license →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         HOW IT WORKS
+         ====================================================== -->
+    <section id="how-it-works" class="section" aria-labelledby="how-heading">
+      <div class="container">
+        <header class="section-header centered">
+          <span class="section-tag">Process</span>
+          <h2 class="section-title" id="how-heading">How it works</h2>
+          <p class="section-subtitle">
+            Three steps from source to certified. Fully automated, fully auditable.
+          </p>
+        </header>
+
+        <div class="grid-3">
+
+          <!-- Step 1 -->
+          <article class="step-card">
+            <div class="step-number" aria-hidden="true">1</div>
+            <div class="step-icon" aria-hidden="true">🔍</div>
+            <h3>Scan</h3>
+            <p>
+              Your agent package is automatically scanned against the
+              <strong>OWASP LLM Top 10</strong>. A score below 70 is refused —
+              no exceptions.
+            </p>
+            <span class="step-badge" aria-label="Minimum score required">score ≥ 70 required</span>
+          </article>
+
+          <!-- Step 2 -->
+          <article class="step-card">
+            <div class="step-number" aria-hidden="true">2</div>
+            <div class="step-icon" aria-hidden="true">✅</div>
+            <h3>Sign</h3>
+            <p>
+              A unique <strong>License ID</strong> is generated and a
+              cryptographic hash of your package is registered on the
+              agentverif.com registry. A <code>SIGNATURE.json</code> is injected.
+            </p>
+            <span class="step-badge" aria-label="License ID format">AV-XXXX-XXXX</span>
+          </article>
+
+          <!-- Step 3 -->
+          <article class="step-card">
+            <div class="step-number" aria-hidden="true">3</div>
+            <div class="step-icon" aria-hidden="true">🔐</div>
+            <h3>Certify</h3>
+            <p>
+              Buyers verify the certificate at
+              <a href="https://verify.agentverif.com" style="color:var(--primary)">verify.agentverif.com</a>
+              or via the CLI. Tampered packages are flagged instantly.
+            </p>
+            <span class="step-badge" aria-label="Hash algorithm used">sha256 hash-locked</span>
+          </article>
+
+        </div>
+
+        <!-- CLI quickstart -->
+        <div style="margin-top:56px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:32px 36px;">
+          <h3 style="font-size:1.0625rem;font-weight:700;margin-bottom:20px;letter-spacing:-0.02em;">
+            CLI quickstart
+          </h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div>
+              <p style="font-size:0.78rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">As a vendor</p>
+              <div style="background:#1e2433;border-radius:var(--radius-sm);padding:14px 18px;">
+                <code style="font-family:var(--font-mono);font-size:0.875rem;color:#a3e635;white-space:pre-wrap;display:block;line-height:1.8;">agentverif-sign sign ./agent.zip
+<span style="color:#60a5fa"># ✅ Signed successfully
+# License: AV-84F2-91AB
+# Tier:    indie</span></code>
+              </div>
+            </div>
+            <div>
+              <p style="font-size:0.78rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">As a buyer</p>
+              <div style="background:#1e2433;border-radius:var(--radius-sm);padding:14px 18px;">
+                <code style="font-family:var(--font-mono);font-size:0.875rem;color:#a3e635;white-space:pre-wrap;display:block;line-height:1.8;">agentverif-sign verify ./agent.zip
+<span style="color:#60a5fa"># ✅ UNREGISTERED
+# Verify: verify.agentverif.com/…</span></code>
+              </div>
+            </div>
+          </div>
+          <p style="margin-top:16px;font-size:0.875rem;color:var(--text-muted);">
+            Output is JSON-compatible for CI/CD pipelines, LLM tool calls, and MCP integrations
+            (<code style="font-size:0.84rem;color:var(--text);">agentverif-sign verify --json</code>).
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         PRICING
+         ====================================================== -->
+    <section id="pricing" class="section section-alt" aria-labelledby="pricing-heading">
+      <div class="container">
+        <header class="section-header centered">
+          <span class="section-tag">Pricing</span>
+          <h2 class="section-title" id="pricing-heading">Simple, transparent pricing</h2>
+          <p class="section-subtitle">
+            Start free. Upgrade when you need a public registry entry or cryptographic signing.
+          </p>
+        </header>
+
+        <div class="grid-3">
+
+          <!-- Indie -->
+          <article class="pricing-card" aria-label="Indie plan">
+            <div class="pricing-header">
+              <p class="pricing-tier">Indie</p>
+              <div class="pricing-price">
+                <span class="amount">Free</span>
+              </div>
+              <p class="pricing-desc">For solo developers and open-source projects.</p>
+            </div>
+            <ul class="pricing-features" aria-label="Indie plan features">
+              <li><span class="feat-check" aria-hidden="true">✓</span> 3 signs per month</li>
+              <li><span class="feat-check" aria-hidden="true">✓</span> OWASP LLM Top 10 scan</li>
+              <li><span class="feat-check" aria-hidden="true">✓</span> SIGNATURE.json injected</li>
+              <li><span class="feat-check" aria-hidden="true">✓</span> Local hash verification</li>
+              <li style="color:var(--text-muted)"><span aria-hidden="true">—</span> Public registry entry</li>
+              <li style="color:var(--text-muted)"><span aria-hidden="true">—</span> Ed25519 signing</li>
+            </ul>
+            <div class="pricing-badge-label">Badge</div>
+            <div class="pricing-badge-example" aria-label="Example badge for Indie tier">✅ Signed by agentverif</div>
+            <a href="https://agentverif.com/docs" class="btn btn-secondary btn-full" style="margin-top:24px;">Get started free</a>
+          </article>
+
+          <!-- Pro (featured) -->
+          <article class="pricing-card featured" aria-label="Pro plan — recommended">
+            <div class="pricing-header">
+              <span class="pricing-recommend" aria-label="Recommended plan">Recommended</span>
+              <p class="pricing-tier">Pro</p>
+              <div class="pricing-price">
+                <span class="amount">$9</span>
+                <span class="period">/month</span>
+              </div>
+              <p class="pricing-desc">For teams shipping agents to real users.</p>
+            </div>
+            <ul class="pricing-features" aria-label="Pro plan features">
+              <li><span class="feat-check" aria-hidden="true">✓</span> Unlimited signs</li>
+              <li><span class="feat-check" aria-hidden="true">✓</span> OWASP LLM Top 10 scan</li>
+              <li><span class="feat-check" aria-hidden="true">✓</span> SIGNATURE.json injected</li>
+              <li><span class="feat-check" aria-hidden="true">✓</span> <strong>Public registry entry</strong></li>
+              <li><span class="feat-check" aria-hidden="true">✓</span> Online verification page</li>
+              <li style="color:var(--text-muted)"><span aria-hidden="true">—</span> Ed25519 signing</li>
+            </ul>
+            <div class="pricing-badge-label">Badge</div>
+            <div class="pricing-badge-example" aria-label="Example badge for Pro tier">✅ agentverif VERIFIED | AV-XXXX</div>
+            <a href="https://agentverif.com/docs" class="btn btn-primary btn-full" style="margin-top:24px;">Start Pro</a>
+          </article>
+
+          <!-- Enterprise -->
+          <article class="pricing-card" aria-label="Enterprise plan">
+            <div class="pricing-header">
+              <p class="pricing-tier">Enterprise</p>
+              <div class="pricing-price">
+                <span class="amount">$49</span>
+                <span class="period">/month</span>
+              </div>
+              <p class="pricing-desc">For fleets, regulated industries, and critical infrastructure.</p>
+            </div>
+            <ul class="pricing-features" aria-label="Enterprise plan features">
+              <li><span class="feat-check" aria-hidden="true">✓</span> Everything in Pro</li>
+              <li><span class="feat-check" aria-hidden="true">✓</span> <strong>Ed25519 cryptographic signing</strong></li>
+              <li><span class="feat-check" aria-hidden="true">✓</span> Full audit trail</li>
+              <li><span class="feat-check" aria-hidden="true">✓</span> Revocation API</li>
+              <li><span class="feat-check" aria-hidden="true">✓</span> SLA guarantee</li>
+              <li><span class="feat-check" aria-hidden="true">✓</span> Priority support</li>
+            </ul>
+            <div class="pricing-badge-label">Badge</div>
+            <div class="pricing-badge-example" aria-label="Example badge for Enterprise tier">🔐 agentverif ENTERPRISE CERTIFIED</div>
+            <a href="mailto:enterprise@agentverif.com" class="btn btn-secondary btn-full" style="margin-top:24px;">Contact us</a>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         TRUST SIGNALS
+         ====================================================== -->
+    <section id="trust" class="section-xs" aria-labelledby="trust-heading">
+      <div class="container">
+        <h2 id="trust-heading" class="hidden">Trust signals</h2>
+        <div class="trust-items">
+          <div class="trust-item">
+            <span class="trust-icon" aria-hidden="true">🛡️</span>
+            <span>Powered by agentcop — OWASP LLM Top 10 scan engine</span>
+          </div>
+          <div class="trust-item">
+            <span class="trust-icon" aria-hidden="true">🔍</span>
+            <span>Every package scanned before certification</span>
+          </div>
+          <div class="trust-item">
+            <span class="trust-icon" aria-hidden="true">📋</span>
+            <span>Registry: agentverif.com</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         CTA BANNER
+         ====================================================== -->
+    <section class="section-sm cta-section" aria-labelledby="cta-heading">
+      <div class="container">
+        <h2 class="section-title" id="cta-heading">Unsigned agents shouldn't be executed.</h2>
+        <p class="section-subtitle" style="margin-bottom:32px;">
+          Start signing in two minutes. Free tier, no credit card required.
+        </p>
+        <div class="cta-btns">
+          <a href="https://agentverif.com/docs" class="btn btn-primary btn-lg">Read the docs →</a>
+          <a href="https://verify.agentverif.com" class="btn btn-secondary btn-lg">Verify a license</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======================================================
+       FOOTER (shared)
+       ====================================================== -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <p>
+        <a href="https://agentverif.com" aria-label="agentverif home">agentverif.com</a>
+        — The certification standard for AI agent packages
+        &nbsp;|&nbsp;
+        Powered by <a href="https://agentcop.com" rel="noopener">agentcop</a>
+      </p>
+      <p style="margin-top:8px;">
+        <a href="https://verify.agentverif.com">Verify</a>
+        &nbsp;·&nbsp;
+        <a href="https://agentverif.com/docs">Docs</a>
+        &nbsp;·&nbsp;
+        <a href="mailto:support@agentverif.com">Support</a>
+        &nbsp;·&nbsp;
+        <a href="https://github.com/trusthandoff/agentverif">GitHub</a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- Minimal JS: copy button + mobile nav -->
+  <script>
+    // Copy install command
+    document.getElementById('copy-install').addEventListener('click', function() {
+      var btn = this;
+      var text = document.getElementById('install-cmd').textContent;
+      navigator.clipboard.writeText(text).then(function() {
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(function() { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+      }).catch(function() {
+        btn.textContent = 'Copy failed';
+        setTimeout(function() { btn.textContent = 'Copy'; }, 2000);
+      });
+    });
+
+    // Mobile nav toggle
+    var toggle = document.getElementById('menu-toggle');
+    var nav = document.getElementById('site-nav');
+    toggle.addEventListener('click', function() {
+      var isOpen = nav.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+  </script>
+
+</body>
+</html>

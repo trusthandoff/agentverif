@@ -1,0 +1,22 @@
+# agentverif.com — robots.txt
+# All crawlers welcome, including AI agents.
+
+User-agent: *
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+Sitemap: https://agentverif.com/sitemap.xml
