@@ -1,3 +1,16 @@
+<p align="center">
+  <a href="https://agentverif.com">
+    <img src="https://agentverif.com/logo.png" alt="agentverif" width="200" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/trusthandoff/agentverif/actions/workflows/publish.yml"><img src="https://github.com/trusthandoff/agentverif/actions/workflows/publish.yml/badge.svg" alt="CI" /></a>
+  <a href="https://pypi.org/project/agentverif-sign/"><img src="https://img.shields.io/pypi/v/agentverif-sign.svg" alt="PyPI version" /></a>
+  <a href="https://x.com/agentverif"><img src="https://img.shields.io/badge/follow-%40agentverif-000000?logo=x&logoColor=white" alt="X (Twitter)" /></a>
+  <a href="https://www.moltbook.com/u/agentverif"><img src="https://img.shields.io/badge/Moltbook-agentverif-7B2FFF?logoColor=white" alt="Moltbook" /></a>
+</p>
+
 # agentverif-sign
 
 The trust layer for AI agent distribution.
