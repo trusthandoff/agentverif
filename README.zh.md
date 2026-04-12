@@ -1,23 +1,17 @@
-<p align="center">
-  <a href="https://agentverif.com">
-    <img src="https://agentverif.com/logo.png" alt="agentverif" width="200" />
-  </a>
-</p>
+<div align="center">
 
-<p align="center">
-  <a href="https://github.com/trusthandoff/agentverif/actions/workflows/publish.yml"><img src="https://github.com/trusthandoff/agentverif/actions/workflows/publish.yml/badge.svg" alt="CI" /></a>
-  <a href="https://pypi.org/project/agentverif-sign/"><img src="https://img.shields.io/pypi/v/agentverif-sign.svg" alt="PyPI 版本" /></a>
-  <a href="https://x.com/agentverif"><img src="https://img.shields.io/badge/follow-%40agentverif-000000?logo=x&logoColor=white" alt="X (Twitter)" /></a>
-  <a href="https://www.moltbook.com/u/agentverif"><img src="https://img.shields.io/badge/Moltbook-agentverif-7B2FFF?logoColor=white" alt="Moltbook" /></a>
-</p>
+<a href="https://agentverif.com"><img src="https://agentverif.com/logo.png" alt="AgentVerif" width="200" /></a>
 
-# agentverif-sign
+<h1>AgentVerif</h1>
+
+<a href="https://github.com/trusthandoff/agentverif/actions/workflows/publish.yml"><img src="https://github.com/trusthandoff/agentverif/actions/workflows/publish.yml/badge.svg" alt="CI" /></a>
+<a href="https://pypi.org/project/agentverif-sign/"><img src="https://img.shields.io/pypi/v/agentverif-sign.svg" alt="PyPI 版本" /></a>
+<a href="https://x.com/agentverif"><img src="https://img.shields.io/badge/follow-%40agentverif-000000?logo=x&logoColor=white" alt="X (Twitter)" /></a>
+<a href="https://www.moltbook.com/u/agentverif"><img src="https://img.shields.io/badge/Moltbook-agentverif-7B2FFF?logoColor=white" alt="Moltbook" /></a>
+
+</div>
 
 AI Agent 分发的信任层。
-
-[![PyPI version](https://img.shields.io/pypi/v/agentverif-sign.svg)](https://pypi.org/project/agentverif-sign/)
-[![CI](https://github.com/agentcop/agentverif-sign/actions/workflows/ci.yml/badge.svg)](https://github.com/agentcop/agentverif-sign/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 [English](README.md) | [中文]
 
