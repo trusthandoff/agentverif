@@ -72,8 +72,8 @@ jobs:
           RELEASE_NOTES: ${{ steps.changelog.outputs.CHANGELOG }}
         run: |
           printf '%s\n' "$RELEASE_NOTES" > /tmp/release-notes.md
+          gh release delete "${{ github.ref_name }}" --yes 2>/dev/null || true
           gh release create "${{ github.ref_name }}" \
             dist/* \
             --title "${{ github.ref_name }}" \
-            --notes-file /tmp/release-notes.md \
-            --clobber
+            --notes-file /tmp/release-notes.md
