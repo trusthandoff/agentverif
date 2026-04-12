@@ -50,7 +50,7 @@ jobs:
       - name: Publish to PyPI
         env:
           TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_SECRET }}
         run: twine upload dist/*
 
       - name: Generate changelog from commits
