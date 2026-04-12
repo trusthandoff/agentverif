@@ -11,14 +11,21 @@ Endpoints:
 from __future__ import annotations
 
 import contextlib
+import hashlib
+import hmac
 import json
 import os
 import sqlite3
 from datetime import UTC, datetime
+from typing import Annotated
 
-from fastapi import FastAPI, Header, HTTPException
+from fastapi import FastAPI, Header, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.util import get_remote_address
+from starlette.middleware.base import BaseHTTPMiddleware
 
 # ---------------------------------------------------------------------------
 # App setup
@@ -28,8 +35,9 @@ app = FastAPI(
     title="agentverif API",
     version="0.1.0",
     description="Certificate registry for AI agent packages.",
-    docs_url="/docs",
+    docs_url=None,
     redoc_url=None,
+    openapi_url=None,
 )
 
 app.add_middleware(
@@ -41,8 +49,31 @@ app.add_middleware(
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "OPTIONS"],
-    allow_headers=["*"],
+    allow_headers=["Content-Type", "Authorization", "X-Request-ID"],
 )
+
+# ---------------------------------------------------------------------------
+# Security headers middleware
+# ---------------------------------------------------------------------------
+
+
+class _SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        return response
+
+
+app.add_middleware(_SecurityHeadersMiddleware)
+
+# ---------------------------------------------------------------------------
+# Rate limiting
+# ---------------------------------------------------------------------------
+
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # ---------------------------------------------------------------------------
 # Database
@@ -91,16 +122,20 @@ def _init_db() -> None:
 
 _init_db()
 
+_EXPECTED_KEY = os.environ.get("AGENTVERIF_API_KEY", "")
+
 # ---------------------------------------------------------------------------
 # Pydantic models
 # ---------------------------------------------------------------------------
 
+_FileItem = Annotated[str, Field(max_length=500)]
+
 
 class RegisterRequest(BaseModel):
-    license_id: str = Field(..., description="License ID, e.g. AV-84F2-91AB")
+    license_id: str = Field(..., max_length=20, pattern=r"^AV-[A-Z0-9-]+$", description="License ID, e.g. AV-84F2-91AB")
     tier: str = Field(..., description="indie | pro | enterprise")
     zip_hash: str = Field(..., description="sha256:<hex>")
-    file_list: list[str] = Field(default_factory=list)
+    file_list: list[_FileItem] = Field(default_factory=list, max_length=1000)
     issued_at: str = Field(..., description="ISO 8601 UTC timestamp")
     expires_at: str | None = None
     issuer: str = "agentverif.com"
@@ -117,12 +152,12 @@ class RegisterRequest(BaseModel):
 
 
 class RevokeRequest(BaseModel):
-    license_id: str
-    reason: str | None = None
+    license_id: str = Field(..., max_length=20, pattern=r"^AV-[A-Z0-9-]+$")
+    reason: str | None = Field(None, max_length=500)
 
 
 class VerifyBody(BaseModel):
-    license_id: str
+    license_id: str = Field(..., max_length=20, pattern=r"^AV-[A-Z0-9-]+$")
     zip_hash: str | None = None
     buyer_id: str | None = None
 
@@ -206,7 +241,8 @@ def health() -> dict:
 
 
 @app.post("/register", tags=["registry"])
-def register(req: RegisterRequest) -> dict:
+@limiter.limit("10/minute")
+def register(request: Request, req: RegisterRequest) -> dict:
     """Register a signed package. Called by the agentverif-sign CLI."""
     file_list_json = json.dumps(req.file_list)
     file_count = len(req.file_list)
@@ -245,7 +281,8 @@ def register(req: RegisterRequest) -> dict:
 
 
 @app.get("/verify/{license_id}", tags=["registry"])
-def verify_get(license_id: str) -> dict:
+@limiter.limit("60/minute")
+def verify_get(request: Request, license_id: str) -> dict:
     """Verify a license by ID (used by the web verify page)."""
     license_id = license_id.upper().strip()
     with _get_conn() as conn:
@@ -269,7 +306,8 @@ def verify_get(license_id: str) -> dict:
 
 
 @app.post("/verify", tags=["registry"])
-def verify_post(body: VerifyBody) -> dict:
+@limiter.limit("60/minute")
+def verify_post(request: Request, body: VerifyBody) -> dict:
     """Verify via JSON body — used by the agentverif-sign CLI."""
     license_id = body.license_id.upper().strip()
     with _get_conn() as conn:
@@ -293,7 +331,9 @@ def verify_post(body: VerifyBody) -> dict:
 
 
 @app.post("/revoke", tags=["registry"])
+@limiter.limit("5/minute")
 def revoke(
+    request: Request,
     req: RevokeRequest,
     authorization: str | None = Header(None),
 ) -> dict:
@@ -303,9 +343,11 @@ def revoke(
     api_key = authorization.removeprefix("Bearer ").strip()
     if not api_key:
         raise HTTPException(status_code=401, detail="API key required")
-    # NOTE: In production, validate api_key against a stored hash.
-    # For v0.1 we accept any non-empty key; harden before public launch.
-    _ = api_key
+    if not _EXPECTED_KEY or not hmac.compare_digest(
+        hashlib.sha256(api_key.encode()).digest(),
+        hashlib.sha256(_EXPECTED_KEY.encode()).digest(),
+    ):
+        raise HTTPException(status_code=401, detail="Invalid API key")
 
     with _get_conn() as conn:
         row = conn.execute(

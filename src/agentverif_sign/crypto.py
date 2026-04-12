@@ -8,6 +8,7 @@ logger = logging.getLogger(__name__)
 
 _CRYPTO_AVAILABLE = False
 try:
+    from cryptography.exceptions import InvalidSignature
     from cryptography.hazmat.primitives.asymmetric.ed25519 import (
         Ed25519PrivateKey,
         Ed25519PublicKey,
@@ -68,5 +69,5 @@ def verify_signature(data: bytes, signature_str: str, public_key_bytes: bytes) -
         key = Ed25519PublicKey.from_public_bytes(public_key_bytes)
         key.verify(sig_bytes, data)
         return True
-    except Exception:
+    except (ValueError, InvalidSignature):
         return False

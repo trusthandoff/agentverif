@@ -32,6 +32,7 @@ def _get_requests():
 def _request_with_retry(method: str, url: str, **kwargs):
     requests = _get_requests()
     kwargs.setdefault("timeout", _TIMEOUT)
+    kwargs.setdefault("verify", True)
     last_exc: Exception | None = None
     for attempt in range(_MAX_RETRIES + 1):
         try:
@@ -107,7 +108,7 @@ def health(sign_url: str) -> bool:
     """Return True if the registry is reachable."""
     requests = _get_requests()
     try:
-        resp = requests.get(f"{sign_url}/health", timeout=_TIMEOUT)
+        resp = requests.get(f"{sign_url}/health", timeout=_TIMEOUT, verify=True)
         return resp.status_code < 500
     except Exception:
         return False
