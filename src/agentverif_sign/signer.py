@@ -121,10 +121,10 @@ def sign_zip(
     max_activations: int | None = None,
     buyer_id: str | None = None,
 ) -> SignatureRecord:
+    """Build and return a SignatureRecord (does NOT inject into zip)."""
     # CLI flags: --license single_use (default)
     #            --license multi_use --max-activations N
     #            --license enterprise_custom
-    """Build and return a SignatureRecord (does NOT inject into zip)."""
     from agentverif_sign.scanner import list_zip_files
 
     file_list = list_zip_files(zip_path)

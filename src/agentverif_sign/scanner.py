@@ -4,10 +4,6 @@ from __future__ import annotations
 
 import logging
 import zipfile
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    pass
 
 from agentverif_sign.models import ScanResult
 

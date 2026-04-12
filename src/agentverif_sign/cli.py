@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import sys
+from dataclasses import replace
 
 import click
 
@@ -75,8 +76,6 @@ def sign_cmd(zip_path: str, tier: str, api_key: str | None, offline: bool) -> No
         try:
             registered_id = registry_client.register(record, cfg.sign_url, api_key=cfg.api_key)
             # Update license_id if registry assigned one
-            from dataclasses import replace
-
             record = replace(record, license_id=registered_id)
         except Exception as exc:
             logger.warning("Registry unavailable, proceeding locally: %s", exc)
@@ -94,7 +93,7 @@ def sign_cmd(zip_path: str, tier: str, api_key: str | None, offline: bool) -> No
     click.echo(f"Tier:    {record.tier}")
     click.echo(f"Hash:    {record.zip_hash}")
     click.echo(f"\nEmbed badge:\n{badge}")
-    click.echo(f"\nVerify at: https://verify.agentverif.com/{record.license_id}")
+    click.echo(f"\nVerify at: https://verify.agentverif.com/?id={record.license_id}")
 
 
 # ---------------------------------------------------------------------------

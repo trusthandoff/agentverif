@@ -30,20 +30,20 @@ def render_badge(
 
 
 def _indie_badge(fmt: str) -> str:
-    text = "Signed by agentcop"
+    text = "Signed by agentverif"
     icon = "\u2705"  # ✅
     if fmt == "text":
         return f"{icon} {text}"
     if fmt == "html":
         return (
-            f'<span class="agentcop-badge agentcop-indie">'
+            f'<span class="agentverif-badge agentverif-indie">'
             f"{html.escape(icon)} {html.escape(text)}"
             f"</span>"
         )
     if fmt == "markdown":
         return f"![{text}](https://img.shields.io/badge/agentverif-signed-green)"
     if fmt == "svg":
-        return _svg_badge("agentcop", "signed", "4c1")
+        return _svg_badge("agentverif", "signed", "4c1")
     raise ValueError(f"Unknown format: {fmt}")
 
 
@@ -54,7 +54,7 @@ def _indie_badge(fmt: str) -> str:
 
 def _pro_badge(license_id: str | None, fmt: str) -> str:
     icon = "\u2705"
-    label = "agentcop VERIFIED"
+    label = "agentverif VERIFIED"
     detail = f"License: {license_id}" if license_id else ""
     if fmt == "text":
         lines = [f"{icon} {label}"]
@@ -63,19 +63,19 @@ def _pro_badge(license_id: str | None, fmt: str) -> str:
         return "\n".join(lines)
     if fmt == "html":
         detail_html = (
-            f'<br><small class="agentcop-license">{html.escape(detail)}</small>' if detail else ""
+            f'<br><small class="agentverif-license">{html.escape(detail)}</small>' if detail else ""
         )
         return (
-            f'<span class="agentcop-badge agentcop-pro">'
+            f'<span class="agentverif-badge agentverif-pro">'
             f"{html.escape(icon)} {html.escape(label)}"
             f"{detail_html}"
             f"</span>"
         )
     if fmt == "markdown":
         alt = f"{label} {detail}".strip()
-        return f"![{alt}](https://img.shields.io/badge/agentcop-VERIFIED-blue)"
+        return f"![{alt}](https://img.shields.io/badge/agentverif-VERIFIED-blue)"
     if fmt == "svg":
-        return _svg_badge("agentcop", "VERIFIED", "007ec6")
+        return _svg_badge("agentverif", "VERIFIED", "007ec6")
     raise ValueError(f"Unknown format: {fmt}")
 
 
@@ -86,7 +86,7 @@ def _pro_badge(license_id: str | None, fmt: str) -> str:
 
 def _enterprise_badge(license_id: str | None, expires_at: str | None, fmt: str) -> str:
     icon = "\U0001f510"  # 🔐
-    label = "agentcop ENTERPRISE CERTIFIED"
+    label = "agentverif ENTERPRISE CERTIFIED"
     parts = [f"{icon} {label}"]
     if license_id:
         parts.append(f"License: {license_id}")
@@ -101,12 +101,12 @@ def _enterprise_badge(license_id: str | None, expires_at: str | None, fmt: str) 
         return "\n".join(parts)
     if fmt == "html":
         inner = "<br>".join(html.escape(p) for p in parts)
-        return f'<span class="agentcop-badge agentcop-enterprise">{inner}</span>'
+        return f'<span class="agentverif-badge agentverif-enterprise">{inner}</span>'
     if fmt == "markdown":
         alt = " | ".join(parts)
-        return f"![{alt}](https://img.shields.io/badge/agentcop-ENTERPRISE-gold)"
+        return f"![{alt}](https://img.shields.io/badge/agentverif-ENTERPRISE-gold)"
     if fmt == "svg":
-        return _svg_badge("agentcop", "ENTERPRISE", "e4a000")
+        return _svg_badge("agentverif", "ENTERPRISE", "e4a000")
     raise ValueError(f"Unknown format: {fmt}")
 
 

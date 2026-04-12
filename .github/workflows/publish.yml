@@ -69,9 +69,11 @@ jobs:
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_NOTES: ${{ steps.changelog.outputs.CHANGELOG }}
         run: |
+          printf '%s\n' "$RELEASE_NOTES" > /tmp/release-notes.md
           gh release create "${{ github.ref_name }}" \
             dist/* \
             --title "${{ github.ref_name }}" \
-            --notes "${{ steps.changelog.outputs.CHANGELOG }}" \
+            --notes-file /tmp/release-notes.md \
             --clobber

@@ -45,7 +45,7 @@ def verify_zip(
             license_id=None,
             tier=None,
             badge=None,
-            message="No agentcop signature found",
+            message="No agentverif signature found",
             offline=offline,
             verify_url=None,
         )
@@ -60,10 +60,10 @@ def verify_zip(
             badge=None,
             message="Package was changed after signing",
             offline=offline,
-            verify_url=f"https://verify.agentverif.com/{record.license_id}",
+            verify_url=f"https://verify.agentverif.com/?id={record.license_id}",
         )
 
-    verify_url = f"https://verify.agentverif.com/{record.license_id}"
+    verify_url = f"https://verify.agentverif.com/?id={record.license_id}"
 
     # Step 4 — registry check (optional)
     if not offline:

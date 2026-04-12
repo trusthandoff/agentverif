@@ -13,20 +13,20 @@ from agentverif_sign.badges import render_badge
 
 def test_indie_text():
     b = render_badge("indie", fmt="text")
-    assert "Signed by agentcop" in b
+    assert "Signed by agentverif" in b
     assert "\u2705" in b
 
 
 def test_indie_html():
     b = render_badge("indie", fmt="html")
-    assert "agentcop-indie" in b
+    assert "agentverif-indie" in b
     assert "<span" in b
 
 
 def test_indie_markdown():
     b = render_badge("indie", fmt="markdown")
     assert "![" in b
-    assert "agentcop" in b.lower()
+    assert "agentverif" in b.lower()
 
 
 def test_indie_svg():
@@ -53,7 +53,7 @@ def test_pro_text_with_license():
 
 def test_pro_html():
     b = render_badge("pro", license_id="AC-1234-ABCD", fmt="html")
-    assert "agentcop-pro" in b
+    assert "agentverif-pro" in b
     assert "AC-1234-ABCD" in b
 
 
@@ -93,7 +93,7 @@ def test_enterprise_html():
     b = render_badge(
         "enterprise", license_id="AC-ENT-X", expires_at="2027-01-01T00:00:00Z", fmt="html"
     )
-    assert "agentcop-enterprise" in b
+    assert "agentverif-enterprise" in b
     assert "AC-ENT-X" in b
 
 
@@ -116,7 +116,7 @@ def test_enterprise_svg():
 
 def test_none_tier_defaults_to_indie():
     b = render_badge(None, fmt="text")
-    assert "Signed by agentcop" in b
+    assert "Signed by agentverif" in b
 
 
 def test_invalid_format_raises():

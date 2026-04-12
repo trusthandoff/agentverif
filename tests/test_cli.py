@@ -163,7 +163,7 @@ def test_revoke_failure_exits_1(runner):
 def test_badge_text(runner):
     result = runner.invoke(main, ["badge", "AC-1234-ABCD"])
     assert result.exit_code == 0
-    assert "agentcop" in result.output.lower()
+    assert "agentverif" in result.output.lower()
 
 
 def test_badge_html(runner):

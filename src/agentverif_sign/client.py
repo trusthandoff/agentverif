@@ -7,7 +7,7 @@ import time
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from agentverif_sign.models import SignatureRecord, VerifyResult
+    from agentverif_sign.models import SignatureRecord
 
 from agentverif_sign.models import VerifyResult
 

@@ -16,7 +16,7 @@ import os
 import sqlite3
 from datetime import UTC, datetime
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
@@ -118,7 +118,6 @@ class RegisterRequest(BaseModel):
 
 class RevokeRequest(BaseModel):
     license_id: str
-    api_key: str
     reason: str | None = None
 
 
@@ -294,12 +293,19 @@ def verify_post(body: VerifyBody) -> dict:
 
 
 @app.post("/revoke", tags=["registry"])
-def revoke(req: RevokeRequest) -> dict:
+def revoke(
+    req: RevokeRequest,
+    authorization: str | None = Header(None),
+) -> dict:
     """Revoke a license certificate."""
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="API key required")
+    api_key = authorization.removeprefix("Bearer ").strip()
+    if not api_key:
+        raise HTTPException(status_code=401, detail="API key required")
     # NOTE: In production, validate api_key against a stored hash.
     # For v0.1 we accept any non-empty key; harden before public launch.
-    if not req.api_key:
-        raise HTTPException(status_code=401, detail="API key required")
+    _ = api_key
 
     with _get_conn() as conn:
         row = conn.execute(
