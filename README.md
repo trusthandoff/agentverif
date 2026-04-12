@@ -1,6 +1,6 @@
 <div align="center">
 
-<a href="https://agentverif.com"><img src="https://agentverif.com/logo.png" alt="AgentVerif" width="200" /></a>
+<a href="https://agentverif.com"><img src="https://img.shields.io/badge/AgentVerif-agentverif.com-7B2FFF?style=for-the-badge&logoColor=white" alt="AgentVerif" /></a>
 
 <h1>AgentVerif</h1>
 
