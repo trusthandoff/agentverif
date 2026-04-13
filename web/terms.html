@@ -7,10 +7,10 @@
   <link rel="apple-touch-icon" href="/favicon.svg">
   <meta name="theme-color" content="#16a34a">
 
-  <title>Privacy Policy — agentverif</title>
-  <meta name="description" content="agentverif privacy policy. We collect only license IDs submitted for verification. No user accounts, no conversation data, no cookies.">
+  <title>Terms of Service — agentverif</title>
+  <meta name="description" content="agentverif terms of service. Covers acceptable use, plans, liability, revocation, and governing law for the agentverif certification platform.">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://agentverif.com/privacy">
+  <link rel="canonical" href="https://agentverif.com/terms">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -160,45 +160,6 @@
       border-radius: var(--radius-sm);
     }
 
-    .privacy-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 16px 0 24px;
-      font-size: 0.875rem;
-    }
-    .privacy-table th {
-      text-align: left;
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      border-bottom: 2px solid var(--border);
-      padding: 8px 12px 10px;
-    }
-    .privacy-table td {
-      padding: 12px;
-      border-bottom: 1px solid var(--border);
-      color: var(--text-muted);
-      line-height: 1.6;
-      vertical-align: top;
-    }
-    .privacy-table tr:last-child td { border-bottom: none; }
-    .privacy-table td:first-child { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--primary-dark); }
-
-    .privacy-note {
-      background: var(--accent);
-      border: 1px solid var(--accent-mid);
-      border-radius: var(--radius-md);
-      padding: 18px 20px;
-      margin: 24px 0;
-    }
-    .privacy-note p {
-      margin: 0;
-      color: var(--primary-dark);
-      font-weight: 600;
-    }
-
     hr.privacy-rule {
       border: none;
       border-top: 1px solid var(--border);
@@ -234,7 +195,7 @@
 
     <section class="privacy-hero">
       <div class="container">
-        <h1>Privacy Policy</h1>
+        <h1>Terms of Service</h1>
         <p class="updated">Last updated: April 13, 2026</p>
       </div>
     </section>
@@ -243,144 +204,96 @@
       <div class="container">
         <div class="privacy-content">
 
-          <h2>Overview</h2>
+          <h2>1. Acceptance</h2>
           <p>
-            agentverif is a read-only agent verification service. When you or an AI assistant
-            submits a license ID, we look it up in our public registry and return the result.
-            We do not create accounts, track users, or store any data about the people who
-            use this service.
-          </p>
-          <p>
-            This policy covers agentverif.com, verify.agentverif.com, api.agentverif.com,
-            and mcp.agentverif.com.
+            By accessing agentverif.com or using the agentverif MCP plugin, you agree to these terms.
           </p>
 
           <hr class="privacy-rule">
 
-          <h2>Data we collect</h2>
-
-          <table class="privacy-table" aria-label="Data collection summary">
-            <thead>
-              <tr>
-                <th>Data</th>
-                <th>Purpose</th>
-                <th>Retention</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>license_id</code> submitted for verification</td>
-                <td>Registry lookup — returned immediately, not stored per-user</td>
-                <td>Up to 30 days in server access logs, then auto-deleted</td>
-              </tr>
-              <tr>
-                <td>Anonymous request logs (IP address, timestamp, endpoint)</td>
-                <td>Rate limiting and abuse prevention</td>
-                <td>30 days maximum, then auto-deleted</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div class="privacy-note">
-            <p>License verification results are never stored per-user. We return the registry
-            record to you and immediately discard the transaction.</p>
-          </div>
+          <h2>2. Service</h2>
+          <p>
+            agentverif provides AI agent package certification, verification, and registry services.
+            We issue cryptographic certificates for agent packages submitted by vendors.
+          </p>
 
           <hr class="privacy-rule">
 
-          <h2>Data we do not collect</h2>
+          <h2>3. Free Tier</h2>
+          <p>
+            The Indie plan includes 3 signs per month with local hash verification only.
+            No public registry entry.
+          </p>
+
+          <hr class="privacy-rule">
+
+          <h2>4. Paid Plans</h2>
+          <p>
+            Pro ($9/mo) and Enterprise ($79/mo) plans include public registry, activation tracking,
+            and revocation. Billing is monthly. Cancel anytime.
+          </p>
+
+          <hr class="privacy-rule">
+
+          <h2>5. Acceptable Use</h2>
+          <p>You must not:</p>
           <ul>
-            <li>No conversation history from Claude, ChatGPT, or any LLM</li>
-            <li>No user identity, name, email, or authentication data</li>
-            <li>No cookies or browser fingerprinting</li>
-            <li>No third-party analytics (no Google Analytics, Mixpanel, etc.)</li>
-            <li>No advertising identifiers</li>
-            <li>No payment information</li>
-            <li>No agent ZIP file contents — only the license ID you explicitly provide</li>
+            <li>Submit malicious, harmful, or deceptive agents</li>
+            <li>Attempt to forge, tamper with, or spoof certificates</li>
+            <li>Abuse the API, MCP endpoint, or verification service</li>
+            <li>Resell or redistribute certificates without permission</li>
           </ul>
+          <p>Violation may result in immediate license revocation.</p>
 
           <hr class="privacy-rule">
 
-          <h2>MCP plugin — Claude integration</h2>
+          <h2>6. Disclaimer</h2>
           <p>
-            When agentverif is used as an MCP server connected to Claude or another AI
-            assistant, the following applies:
-          </p>
-          <ul>
-            <li>Only the <code>license_id</code> parameter is transmitted to agentverif servers — nothing else from your conversation</li>
-            <li>No conversation context, messages, or history is ever sent to or stored by agentverif</li>
-            <li>Anthropic does not share user data with agentverif</li>
-            <li>The MCP server endpoint is stateless — no session data is retained between requests</li>
-          </ul>
-          <p>
-            The MCP server returns only what is already in the public registry. There is no
-            mechanism for agentverif to read, store, or influence your AI conversation.
+            agentverif certifies package integrity and origin — we verify that a package has not
+            been tampered with since signing. We do not guarantee agent behavior, fitness for
+            purpose, or safety of execution. Use certified agents at your own risk.
           </p>
 
           <hr class="privacy-rule">
 
-          <h2>Data retention</h2>
-          <ul>
-            <li>Server access logs: 30 days maximum, then permanently deleted</li>
-            <li>License verification results: not stored per-user — returned and discarded immediately</li>
-            <li>License registry records: stored until revoked or expired by the issuer</li>
-          </ul>
-
-          <hr class="privacy-rule">
-
-          <h2>Data sharing</h2>
+          <h2>7. Limitation of Liability</h2>
           <p>
-            We do not sell, rent, or share personal data with third parties. License IDs
-            submitted for verification are forwarded to an internal registry API on the same
-            server. No external third-party services receive verification requests.
+            agentverif is not liable for any damages arising from the use or inability to use
+            certified or uncertified agents. Our liability is limited to the amount paid in the
+            30 days preceding the claim.
           </p>
 
           <hr class="privacy-rule">
 
-          <h2>Cookies and tracking</h2>
+          <h2>8. Revocation</h2>
           <p>
-            agentverif sets no cookies and uses no tracking technologies. There are no
-            analytics scripts, advertising pixels, or session identifiers on any agentverif
-            page.
+            agentverif reserves the right to revoke any license at any time for violation of
+            these terms, abuse, or fraudulent submission.
           </p>
 
           <hr class="privacy-rule">
 
-          <h2>Security</h2>
+          <h2>9. Changes</h2>
           <p>
-            All traffic between users and agentverif is encrypted via HTTPS (TLS 1.2+).
-            Internal API calls are made over localhost only and never leave the server.
+            We may update these terms at any time. Continued use constitutes acceptance.
           </p>
 
           <hr class="privacy-rule">
 
-          <h2>Your rights</h2>
+          <h2>10. Governing Law</h2>
           <p>
-            Because agentverif does not collect personally identifiable information, standard
-            data subject requests (access, correction, deletion) are generally not applicable.
-            If you have concerns about data processed in connection with your use of this
-            service, contact us at the address below.
+            These terms are governed by French law. Disputes are subject to the jurisdiction
+            of French courts.
           </p>
 
           <hr class="privacy-rule">
 
-          <h2>Changes to this policy</h2>
+          <h2>11. Contact</h2>
           <p>
-            We may update this policy when our practices change. Material changes will be
-            announced at agentverif.com. The "Last updated" date at the top of this page
-            reflects the most recent revision.
-          </p>
-
-          <hr class="privacy-rule">
-
-          <h2>Contact</h2>
-          <p>
-            Questions or concerns? Reach us at
-            <a href="mailto:hi@agentverif.com">hi@agentverif.com</a>.
+            <a href="mailto:hi@agentverif.com">hi@agentverif.com</a>
           </p>
           <p>
-            Source code:
-            <a href="https://github.com/trusthandoff/agentverif" rel="noopener">github.com/trusthandoff/agentverif</a>
+            <a href="https://agentverif.com">agentverif.com</a>
           </p>
 
         </div>
@@ -418,6 +331,7 @@
             <li><a href="https://agentverif.com/about">About</a></li>
             <li><a href="mailto:support@agentverif.com">Contact</a></li>
             <li><a href="/privacy">Privacy</a></li>
+            <li><a href="/terms">Terms</a></li>
           </ul>
         </div>
 
