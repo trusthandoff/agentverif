@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Privacy Policy — agentverif</title>
+  <meta name="description" content="agentverif privacy policy. We collect only license IDs submitted for verification. No user accounts, no conversation data, no cookies.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://agentverif.com/privacy">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="/assets/style.css">
+
+  <style>
+    /* ── Footer overrides (match index.html) ── */
+    .site-footer {
+      background: #0d1117 !important;
+      border-top: 1px solid #1e2433 !important;
+      padding: 56px 0 0 !important;
+      text-align: left !important;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 48px;
+      padding-bottom: 48px;
+    }
+    .footer-col-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #4b5563;
+      margin-bottom: 16px;
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 10px; }
+    .footer-col ul li a {
+      font-size: 0.9375rem;
+      color: #6b7280 !important;
+      transition: color 0.15s;
+      text-decoration: none !important;
+    }
+    .footer-col ul li a:hover {
+      color: #d1d5db !important;
+      opacity: 1 !important;
+      text-decoration: none !important;
+    }
+    .footer-bottom {
+      border-top: 1px solid #1e2433;
+      padding: 20px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-bottom p {
+      font-size: 0.8125rem !important;
+      color: #4b5563 !important;
+      line-height: 1.5 !important;
+    }
+    .footer-bottom a {
+      color: #6b7280 !important;
+      text-decoration: none !important;
+    }
+    .footer-bottom a:hover {
+      color: #9ca3af !important;
+      opacity: 1 !important;
+      text-decoration: none !important;
+    }
+    @media (max-width: 768px) {
+      .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; }
+    }
+
+    /* ── Privacy page layout ── */
+    .privacy-hero {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 56px 0 48px;
+    }
+    .privacy-hero h1 {
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .privacy-hero .updated {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .privacy-body {
+      padding: 56px 0 80px;
+    }
+    .privacy-content {
+      max-width: 720px;
+    }
+
+    .privacy-content h2 {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 40px 0 14px;
+      padding-top: 8px;
+    }
+    .privacy-content h2:first-child { margin-top: 0; }
+
+    .privacy-content p {
+      font-size: 0.9375rem;
+      color: var(--text-muted);
+      line-height: 1.75;
+      margin-bottom: 14px;
+      font-weight: 500;
+    }
+
+    .privacy-content ul {
+      list-style: none;
+      margin: 0 0 14px;
+      padding: 0;
+    }
+    .privacy-content ul li {
+      font-size: 0.9375rem;
+      color: var(--text-muted);
+      line-height: 1.75;
+      font-weight: 500;
+      padding-left: 18px;
+      position: relative;
+      margin-bottom: 6px;
+    }
+    .privacy-content ul li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .privacy-content a {
+      color: var(--primary);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .privacy-content a:hover { opacity: 0.8; }
+
+    .privacy-content code {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      background: var(--accent);
+      color: var(--primary-dark);
+      padding: 1px 6px;
+      border-radius: var(--radius-sm);
+    }
+
+    .privacy-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      font-size: 0.875rem;
+    }
+    .privacy-table th {
+      text-align: left;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border-bottom: 2px solid var(--border);
+      padding: 8px 12px 10px;
+    }
+    .privacy-table td {
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-muted);
+      line-height: 1.6;
+      vertical-align: top;
+    }
+    .privacy-table tr:last-child td { border-bottom: none; }
+    .privacy-table td:first-child { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--primary-dark); }
+
+    .privacy-note {
+      background: var(--accent);
+      border: 1px solid var(--accent-mid);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      margin: 24px 0;
+    }
+    .privacy-note p {
+      margin: 0;
+      color: var(--primary-dark);
+      font-weight: 600;
+    }
+
+    hr.privacy-rule {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 40px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <a href="/" class="logo" aria-label="agentverif home" style="padding-bottom:4px;overflow:visible;">
+        <svg width="32" height="37" viewBox="0 0 32 37" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="overflow:visible;">
+          <path d="M16 1L2 6.5v13C2 28.1 8.3 35.4 16 38c7.7-2.6 14-9.9 14-18.5v-13L16 1z" fill="#16a34a"/>
+          <path d="M10 19l4.5 4.5 8-8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="logo-wordmark">agentverif</span>
+      </a>
+      <nav class="site-nav" id="site-nav" role="navigation" aria-label="Main navigation">
+        <a href="/#how-it-works">How it works</a>
+        <a href="/#pricing">Pricing</a>
+        <a href="https://verify.agentverif.com" class="nav-cta">Verify</a>
+        <a href="/docs/">Docs</a>
+      </nav>
+      <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="site-nav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main-content">
+
+    <section class="privacy-hero">
+      <div class="container">
+        <h1>Privacy Policy</h1>
+        <p class="updated">Last updated: April 13, 2026</p>
+      </div>
+    </section>
+
+    <section class="privacy-body">
+      <div class="container">
+        <div class="privacy-content">
+
+          <h2>Overview</h2>
+          <p>
+            agentverif is a read-only agent verification service. When you or an AI assistant
+            submits a license ID, we look it up in our public registry and return the result.
+            We do not create accounts, track users, or store any data about the people who
+            use this service.
+          </p>
+          <p>
+            This policy covers agentverif.com, verify.agentverif.com, api.agentverif.com,
+            and mcp.agentverif.com.
+          </p>
+
+          <hr class="privacy-rule">
+
+          <h2>Data we collect</h2>
+
+          <table class="privacy-table" aria-label="Data collection summary">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Purpose</th>
+                <th>Retention</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>license_id</code> submitted for verification</td>
+                <td>Registry lookup — returned immediately, not stored per-user</td>
+                <td>Up to 30 days in server access logs, then auto-deleted</td>
+              </tr>
+              <tr>
+                <td>Anonymous request logs (IP address, timestamp, endpoint)</td>
+                <td>Rate limiting and abuse prevention</td>
+                <td>30 days maximum, then auto-deleted</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="privacy-note">
+            <p>License verification results are never stored per-user. We return the registry
+            record to you and immediately discard the transaction.</p>
+          </div>
+
+          <hr class="privacy-rule">
+
+          <h2>Data we do not collect</h2>
+          <ul>
+            <li>No conversation history from Claude, ChatGPT, or any LLM</li>
+            <li>No user identity, name, email, or authentication data</li>
+            <li>No cookies or browser fingerprinting</li>
+            <li>No third-party analytics (no Google Analytics, Mixpanel, etc.)</li>
+            <li>No advertising identifiers</li>
+            <li>No payment information</li>
+            <li>No agent ZIP file contents — only the license ID you explicitly provide</li>
+          </ul>
+
+          <hr class="privacy-rule">
+
+          <h2>MCP plugin — Claude integration</h2>
+          <p>
+            When agentverif is used as an MCP server connected to Claude or another AI
+            assistant, the following applies:
+          </p>
+          <ul>
+            <li>Only the <code>license_id</code> parameter is transmitted to agentverif servers — nothing else from your conversation</li>
+            <li>No conversation context, messages, or history is ever sent to or stored by agentverif</li>
+            <li>Anthropic does not share user data with agentverif</li>
+            <li>The MCP server endpoint is stateless — no session data is retained between requests</li>
+          </ul>
+          <p>
+            The MCP server returns only what is already in the public registry. There is no
+            mechanism for agentverif to read, store, or influence your AI conversation.
+          </p>
+
+          <hr class="privacy-rule">
+
+          <h2>Data retention</h2>
+          <ul>
+            <li>Server access logs: 30 days maximum, then permanently deleted</li>
+            <li>License verification results: not stored per-user — returned and discarded immediately</li>
+            <li>License registry records: stored until revoked or expired by the issuer</li>
+          </ul>
+
+          <hr class="privacy-rule">
+
+          <h2>Data sharing</h2>
+          <p>
+            We do not sell, rent, or share personal data with third parties. License IDs
+            submitted for verification are forwarded to an internal registry API on the same
+            server. No external third-party services receive verification requests.
+          </p>
+
+          <hr class="privacy-rule">
+
+          <h2>Cookies and tracking</h2>
+          <p>
+            agentverif sets no cookies and uses no tracking technologies. There are no
+            analytics scripts, advertising pixels, or session identifiers on any agentverif
+            page.
+          </p>
+
+          <hr class="privacy-rule">
+
+          <h2>Security</h2>
+          <p>
+            All traffic between users and agentverif is encrypted via HTTPS (TLS 1.2+).
+            Internal API calls are made over localhost only and never leave the server.
+          </p>
+
+          <hr class="privacy-rule">
+
+          <h2>Your rights</h2>
+          <p>
+            Because agentverif does not collect personally identifiable information, standard
+            data subject requests (access, correction, deletion) are generally not applicable.
+            If you have concerns about data processed in connection with your use of this
+            service, contact us at the address below.
+          </p>
+
+          <hr class="privacy-rule">
+
+          <h2>Changes to this policy</h2>
+          <p>
+            We may update this policy when our practices change. Material changes will be
+            announced at agentverif.com. The "Last updated" date at the top of this page
+            reflects the most recent revision.
+          </p>
+
+          <hr class="privacy-rule">
+
+          <h2>Contact</h2>
+          <p>
+            Questions or concerns? Reach us at
+            <a href="mailto:hi@agentverif.com">hi@agentverif.com</a>.
+          </p>
+          <p>
+            Source code:
+            <a href="https://github.com/trusthandoff/agentverif" rel="noopener">github.com/trusthandoff/agentverif</a>
+          </p>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+
+        <div class="footer-col">
+          <p class="footer-col-title">Product</p>
+          <ul>
+            <li><a href="/#how-it-works">How it works</a></li>
+            <li><a href="/#pricing">Pricing</a></li>
+            <li><a href="https://verify.agentverif.com">Verify</a></li>
+            <li><a href="/docs/">Docs</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <p class="footer-col-title">Resources</p>
+          <ul>
+            <li><a href="https://agentcop.live" rel="noopener">agentcop.live</a></li>
+            <li><a href="https://github.com/trusthandoff/agentverif" rel="noopener">GitHub</a></li>
+            <li><a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/" rel="noopener">OWASP LLM Top 10</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <p class="footer-col-title">Company</p>
+          <ul>
+            <li><a href="https://agentverif.com/about">About</a></li>
+            <li><a href="mailto:support@agentverif.com">Contact</a></li>
+            <li><a href="/privacy">Privacy</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 agentverif.com &mdash; Powered by <a href="https://agentcop.live" rel="noopener">agentcop</a></p>
+        <p>
+          <a href="https://verify.agentverif.com">Verify</a>
+          &nbsp;&middot;&nbsp;
+          <a href="/docs/">Docs</a>
+          &nbsp;&middot;&nbsp;
+          <a href="mailto:support@agentverif.com">Support</a>
+          &nbsp;&middot;&nbsp;
+          <a href="/privacy">Privacy</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    var toggle = document.getElementById('menu-toggle');
+    var nav = document.getElementById('site-nav');
+    if (toggle && nav) {
+      toggle.addEventListener('click', function () {
+        var open = nav.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', open);
+      });
+    }
+  </script>
+
+</body>
+</html>

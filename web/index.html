@@ -33,6 +33,12 @@
   <!-- Shared stylesheet -->
   <link rel="stylesheet" href="/assets/style.css">
 
+  <!-- EmailJS — for waitlist + referral notifications -->
+  <!-- EMAILJS_PUBLIC_KEY: emailjs.com → Account → Public Key -->
+  <!-- EMAILJS_SERVICE_ID: emailjs.com → Email Services → Service ID -->
+  <!-- EMAILJS_TEMPLATE_ID: create template with vars: type, email, referral_from, ref_code, timestamp -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
   <!-- Page-specific styles -->
   <style>
     /* ---- Global text weight ---- */
@@ -538,6 +544,71 @@
       .footer-bottom { flex-direction: column; align-items: flex-start; }
     }
 
+    /* ---- Pro waitlist modal ---- */
+    #pro-waitlist-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.78);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    #pro-waitlist-modal .modal-inner {
+      background: #0d1117;
+      border: 1px solid #1e2433;
+      border-radius: 12px;
+      padding: 40px 36px;
+      max-width: 440px;
+      width: 90%;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.55);
+    }
+    #waitlist-email-input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 1px solid #1e2433;
+      background: #161b27;
+      color: #f9fafb;
+      font-size: 0.9375rem;
+      margin-bottom: 12px;
+      outline: none;
+      font-family: inherit;
+    }
+    #waitlist-email-input:focus { border-color: #16a34a; }
+    /* ---- Referral section ---- */
+    .referral-section { background: var(--surface); }
+    .referral-card {
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 36px 32px;
+      max-width: 560px;
+      margin: 36px auto 0;
+      box-shadow: var(--shadow-sm);
+    }
+    .referral-email-input, .referral-link-input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 11px 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.9375rem;
+      font-family: inherit;
+      outline: none;
+    }
+    .referral-email-input:focus, .referral-link-input:focus { border-color: var(--primary); }
+    .referral-link-input { font-family: var(--font-mono); font-size: 0.84rem; }
+    .referral-link-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .referral-link-row .referral-link-input { flex: 1; min-width: 0; }
     /* ---- Kill ghost space after footer (all viewports) ---- */
     html, body { margin: 0; padding: 0; }
     .site-footer { margin-bottom: 0 !important; padding-bottom: 0 !important; }
@@ -749,7 +820,7 @@
         </div>
         <div class="hero-stats" role="list" aria-label="Platform statistics">
           <div class="hero-stat" role="listitem">
-            <div class="hero-stat-number">117</div>
+            <div class="hero-stat-number"><span id="cert-counter">117</span></div>
             <div class="hero-stat-label">agents certified</div>
           </div>
           <div class="hero-stat" role="listitem">
@@ -1078,7 +1149,7 @@
             </ul>
             <div class="pricing-badge-label">Badge</div>
             <div class="pricing-badge-example" aria-label="Example badge for Pro tier">&#x2705; agentverif VERIFIED | AV-XXXX</div>
-            <a href="https://buy.stripe.com/pro_agentverif" class="btn btn-primary btn-full" style="margin-top:24px;" rel="noopener">Get verified &mdash; $9/mo</a>
+            <button type="button" onclick="openWaitlistModal()" class="btn btn-primary btn-full" style="margin-top:24px;background:#f59e0b;border-color:#d97706;color:#111;cursor:pointer;">🔒 Closed — Join the waitlist →</button>
           </article>
 
           <!-- Enterprise -->
@@ -1106,6 +1177,30 @@
             <a href="mailto:enterprise@agentverif.com?subject=Enterprise%20plan" class="btn btn-secondary btn-full" style="margin-top:24px;">Contact us</a>
           </article>
 
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         REFERRAL
+         ====================================================== -->
+    <section class="section referral-section" aria-labelledby="referral-heading">
+      <div class="container">
+        <header class="section-header centered">
+          <h2 class="section-title" id="referral-heading">Refer 3 devs. Get 1 free per-use license.</h2>
+          <p class="section-subtitle">Your link is unique. 3 signups through it = 1 free per-use license sent to you automatically.</p>
+        </header>
+        <div class="referral-card">
+          <label for="referral-email" style="display:block;font-size:0.875rem;font-weight:600;color:var(--text);margin-bottom:8px;">Enter your email to generate your link</label>
+          <input type="email" id="referral-email" class="referral-email-input" placeholder="your@email.com" autocomplete="email" />
+          <div style="margin-top:12px;">
+            <button type="button" id="referral-generate-btn" class="btn btn-primary">Generate my referral link &rarr;</button>
+          </div>
+          <div id="referral-link-row" class="referral-link-row" style="display:none;">
+            <input type="text" id="referral-link-display" class="referral-link-input" readonly aria-label="Your referral link" />
+            <button type="button" id="referral-copy-btn" class="btn btn-primary">Copy link</button>
+          </div>
+          <p style="font-size:0.8125rem;color:var(--text-muted);margin-top:12px;">We track by email. First to refer 3 gets the license.</p>
         </div>
       </div>
     </section>
@@ -1189,13 +1284,41 @@
           <a href="/docs/">Docs</a>
           &nbsp;&middot;&nbsp;
           <a href="mailto:support@agentverif.com">Support</a>
+          &nbsp;&middot;&nbsp;
+          <a href="/privacy">Privacy</a>
         </p>
       </div>
     </div>
   </footer>
 
-  <!-- Minimal JS: copy button + mobile nav -->
+  <!-- Pro waitlist modal -->
+  <div id="pro-waitlist-modal" role="dialog" aria-modal="true" aria-labelledby="waitlist-modal-title">
+    <div class="modal-inner">
+      <button id="waitlist-close-btn" aria-label="Close modal" style="position:absolute;top:14px;right:16px;background:none;border:none;color:#6b7280;font-size:1.5rem;cursor:pointer;line-height:1;padding:0;">&times;</button>
+      <h3 id="waitlist-modal-title" style="font-size:1.25rem;font-weight:800;color:#f9fafb;margin-bottom:10px;letter-spacing:-0.025em;">Pro slots are closed.</h3>
+      <p style="color:#9ca3af;font-size:0.9375rem;line-height:1.6;margin-bottom:24px;">We paused new signups to keep quality high. Drop your email — you'll be first when we reopen.</p>
+      <div id="waitlist-form">
+        <input type="email" id="waitlist-email-input" placeholder="you@example.com" autocomplete="email" />
+        <button type="button" id="waitlist-notify-btn" style="width:100%;padding:12px;background:#16a34a;color:#fff;font-weight:700;border:none;border-radius:8px;font-size:0.9375rem;cursor:pointer;font-family:inherit;">Notify me</button>
+      </div>
+      <div id="waitlist-success" style="display:none;color:#4ade80;font-weight:600;text-align:center;padding:12px 0;font-size:1rem;">You're in. First to know when Pro reopens. 🔒</div>
+    </div>
+  </div>
+
+  <!-- Minimal JS: copy button + mobile nav + counter + waitlist + referral -->
   <script>
+    // EmailJS init — replace placeholder values with real keys from emailjs.com
+    emailjs.init('16bCAh-LM8QW8aWWp');
+
+    // Referral tracking — tag any visitor who arrives via a ?ref= link
+    document.addEventListener('DOMContentLoaded', function() {
+      var params = new URLSearchParams(window.location.search);
+      var ref = params.get('ref');
+      if (ref) {
+        localStorage.setItem('agentverif_ref', ref);
+      }
+    });
+
     // Copy install command
     document.getElementById('copy-install').addEventListener('click', function() {
       var btn = this;
@@ -1217,6 +1340,109 @@
       var isOpen = nav.classList.toggle('open');
       toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
     });
+
+    // Animated counter — agents certified (persisted via localStorage, caps at 9999)
+    (function() {
+      var STORAGE_KEY = 'av_cert_count';
+      var BASE = 117;
+      var CAP = 9999;
+      var stored = parseInt(localStorage.getItem(STORAGE_KEY), 10);
+      var count = (!isNaN(stored) && stored >= BASE) ? Math.min(stored, CAP) : BASE;
+      var el = document.getElementById('cert-counter');
+      if (!el) return;
+      el.textContent = count;
+      function tick() {
+        if (count >= CAP) return;
+        count++;
+        localStorage.setItem(STORAGE_KEY, count);
+        el.textContent = count;
+        setTimeout(tick, 1000 + Math.floor(Math.random() * 400));
+      }
+      setTimeout(tick, 1200);
+    })();
+
+    // Pro waitlist modal — sends EmailJS notification on submit
+    (function() {
+      var modal = document.getElementById('pro-waitlist-modal');
+      var closeBtn = document.getElementById('waitlist-close-btn');
+      var notifyBtn = document.getElementById('waitlist-notify-btn');
+      var form = document.getElementById('waitlist-form');
+      var success = document.getElementById('waitlist-success');
+      function openModal() { modal.style.display = 'flex'; }
+      function closeModal() { modal.style.display = 'none'; }
+      window.openWaitlistModal = openModal;
+      closeBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', function(e) { if (e.target === modal) closeModal(); });
+      document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && modal.style.display === 'flex') closeModal(); });
+      notifyBtn.addEventListener('click', function() {
+        var email = document.getElementById('waitlist-email-input').value.trim();
+        if (!email || !email.includes('@')) {
+          document.getElementById('waitlist-email-input').focus();
+          return;
+        }
+        // Read referral attribution (null if direct visit)
+        var storedRef = localStorage.getItem('agentverif_ref') || 'direct';
+        // Notify via EmailJS — template vars: type, email, referral_from, timestamp
+        emailjs.send('service_4pknguq', 'template_2vo2wuc', {
+          type: 'waitlist_signup',
+          email: email,
+          referral_from: storedRef,
+          timestamp: new Date().toISOString()
+        });
+        form.style.display = 'none';
+        success.style.display = 'block';
+      });
+    })();
+
+    // Referral link generator — validates email, generates link on button click, sends EmailJS
+    (function() {
+      var emailInput = document.getElementById('referral-email');
+      var generateBtn = document.getElementById('referral-generate-btn');
+      var linkRow = document.getElementById('referral-link-row');
+      var linkDisplay = document.getElementById('referral-link-display');
+      var copyBtn = document.getElementById('referral-copy-btn');
+      if (!generateBtn) return;
+      function makeRefCode(email) {
+        try { return btoa(email).replace(/[^a-zA-Z0-9]/g, '').slice(0, 12); }
+        catch(e) { return ''; }
+      }
+      function isValidEmail(email) {
+        return email && email.includes('@') && email.includes('.');
+      }
+      generateBtn.addEventListener('click', function() {
+        var email = emailInput.value.trim();
+        if (!isValidEmail(email)) {
+          emailInput.focus();
+          emailInput.style.borderColor = '#ef4444';
+          setTimeout(function() { emailInput.style.borderColor = ''; }, 2000);
+          return;
+        }
+        var code = makeRefCode(email);
+        if (!code) return;
+        var url = 'https://agentverif.com?ref=' + code;
+        linkDisplay.value = url;
+        linkRow.style.display = 'flex';
+        // Notify via EmailJS — template vars: type, email, ref_code, referral_from, timestamp
+        emailjs.send('service_4pknguq', 'template_2vo2wuc', {
+          type: 'referral_generated',
+          email: email,
+          ref_code: code,
+          referral_from: 'direct',
+          timestamp: new Date().toISOString()
+        });
+      });
+      copyBtn.addEventListener('click', function() {
+        var url = linkDisplay.value;
+        if (!url) return;
+        navigator.clipboard.writeText(url).then(function() {
+          copyBtn.textContent = 'Copied! \u2713';
+          setTimeout(function() { copyBtn.textContent = 'Copy link'; }, 2000);
+        }).catch(function() {
+          copyBtn.textContent = 'Copy failed';
+          setTimeout(function() { copyBtn.textContent = 'Copy link'; }, 2000);
+        });
+      });
+    })();
   </script>
 
 </body>
