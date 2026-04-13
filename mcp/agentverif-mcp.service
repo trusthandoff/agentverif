@@ -1,0 +1,18 @@
+[Unit]
+Description=agentverif MCP Server
+After=network.target agentverif-api.service
+
+[Service]
+Type=simple
+WorkingDirectory=/root/agentverif/mcp
+ExecStart=/root/agentverif/.venv/bin/uvicorn server:app \
+  --host 0.0.0.0 --port 8092 --workers 1
+Restart=always
+RestartSec=10
+Environment=AGENTVERIF_API_URL=http://localhost:8090
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=agentverif-mcp
+
+[Install]
+WantedBy=multi-user.target
