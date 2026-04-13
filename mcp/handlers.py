@@ -16,7 +16,6 @@ from models import ApiVerifyResponse
 
 _API_BASE = os.getenv("AGENTVERIF_API_URL", "http://localhost:8090")
 _TIMEOUT = 5.0
-_LICENSE_RE = re.compile(r"^AV-[A-Z0-9]{4}-[A-Z0-9]{4}$")
 _SHA256_RE = re.compile(r"^sha256:[a-f0-9]{64}$")
 
 
@@ -139,13 +138,6 @@ async def handle_verify_agent(license_id: str) -> str:
     if _SHA256_RE.match(norm.lower()):
         # Hash-based lookup is not yet supported by the registry API.
         return _fmt_sha256_unsigned(norm.lower())
-
-    if not _LICENSE_RE.match(norm.upper()):
-        return (
-            "⚠️ Invalid identifier format.\n"
-            "License ID must be in format AV-XXXX-XXXX (e.g. AV-84F2-91AB)\n"
-            "or a full SHA256 hash prefixed with 'sha256:'."
-        )
 
     norm = _shorten_id(norm)
 

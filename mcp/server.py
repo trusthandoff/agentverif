@@ -71,7 +71,7 @@ async def verify_agent(
         str,
         Field(
             description=(
-                "The agentverif license ID (format: AV-XXXX-XXXX) "
+                "The agentverif license ID (format: AV-XXXX-XXXX or AC-XXXX-XXXX) "
                 "OR a SHA256 hash of the agent ZIP file"
             ),
             pattern=r"^(A[A-Z]-[A-Z0-9]{4}-[A-Z0-9]{4}|sha256:[a-f0-9]{64})$",
