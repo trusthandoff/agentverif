@@ -1,8 +1,14 @@
 """agentverif MCP Server — Streamable HTTP transport.
 
 Exposes a single MCP tool: verify_agent
-/mcp  — Streamable HTTP endpoint (NOT SSE)
+/     — primary MCP endpoint (Claude.ai posts here)
+/mcp  — alias kept for backward compatibility
 /health — liveness probe
+
+OAuth discovery stubs (required by Claude.ai for no-auth servers):
+/.well-known/oauth-protected-resource  → 200, authorization_servers=[]
+/.well-known/oauth-authorization-server → 404, no_auth_required
+/register → 404, no_auth_required
 
 Run with:
     uvicorn server:app --host 0.0.0.0 --port 8092 --workers 1
@@ -13,9 +19,9 @@ Architecture note:
     /mcp prefix and leaves the sub-app to route /, which it doesn't know —
     triggering a 307 redirect to /mcp/.
 
-    Fix: build a single top-level Starlette app that owns both /health and
-    /mcp as direct routes, and share the session_manager lifespan from the
-    FastMCP sub-app.  No Mount, no redirect.
+    Fix: build a single top-level Starlette app that owns /health, the OAuth
+    stubs, and the MCP endpoint at both / and /mcp as direct routes, sharing
+    the session_manager lifespan from the FastMCP sub-app.  No Mount, no redirect.
 """
 
 from __future__ import annotations
@@ -99,10 +105,29 @@ async def _health(request):
     return JSONResponse({"status": "ok", "service": "agentverif-mcp"})
 
 
+async def _oauth_protected_resource(request):
+    return JSONResponse(
+        {"resource": "https://mcp.agentverif.com", "authorization_servers": []},
+        status_code=200,
+    )
+
+
+async def _oauth_authorization_server(request):
+    return JSONResponse({"error": "no_auth_required"}, status_code=404)
+
+
+async def _register(request):
+    return JSONResponse({"error": "no_auth_required"}, status_code=404)
+
+
 app = Starlette(
     routes=[
         Route("/health", _health, methods=["GET"]),
+        Route("/.well-known/oauth-protected-resource", _oauth_protected_resource, methods=["GET"]),
+        Route("/.well-known/oauth-authorization-server", _oauth_authorization_server, methods=["GET"]),
+        Route("/register", _register, methods=["POST"]),
         Route("/mcp", _mcp_endpoint),
+        Route("/", _mcp_endpoint),
     ],
     middleware=[
         Middleware(TrustedHostMiddleware, allowed_hosts=["*"]),
