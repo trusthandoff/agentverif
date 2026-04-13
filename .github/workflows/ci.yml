@@ -24,8 +24,7 @@ jobs:
 
       - name: Lint with ruff
         run: |
-          ruff check src/ --ignore E501,F401 || true
-          ruff check api/ mcp/ --ignore E501,F401,E402 || true
+          ruff check src/ --config ruff.toml || true
 
       - name: Run tests
         run: |

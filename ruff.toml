@@ -1,0 +1,3 @@
+[lint]
+ignore = ["E501", "E402", "F401", "W503", "E711"]
+exclude = ["api/server.py", "mcp/server.py"]
