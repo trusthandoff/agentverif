@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>agentverif for Claude — MCP Plugin</title>
+  <meta name="description" content="Connect agentverif to Claude via MCP. Claude automatically verifies AI agents before execution — checking signatures, tamper-proof hashes, and registry status in real time.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://agentverif.com/mcp">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://agentverif.com/mcp">
+  <meta property="og:title" content="agentverif for Claude — MCP Plugin">
+  <meta property="og:description" content="Connect agentverif to Claude via MCP. Claude automatically verifies AI agents before execution.">
+  <meta property="og:site_name" content="agentverif">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="agentverif for Claude — MCP Plugin">
+  <meta name="twitter:description" content="Connect agentverif to Claude via MCP. Claude automatically verifies AI agents before execution.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="/assets/style.css">
+
+  <style>
+    /* ── Global ── */
+    body { line-height: 1.7; }
+    p, li, .section-subtitle, .hero-lead {
+      font-weight: 500;
+    }
+    strong { font-weight: 700; }
+
+    /* ── Section title accent ── */
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 32px;
+      height: 3px;
+      background: var(--primary);
+      border-radius: 2px;
+      margin-top: 10px;
+    }
+    .section-header.centered .section-title::after { margin: 10px auto 0; }
+
+    /* ── Hero ── */
+    @keyframes hero-gradient {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .hero {
+      padding: 96px 0 80px;
+      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 20%, #ffffff 55%, #f0fdf4 100%);
+      background-size: 400% 400%;
+      animation: hero-gradient 10s ease infinite;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero > .container { position: relative; z-index: 1; }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: #fff;
+      border: 1.5px solid var(--primary);
+      color: var(--primary);
+      padding: 5px 14px;
+      border-radius: 99px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 4px rgba(22,163,74,0.12);
+    }
+    .hero h1 {
+      font-size: clamp(2.25rem, 6vw, 3.75rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.08;
+      color: var(--text);
+      max-width: 760px;
+      margin: 0 auto 20px;
+    }
+    .hero h1 span { color: var(--primary); }
+    .hero-lead {
+      font-size: clamp(1.0625rem, 2vw, 1.1875rem);
+      color: var(--text-muted);
+      max-width: 540px;
+      margin: 0 auto 36px;
+      line-height: 1.65;
+    }
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .hero-endpoint {
+      margin-top: 40px;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* ── Step cards ── */
+    .step-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 32px 28px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      transition: all 0.15s ease;
+    }
+    .step-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .step-icon {
+      width: 56px;
+      height: 56px;
+      background: var(--accent);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      color: var(--primary);
+      flex-shrink: 0;
+      overflow: visible;
+    }
+    .step-icon svg { display: block; overflow: visible; width: 28px; height: 28px; }
+    .step-card h3 {
+      font-size: 1.0625rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    .step-card p {
+      font-size: 0.9375rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ── Setup section ── */
+    .setup-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    .setup-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 32px 28px;
+      box-shadow: var(--shadow-sm);
+    }
+    .setup-card h3 {
+      font-size: 1.0625rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+      color: var(--text);
+    }
+    .setup-steps {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 20px;
+    }
+    .setup-steps li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 0.9375rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .setup-steps li:last-child { border-bottom: none; }
+    .setup-step-num {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      background: var(--accent);
+      color: var(--primary);
+      border-radius: 50%;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+    }
+    .setup-url {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.84rem;
+      background: var(--accent);
+      color: var(--primary-dark);
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+    }
+    .setup-file-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      font-family: var(--font-mono);
+    }
+
+    /* ── CLI blocks ── */
+    .cli-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .cli-block {
+      background: #0d1117;
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      display: flex;
+      align-items: flex-start;
+      position: relative;
+    }
+    .cli-block code {
+      font-family: var(--font-mono);
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #e2e8f0;
+      white-space: pre-wrap;
+      display: block;
+      line-height: 1.8;
+      flex: 1;
+    }
+    .cli-cmd   { color: #4ade80; }
+    .cli-comment { color: #64748b; }
+    .cli-user  { color: #93c5fd; }
+    .cli-warn  { color: #fbbf24; }
+    .cli-err   { color: #f87171; }
+    .cli-copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(255,255,255,0.08);
+      color: #94a3b8;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 5px;
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s, color 0.15s;
+    }
+    .cli-copy-btn:hover { background: rgba(255,255,255,0.14); color: #e2e8f0; }
+
+    /* ── Examples ── */
+    .examples-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+    .example-card {
+      background: #0d1117;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .example-label {
+      padding: 10px 16px;
+      background: #161b27;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #64748b;
+      border-bottom: 1px solid #1e2433;
+    }
+    .example-body {
+      padding: 16px;
+    }
+    .example-user {
+      font-size: 0.8125rem;
+      color: #93c5fd;
+      font-family: var(--font-mono);
+      line-height: 1.6;
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+    .example-user::before { content: '👤 '; }
+    .example-response {
+      font-size: 0.8125rem;
+      color: #e2e8f0;
+      font-family: var(--font-mono);
+      line-height: 1.8;
+      white-space: pre-wrap;
+      font-weight: 500;
+    }
+
+    /* ── Status table ── */
+    .status-table-wrap {
+      overflow-x: auto;
+      margin: 0;
+    }
+    .status-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9375rem;
+    }
+    .status-table th {
+      text-align: left;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border-bottom: 2px solid var(--border);
+      padding: 10px 16px;
+    }
+    .status-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-muted);
+      line-height: 1.55;
+      vertical-align: top;
+    }
+    .status-table tr:last-child td { border-bottom: none; }
+    .status-table td:first-child {
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+    }
+    .status-table td:last-child {
+      font-weight: 600;
+      color: var(--text);
+    }
+    .status-safe   { color: #16a34a; }
+    .status-warn   { color: #d97706; }
+    .status-danger { color: #dc2626; }
+    .status-info   { color: #6b7280; }
+
+    /* ── CTA section ── */
+    .cta-section { background: var(--text); color: #fff; }
+    .cta-section .section-title { color: #fff; }
+    .cta-section .section-title::after { background: #4ade80; }
+    .cta-section .section-subtitle { color: rgba(255,255,255,0.7); }
+    .cta-section .btn-secondary {
+      border-color: rgba(255,255,255,0.4);
+      color: #fff;
+    }
+    .cta-section .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+    .cta-btns {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    /* ── Footer ── */
+    .site-footer {
+      background: #0d1117 !important;
+      border-top: 1px solid #1e2433 !important;
+      padding: 56px 0 0 !important;
+      text-align: left !important;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 48px;
+      padding-bottom: 48px;
+    }
+    .footer-col-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #4b5563;
+      margin-bottom: 16px;
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 10px; }
+    .footer-col ul li a {
+      font-size: 0.9375rem;
+      color: #6b7280 !important;
+      transition: color 0.15s;
+      text-decoration: none !important;
+    }
+    .footer-col ul li a:hover {
+      color: #d1d5db !important;
+      opacity: 1 !important;
+      text-decoration: none !important;
+    }
+    .footer-support {
+      font-size: 0.875rem;
+      color: #6b7280;
+      margin-bottom: 32px;
+    }
+    .footer-support a {
+      color: #4ade80 !important;
+      text-decoration: none !important;
+    }
+    .footer-support a:hover { opacity: 0.8 !important; }
+    .footer-bottom {
+      border-top: 1px solid #1e2433;
+      padding: 20px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-bottom p {
+      font-size: 0.8125rem !important;
+      color: #4b5563 !important;
+      line-height: 1.5 !important;
+    }
+    .footer-bottom a {
+      color: #6b7280 !important;
+      text-decoration: none !important;
+    }
+    .footer-bottom a:hover {
+      color: #9ca3af !important;
+      opacity: 1 !important;
+      text-decoration: none !important;
+    }
+
+    /* ── Kill ghost space ── */
+    html, body { margin: 0; padding: 0; }
+    .site-footer { margin-bottom: 0 !important; padding-bottom: 0 !important; }
+    body > *:last-child { margin-bottom: 0 !important; padding-bottom: 0 !important; }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .setup-grid  { grid-template-columns: 1fr; }
+      .examples-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 900px) {
+      .examples-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <a href="/" class="logo" aria-label="agentverif home" style="padding-bottom:4px;overflow:visible;">
+        <svg width="32" height="37" viewBox="0 0 32 37" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="overflow:visible;">
+          <path d="M16 1L2 6.5v13C2 28.1 8.3 35.4 16 38c7.7-2.6 14-9.9 14-18.5v-13L16 1z" fill="#16a34a"/>
+          <path d="M10 19l4.5 4.5 8-8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="logo-wordmark">agentverif</span>
+      </a>
+      <nav class="site-nav" id="site-nav" role="navigation" aria-label="Main navigation">
+        <a href="/#how-it-works">How it works</a>
+        <a href="/#pricing">Pricing</a>
+        <a href="https://verify.agentverif.com" class="nav-cta">Verify</a>
+        <a href="/docs/">Docs</a>
+        <a href="/mcp" aria-current="page">MCP</a>
+      </nav>
+      <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="site-nav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main-content">
+
+    <!-- =====================================================
+         HERO
+         ===================================================== -->
+    <section class="hero" aria-labelledby="hero-heading">
+      <div class="container">
+        <div class="hero-badge" aria-label="Integration type">Claude MCP Plugin</div>
+        <h1 id="hero-heading">
+          agentverif for <span>Claude</span>
+        </h1>
+        <p class="hero-lead">
+          Connect Claude to the agent certification registry. Claude verifies agents
+          automatically&nbsp;&mdash; before you execute them.
+        </p>
+        <div class="hero-actions">
+          <a href="https://claude.ai/settings/connectors" class="btn btn-primary btn-lg" rel="noopener">Add to Claude &rarr;</a>
+          <a href="https://github.com/trusthandoff/agentverif" class="btn btn-secondary btn-lg" rel="noopener">View on GitHub &rarr;</a>
+        </div>
+        <div class="hero-endpoint">
+          <div class="code-block" role="region" aria-label="MCP endpoint URL">
+            <code id="endpoint-url">https://mcp.agentverif.com</code>
+            <button class="copy-btn" id="copy-endpoint" aria-label="Copy MCP endpoint URL">Copy</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         HOW IT WORKS — 3 FEATURE CARDS
+         ===================================================== -->
+    <section id="how-it-works" class="section" aria-labelledby="how-heading">
+      <div class="container">
+        <header class="section-header centered">
+          <span class="section-tag">How it works</span>
+          <h2 class="section-title" id="how-heading">Automatic. Instant. Free.</h2>
+          <p class="section-subtitle">
+            One connection. Claude handles everything from there.
+          </p>
+        </header>
+
+        <div class="grid-3">
+
+          <article class="step-card">
+            <div class="step-icon" aria-hidden="true">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2L3 7v6c0 5.25 3.9 10.17 9 11.36C17.1 23.17 21 18.25 21 13V7L12 2z"/>
+                <polyline points="9 12 11 14 15 10"/>
+              </svg>
+            </div>
+            <h3>Automatic verification</h3>
+            <p>
+              Claude calls <code style="font-family:var(--font-mono);font-size:0.84rem;background:var(--accent);color:var(--primary-dark);padding:1px 5px;border-radius:3px;">verify_agent</code> whenever you mention
+              running, installing, or trusting an AI agent.
+              No manual steps.
+            </p>
+          </article>
+
+          <article class="step-card">
+            <div class="step-icon" aria-hidden="true">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+            </div>
+            <h3>5 clear verdicts</h3>
+            <p>
+              VERIFIED, UNREGISTERED, UNSIGNED, TAMPERED, REVOKED.
+              No ambiguity. You always know exactly what you&rsquo;re running.
+            </p>
+          </article>
+
+          <article class="step-card">
+            <div class="step-icon" aria-hidden="true">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+            </div>
+            <h3>Zero configuration</h3>
+            <p>
+              No account. No API key. No subscription.
+              Free public service. One URL to connect.
+            </p>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         SETUP
+         ===================================================== -->
+    <section id="setup" class="section section-alt" aria-labelledby="setup-heading">
+      <div class="container">
+        <header class="section-header centered">
+          <span class="section-tag">Setup</span>
+          <h2 class="section-title" id="setup-heading">Connect in 30 seconds</h2>
+          <p class="section-subtitle">Choose your Claude client. No authentication required.</p>
+        </header>
+
+        <div class="setup-grid">
+
+          <!-- Option A: Claude.ai -->
+          <div class="setup-card">
+            <h3>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:6px;color:var(--primary);">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+              </svg>
+              Claude.ai
+            </h3>
+            <ol class="setup-steps">
+              <li>
+                <span class="setup-step-num" aria-hidden="true">1</span>
+                <span>Go to <strong>claude.ai</strong> &rarr; Settings &rarr; Connectors</span>
+              </li>
+              <li>
+                <span class="setup-step-num" aria-hidden="true">2</span>
+                <span>Click <strong>"Add connector"</strong></span>
+              </li>
+              <li>
+                <span class="setup-step-num" aria-hidden="true">3</span>
+                <span>Enter: <span class="setup-url">https://mcp.agentverif.com</span></span>
+              </li>
+              <li>
+                <span class="setup-step-num" aria-hidden="true">4</span>
+                <span>Click <strong>Connect</strong>&nbsp;&mdash; done</span>
+              </li>
+            </ol>
+            <a href="https://claude.ai/settings/connectors" class="btn btn-primary" rel="noopener" style="margin-top:4px;">Open Claude Settings &rarr;</a>
+          </div>
+
+          <!-- Option B: Claude Desktop -->
+          <div class="setup-card">
+            <h3>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:6px;color:var(--primary);">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                <line x1="8" y1="21" x2="16" y2="21"/>
+                <line x1="12" y1="17" x2="12" y2="21"/>
+              </svg>
+              Claude Desktop
+            </h3>
+            <p class="setup-file-label">~/Library/Application Support/Claude/claude_desktop_config.json</p>
+            <div class="cli-block" style="margin-bottom:16px;border-radius:var(--radius-sm);">
+              <code id="desktop-config">{
+  "mcpServers": {
+    "agentverif": {
+      "url": "https://mcp.agentverif.com"
+    }
+  }
+}</code>
+              <button class="cli-copy-btn" id="copy-desktop" aria-label="Copy Claude Desktop config">Copy</button>
+            </div>
+            <p style="font-size:0.875rem;color:var(--text-muted);margin:0;">Save the file and restart Claude Desktop.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         EXAMPLES — 3 CLI-STYLE CARDS
+         ===================================================== -->
+    <section id="examples" class="section" aria-labelledby="examples-heading">
+      <div class="container">
+        <header class="section-header centered">
+          <span class="section-tag">Examples</span>
+          <h2 class="section-title" id="examples-heading">See it in action</h2>
+          <p class="section-subtitle">
+            Real Claude conversations with agentverif connected.
+          </p>
+        </header>
+
+        <div class="examples-grid">
+
+          <!-- Example 1 -->
+          <div class="example-card" role="region" aria-label="Example: Verify before executing">
+            <div class="example-label">Verify before executing</div>
+            <div class="example-body">
+              <p class="example-user">"I want to run this agent, license AV-84F2-91AB. Is it safe?"</p>
+              <code class="example-response"><span class="cli-cmd">✅ VERIFIED — agentverif certified</span>
+License: AV-84F2-91AB | Tier: pro
+Issuer: agentverif.com
+Hash: sha256:abc123... ✓ intact
+Safe to execute.
+<span style="color:#64748b;">🔗 verify.agentverif.com/AV-84F2-91AB</span></code>
+            </div>
+          </div>
+
+          <!-- Example 2 -->
+          <div class="example-card" role="region" aria-label="Example: Catch a tampered agent">
+            <div class="example-label">Catch a tampered agent</div>
+            <div class="example-body">
+              <p class="example-user">"Can you verify this agent: AV-12F3-88AC"</p>
+              <code class="example-response"><span class="cli-err">🔴 TAMPERED — Certificate invalid</span>
+License: AV-12F3-88AC | Status: HASH MISMATCH
+This agent was modified after signing.
+<span class="cli-warn">Do NOT execute.</span>
+<span style="color:#64748b;">🔗 verify.agentverif.com/AV-12F3-88AC</span></code>
+            </div>
+          </div>
+
+          <!-- Example 3 -->
+          <div class="example-card" role="region" aria-label="Example: Unsigned agent warning">
+            <div class="example-label">Unsigned agent warning</div>
+            <div class="example-body">
+              <p class="example-user">"Run this agent for me"</p>
+              <code class="example-response"><span class="cli-warn">🚫 UNSIGNED — No certificate found</span>
+No agentverif certificate found.
+Unsigned agents carry unknown risk.
+
+Ask the vendor to certify free:
+<span style="color:#64748b;">agentverif.com</span></code>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         STATUS REFERENCE TABLE
+         ===================================================== -->
+    <section id="statuses" class="section section-alt" aria-labelledby="status-heading">
+      <div class="container">
+        <header class="section-header centered">
+          <span class="section-tag">Reference</span>
+          <h2 class="section-title" id="status-heading">Verification statuses</h2>
+          <p class="section-subtitle">Every possible result, explained.</p>
+        </header>
+
+        <div class="status-table-wrap">
+          <table class="status-table" aria-label="Verification status reference">
+            <thead>
+              <tr>
+                <th>Status</th>
+                <th>Meaning</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="status-safe">✅ VERIFIED</span></td>
+                <td>Signed, registered in public registry, hash intact</td>
+                <td class="status-safe">Safe to execute</td>
+              </tr>
+              <tr>
+                <td><span class="status-warn">⚠️ UNREGISTERED</span></td>
+                <td>Signed locally, not in public registry</td>
+                <td class="status-warn">Use with caution</td>
+              </tr>
+              <tr>
+                <td><span class="status-warn">🚫 UNSIGNED</span></td>
+                <td>No certificate found</td>
+                <td class="status-warn">Ask vendor to certify</td>
+              </tr>
+              <tr>
+                <td><span class="status-danger">🔴 TAMPERED</span></td>
+                <td>Modified after signing — hash mismatch</td>
+                <td class="status-danger">Do NOT execute</td>
+              </tr>
+              <tr>
+                <td><span class="status-danger">🔴 REVOKED</span></td>
+                <td>Licence cancelled by issuer</td>
+                <td class="status-danger">Do NOT execute</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         CTA SECTION
+         ===================================================== -->
+    <section class="section-sm cta-section" aria-labelledby="cta-heading">
+      <div class="container">
+        <h2 class="section-title" id="cta-heading">Sell AI agents?</h2>
+        <p class="section-subtitle" style="margin-bottom:32px;">
+          Get certified free. Buyers trust verified packages. Unsigned agents get ignored.
+        </p>
+        <div class="cta-btns">
+          <a href="/#pricing" class="btn btn-primary btn-lg">Certify your agent free &rarr;</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =====================================================
+       FOOTER
+       ===================================================== -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+
+      <p class="footer-support">Questions? <a href="mailto:hi@agentverif.com">hi@agentverif.com</a></p>
+
+      <div class="footer-grid">
+
+        <div class="footer-col">
+          <p class="footer-col-title">Product</p>
+          <ul>
+            <li><a href="/#how-it-works">How it works</a></li>
+            <li><a href="/#pricing">Pricing</a></li>
+            <li><a href="https://verify.agentverif.com">Verify</a></li>
+            <li><a href="/docs/">Docs</a></li>
+            <li><a href="/mcp">MCP Plugin</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <p class="footer-col-title">Resources</p>
+          <ul>
+            <li><a href="https://agentcop.live" rel="noopener">agentcop.live</a></li>
+            <li><a href="https://github.com/trusthandoff/agentverif" rel="noopener">GitHub</a></li>
+            <li><a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/" rel="noopener">OWASP LLM Top 10</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <p class="footer-col-title">Company</p>
+          <ul>
+            <li><a href="https://agentverif.com/about">About</a></li>
+            <li><a href="mailto:hi@agentverif.com">Contact</a></li>
+            <li><a href="/privacy">Privacy</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 agentverif.com &mdash; Powered by <a href="https://agentcop.live" rel="noopener">agentcop</a></p>
+        <p>
+          <a href="https://verify.agentverif.com">Verify</a>
+          &nbsp;&middot;&nbsp;
+          <a href="/docs/">Docs</a>
+          &nbsp;&middot;&nbsp;
+          <a href="/mcp">MCP</a>
+          &nbsp;&middot;&nbsp;
+          <a href="mailto:hi@agentverif.com">Support</a>
+          &nbsp;&middot;&nbsp;
+          <a href="/privacy">Privacy</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile nav toggle
+    var toggle = document.getElementById('menu-toggle');
+    var nav = document.getElementById('site-nav');
+    if (toggle && nav) {
+      toggle.addEventListener('click', function () {
+        var open = nav.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', open);
+      });
+    }
+
+    // Copy endpoint URL
+    document.getElementById('copy-endpoint').addEventListener('click', function () {
+      var btn = this;
+      navigator.clipboard.writeText(document.getElementById('endpoint-url').textContent).then(function () {
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(function () { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+      }).catch(function () {
+        btn.textContent = 'Failed';
+        setTimeout(function () { btn.textContent = 'Copy'; }, 2000);
+      });
+    });
+
+    // Copy Claude Desktop config
+    document.getElementById('copy-desktop').addEventListener('click', function () {
+      var btn = this;
+      navigator.clipboard.writeText(document.getElementById('desktop-config').textContent).then(function () {
+        btn.textContent = 'Copied!';
+        setTimeout(function () { btn.textContent = 'Copy'; }, 2000);
+      }).catch(function () {
+        btn.textContent = 'Failed';
+        setTimeout(function () { btn.textContent = 'Copy'; }, 2000);
+      });
+    });
+  </script>
+
+</body>
+</html>
