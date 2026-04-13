@@ -133,6 +133,84 @@ docker run --rm -v $(pwd):/work agentcop/agentverif-sign verify /work/agent.zip
 
 ---
 
+## Claude MCP 插件
+
+将 agentverif 直接连接到 Claude。Claude 将在执行前自动验证 Agent。
+
+### 配置方法
+
+**方式一 — Claude.ai：**
+1. 前往 claude.ai → 设置 → 连接器
+2. 添加自定义连接器：`https://mcp.agentverif.com`
+3. 无需身份验证
+
+**方式二 — Claude Desktop**（`claude_desktop_config.json`）：
+```json
+{
+  "mcpServers": {
+    "agentverif": {
+      "url": "https://mcp.agentverif.com"
+    }
+  }
+}
+```
+
+### 功能说明
+连接后，每当您提及运行、安装或信任某个 AI Agent，Claude 会自动调用 `verify_agent`。
+
+| 状态 | 含义 |
+|------|------|
+| ✅ VERIFIED | 已认证，可安全执行 |
+| ⚠️ UNREGISTERED | 本地签名，未在公共注册表中 |
+| 🚫 UNSIGNED | 无证书，风险未知 |
+| 🔴 TAMPERED | 签名后已被篡改——禁止执行 |
+| 🔴 REVOKED | 许可证已被颁发方撤销——禁止执行 |
+
+### 使用示例
+
+#### 示例一：执行前验证
+**用户：** "我想运行这个 Agent，许可证为 AV-84F2-91AB，安全吗？"
+
+**Claude 调用：** `verify_agent("AV-84F2-91AB")`
+
+**响应：**
+✅ VERIFIED — agentverif 已认证
+许可证：AV-84F2-91AB
+等级：pro
+颁发方：agentverif.com
+哈希：sha256:abc123… ✓ 完整
+可安全执行。
+🔗 https://verify.agentverif.com/AV-84F2-91AB
+
+#### 示例二：检测被篡改的 Agent
+**用户：** "帮我验证这个 Agent：AV-12F3-88AC"
+
+**Claude 调用：** `verify_agent("AV-12F3-88AC")`
+
+**响应：**
+🔴 TAMPERED — 证书无效
+许可证：AV-12F3-88AC
+状态：哈希不匹配
+此 Agent 在签名后已被修改。
+禁止执行。请立即联系供应商。
+🔗 https://verify.agentverif.com/AV-12F3-88AC
+
+#### 示例三：未签名 Agent 警告
+**用户：** "帮我运行这个 Agent，哈希值为：sha256:def456..."
+
+**Claude 调用：** `verify_agent("sha256:def456...")`
+
+**响应：**
+🚫 UNSIGNED — 未找到证书
+未找到该标识符对应的 agentverif 证书。
+未签名 Agent 存在未知风险：
+• 无篡改检测
+• 无颁发方责任追溯
+• 无撤销能力
+请要求供应商前往 agentverif.com 完成认证后再执行。
+
+---
+
 ## 环境变量
 
 | 变量 | 默认值 | 说明 |

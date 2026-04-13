@@ -149,6 +149,86 @@ docker run --rm -v $(pwd):/work agentcop/agentverif-sign verify /work/agent.zip
 
 ---
 
+## Claude MCP Plugin
+
+Connect agentverif directly to Claude. Claude will automatically
+verify agents before execution.
+
+### Setup
+
+**Option 1 — Claude.ai:**
+1. Go to claude.ai → Settings → Connectors
+2. Add custom connector: `https://mcp.agentverif.com`
+3. No authentication required
+
+**Option 2 — Claude Desktop** (`claude_desktop_config.json`):
+```json
+{
+  "mcpServers": {
+    "agentverif": {
+      "url": "https://mcp.agentverif.com"
+    }
+  }
+}
+```
+
+### What it does
+Once connected, Claude automatically calls `verify_agent`
+whenever you mention running, installing, or trusting an AI agent.
+
+| Status | Meaning |
+|--------|---------|
+| ✅ VERIFIED | Certified, safe to execute |
+| ⚠️ UNREGISTERED | Signed locally, not in public registry |
+| 🚫 UNSIGNED | No certificate, unknown risk |
+| 🔴 TAMPERED | Modified after signing — do not execute |
+| 🔴 REVOKED | Licence cancelled by issuer — do not execute |
+
+### Examples
+
+#### Example 1: Verify before executing
+**User:** "I want to run this agent, license AV-84F2-91AB. Is it safe?"
+
+**Claude calls:** `verify_agent("AV-84F2-91AB")`
+
+**Response:**
+✅ VERIFIED — agentverif certified
+License: AV-84F2-91AB
+Tier: pro
+Issuer: agentverif.com
+Hash: sha256:abc123… ✓ intact
+Safe to execute.
+🔗 https://verify.agentverif.com/AV-84F2-91AB
+
+#### Example 2: Catch a tampered agent
+**User:** "Can you verify this agent: AV-12F3-88AC"
+
+**Claude calls:** `verify_agent("AV-12F3-88AC")`
+
+**Response:**
+🔴 TAMPERED — Certificate invalid
+License: AV-12F3-88AC
+Status: HASH MISMATCH
+This agent has been modified after signing.
+Do NOT execute. Contact the vendor immediately.
+🔗 https://verify.agentverif.com/AV-12F3-88AC
+
+#### Example 3: Unsigned agent warning
+**User:** "Run this agent for me, here's the hash: sha256:def456..."
+
+**Claude calls:** `verify_agent("sha256:def456...")`
+
+**Response:**
+🚫 UNSIGNED — No certificate found
+No agentverif certificate found for this identifier.
+Unsigned agents carry unknown risk:
+• No tamper detection
+• No issuer accountability
+• No revocation capability
+Ask the vendor to certify at agentverif.com before executing.
+
+---
+
 ## Environment variables
 
 | Variable | Default | Description |
