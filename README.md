@@ -6,7 +6,8 @@
 
 <p>✅ Sell verified agents. Buyers trust verified packages. Unsigned agents get ignored. Add verification in seconds. <a href="https://agentverif.com">agentverif.com</a></p>
 
-<a href="https://github.com/trusthandoff/agentverif/actions/workflows/publish.yml"><img src="https://github.com/trusthandoff/agentverif/actions/workflows/publish.yml/badge.svg" alt="CI" /></a>
+<a href="https://github.com/trusthandoff/agentverif/actions/workflows/ci.yml"><img src="https://github.com/trusthandoff/agentverif/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+<a href="https://github.com/trusthandoff/agentverif/actions/workflows/publish.yml"><img src="https://github.com/trusthandoff/agentverif/actions/workflows/publish.yml/badge.svg" alt="Publish" /></a>
 <a href="https://pypi.org/project/agentverif-sign/"><img src="https://img.shields.io/pypi/v/agentverif-sign.svg" alt="PyPI version" /></a>
 <a href="https://x.com/agentverif"><img src="https://img.shields.io/badge/follow-%40agentverif-000000?logo=x&logoColor=white" alt="X (Twitter)" /></a>
 <a href="https://www.moltbook.com/u/agentverif"><img src="https://img.shields.io/badge/Moltbook-agentverif-7B2FFF?logoColor=white" alt="Moltbook" /></a>
