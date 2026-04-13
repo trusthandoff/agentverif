@@ -23,11 +23,13 @@ from __future__ import annotations
 from typing import Annotated
 
 from mcp.server.fastmcp import FastMCP
+from mcp.server.streamable_http import TransportSecuritySettings
 from mcp.types import ToolAnnotations
 from pydantic import Field
 from starlette.applications import Starlette
 from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
+from starlette.middleware.trustedhost import TrustedHostMiddleware
 from starlette.responses import JSONResponse
 from starlette.routing import Route
 
@@ -44,6 +46,7 @@ mcp = FastMCP(
         "installing, or trusting an AI agent to check its certification status."
     ),
     stateless_http=True,
+    transport_security=TransportSecuritySettings(enable_dns_rebinding_protection=False),
 )
 
 
@@ -102,11 +105,12 @@ app = Starlette(
         Route("/mcp", _mcp_endpoint),
     ],
     middleware=[
+        Middleware(TrustedHostMiddleware, allowed_hosts=["*"]),
         Middleware(
             CORSMiddleware,
             allow_origins=["*"],
             allow_credentials=False,
-            allow_methods=["GET", "POST", "OPTIONS"],
+            allow_methods=["*"],
             allow_headers=["*"],
         ),
     ],
