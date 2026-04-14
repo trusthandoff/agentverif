@@ -312,4 +312,7 @@ pip install agentverif-sign[crypto]
 
 Full docs: [agentverif.com/docs](https://agentverif.com/docs)
 
+[Changelog](CHANGELOG.md)  
+[Contributing](CONTRIBUTING.md)
+
 Why: unsigned agents shouldn't be executed.
