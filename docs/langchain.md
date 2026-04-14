@@ -39,6 +39,31 @@ print(result)
 
 ---
 
+### Sign your agent
+
+```python
+from agentverif_sign.langchain_tool import sign_tool
+
+result = sign_tool.run("./my-agent.zip")
+# ✅ SIGNED — agentverif certified
+# License: AC-XXXX-XXXX
+```
+
+### Use both in one agent
+
+```python
+from agentverif_sign.langchain_tool import verify_tool, sign_tool
+from langchain.agents import initialize_agent, AgentType
+
+agent = initialize_agent(
+    tools=[verify_tool, sign_tool],
+    llm=llm,
+    agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
+)
+```
+
+---
+
 ## Use inside a LangChain agent
 
 ```python

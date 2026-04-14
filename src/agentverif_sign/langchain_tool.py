@@ -20,7 +20,7 @@ from __future__ import annotations
 
 from typing import Optional
 
-__all__ = ["verify_tool", "LANGCHAIN_AVAILABLE", "run_verify"]
+__all__ = ["verify_tool", "sign_tool", "LANGCHAIN_AVAILABLE", "run_verify", "run_sign"]
 
 
 # ---------------------------------------------------------------------------
@@ -109,6 +109,54 @@ def run_verify(
     return " | ".join(parts)
 
 
+def run_sign(zip_path: str, tier: str = "indie") -> str:
+    """Sign an agent ZIP file and return license ID + hash.
+
+    Args:
+        zip_path: Path to the agent ZIP file to sign
+        tier: Signing tier — indie (free), pro, enterprise
+
+    Returns:
+        Human-readable string with license ID, hash, verify URL
+    """
+    import os
+    import re
+    import subprocess
+
+    if not zip_path:
+        return "\u274c No ZIP path provided"
+
+    if not os.path.exists(zip_path):
+        return f"\u274c File not found: {zip_path}"
+
+    if not zip_path.endswith(".zip"):
+        return f"\u274c File must be a .zip: {zip_path}"
+
+    result = subprocess.run(
+        ["agentverif-sign", "sign", zip_path, "--tier", tier, "--offline"],
+        capture_output=True,
+        text=True,
+    )
+
+    stdout = result.stdout + result.stderr
+    license_match = re.search(r"License:\s+([\w-]+)", stdout)
+    hash_match = re.search(r"Hash:\s+(sha256:[a-f0-9]+)", stdout)
+
+    if result.returncode != 0 or not license_match:
+        return f"\u274c Signing failed:\n{stdout.strip()}"
+
+    license_id = license_match.group(1)
+    zip_hash = (hash_match.group(1)[:28] + "...") if hash_match else "N/A"
+
+    return (
+        f"\u2705 SIGNED \u2014 agentverif certified\n"
+        f"License: {license_id}\n"
+        f"Tier: {tier}\n"
+        f"Hash: {zip_hash}\n"
+        f"Verify: https://verify.agentverif.com/?id={license_id}"
+    )
+
+
 # ---------------------------------------------------------------------------
 # LangChain integration (optional dep)
 # ---------------------------------------------------------------------------
@@ -131,6 +179,17 @@ try:
         ),
     )
 
+    sign_tool: Optional[StructuredTool] = StructuredTool.from_function(
+        func=run_sign,
+        name="sign_agent",
+        description=(
+            "Sign an AI agent ZIP package with agentverif "
+            "to generate a cryptographic certificate and license ID. "
+            "Input: path to ZIP file. Returns: license ID and verify URL."
+        ),
+    )
+
 except ImportError:
     LANGCHAIN_AVAILABLE = False
     verify_tool = None  # type: ignore[assignment]
+    sign_tool = None  # type: ignore[assignment]
