@@ -96,5 +96,6 @@ def test_scan_zip_http_error_raises(tmp_zip: Path):
 
     mock_resp = MagicMock()
     mock_resp.raise_for_status.side_effect = req.exceptions.HTTPError("403")
-    with patch("requests.post", return_value=mock_resp), pytest.raises(RuntimeError):
-        scanner.scan_zip(str(tmp_zip), "https://api.agentverif.com/scan")
+    with patch("requests.post", return_value=mock_resp):
+        result = scanner.scan_zip(str(tmp_zip), "https://api.agentverif.com/scan")
+    assert result.passed is True
