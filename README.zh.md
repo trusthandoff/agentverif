@@ -1,14 +1,13 @@
-# AgentVerif — AI 智能体的 Let's Encrypt
-
 <div align="center">
+  <img src="https://raw.githubusercontent.com/trusthandoff/agentverif/main/web/logo.svg" width="80" height="80" alt="AgentVerif">
 
-<a href="https://agentverif.com"><img src="https://raw.githubusercontent.com/trusthandoff/agentverif/main/logo.svg" alt="AgentVerif" width="80" height="92" /></a>
+  # AgentVerif — AI 智能体的 Let's Encrypt
 
-<a href="https://github.com/trusthandoff/agentverif/actions/workflows/ci.yml"><img src="https://github.com/trusthandoff/agentverif/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
-<a href="https://github.com/trusthandoff/agentverif/actions/workflows/publish.yml"><img src="https://github.com/trusthandoff/agentverif/actions/workflows/publish.yml/badge.svg" alt="Publish" /></a>
-<a href="https://pypi.org/project/agentverif-sign/"><img src="https://img.shields.io/pypi/v/agentverif-sign.svg" alt="PyPI 版本" /></a>
-<a href="https://x.com/agentverif"><img src="https://img.shields.io/badge/follow-%40agentverif-000000?logo=x&logoColor=white" alt="X (Twitter)" /></a>
-<a href="https://www.moltbook.com/u/agentverif"><img src="https://img.shields.io/badge/Moltbook-agentverif-7B2FFF?logoColor=white" alt="Moltbook" /></a>
+  ✅ 销售经过验证的智能体。买家信任经过验证的包。未签名的智能体会被忽略。几秒内添加验证。agentverif.com
+
+  [![CI](https://github.com/trusthandoff/agentverif/actions/workflows/ci.yml/badge.svg)](https://github.com/trusthandoff/agentverif/actions/workflows/ci.yml)
+  [![PyPI version](https://img.shields.io/pypi/v/agentverif-sign.svg)](https://pypi.org/project/agentverif-sign/)
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 </div>
 
