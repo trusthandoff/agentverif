@@ -1,11 +1,8 @@
-# agentverif — AI Agent 的 Let's Encrypt
+# AgentVerif — AI 智能体的 Let's Encrypt
 
-[![CI](https://github.com/trusthandoff/agentverif/actions/workflows/ci.yml/badge.svg)](https://github.com/trusthandoff/agentverif/actions/workflows/ci.yml)
-[![Publish](https://github.com/trusthandoff/agentverif/actions/workflows/publish.yml/badge.svg)](https://github.com/trusthandoff/agentverif/actions/workflows/publish.yml)
-[![PyPI 版本](https://img.shields.io/pypi/v/agentverif-sign.svg)](https://pypi.org/project/agentverif-sign/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![X (Twitter)](https://img.shields.io/badge/follow-%40agentverif-000000?logo=x&logoColor=white)](https://x.com/agentverif)
-[![Moltbook](https://img.shields.io/badge/Moltbook-agentverif-7B2FFF?logoColor=white)](https://www.moltbook.com/u/agentverif)
+<div align="center">
+[![CI](https://github.com/trusthandoff/agentverif/actions/workflows/ci.yml/badge.svg)](https://github.com/trusthandoff/agentverif/actions/workflows/ci.yml) [![Publish](https://github.com/trusthandoff/agentverif/actions/workflows/publish.yml/badge.svg)](https://github.com/trusthandoff/agentverif/actions/workflows/publish.yml) [![PyPI 版本](https://img.shields.io/pypi/v/agentverif-sign.svg)](https://pypi.org/project/agentverif-sign/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![X (Twitter)](https://img.shields.io/badge/follow-%40agentverif-000000?logo=x&logoColor=white)](https://x.com/agentverif) [![Moltbook](https://img.shields.io/badge/Moltbook-agentverif-7B2FFF?logoColor=white)](https://www.moltbook.com/u/agentverif)
+</div>
 
 [English](README.md) | [中文]
 
@@ -28,9 +25,13 @@ Agent 默认被拒绝执行——包括被 Claude 拒绝。
 
 > 2026 年的现实：一个被污染的 Agent 可以在一夜之间
 > 毁掉您的公司或声誉。
-> agentverif 让验证像 HTTPS 一样自动且不可避免。
+> AgentVerif 让验证像 HTTPS 一样自动且不可避免。
 
 ---
+
+```bash
+pip install agentverif-sign
+```
 
 ## 快速开始
 
