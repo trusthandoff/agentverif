@@ -230,6 +230,34 @@ Ask the vendor to certify at agentverif.com before executing.
 
 ---
 
+## GitHub Action
+
+[![agentverif](https://img.shields.io/badge/agentverif-certified-green)](https://agentverif.com)
+
+Sign on every push. Block tampered agents in CI.
+
+```yaml
+name: agentverif
+on: [push, pull_request]
+jobs:
+  certify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Sign agent
+        uses: trusthandoff/agentverif@v1
+        id: sign
+        with:
+          mode: sign
+          agent_zip: ./agent.zip
+      - name: Show license
+        run: echo "License ${{ steps.sign.outputs.license_id }}"
+```
+
+See [`github-action/README.md`](github-action/README.md) for full docs.
+
+---
+
 ## Environment variables
 
 | Variable | Default | Description |

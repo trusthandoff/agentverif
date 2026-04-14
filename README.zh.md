@@ -212,6 +212,34 @@ docker run --rm -v $(pwd):/work agentcop/agentverif-sign verify /work/agent.zip
 
 ---
 
+## GitHub Action
+
+[![agentverif](https://img.shields.io/badge/agentverif-certified-green)](https://agentverif.com)
+
+每次推送自动签名，CI 中阻止被篡改的 Agent。
+
+```yaml
+name: agentverif
+on: [push, pull_request]
+jobs:
+  certify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 签名 Agent
+        uses: trusthandoff/agentverif@v1
+        id: sign
+        with:
+          mode: sign
+          agent_zip: ./agent.zip
+      - name: 显示许可证
+        run: echo "License ${{ steps.sign.outputs.license_id }}"
+```
+
+完整文档见 [`github-action/README.md`](github-action/README.md)。
+
+---
+
 ## 环境变量
 
 | 变量 | 默认值 | 说明 |

@@ -1,0 +1,103 @@
+name: "agentverif — AI Agent Certification"
+description: "Sign and verify AI agent packages with agentverif. Generates cryptographic certificates and blocks tampered agents in CI."
+author: "agentverif.com"
+
+branding:
+  icon: shield
+  color: green
+
+inputs:
+  mode:
+    description: "'sign' to certify your agent, 'verify' to check certification status"
+    required: true
+    default: "verify"
+  agent_zip:
+    description: "Path to agent ZIP file (e.g. ./my-agent.zip)"
+    required: true
+  tier:
+    description: "Signing tier: indie (free), pro, enterprise"
+    required: false
+    default: "indie"
+  api_key:
+    description: "agentverif API key for Pro/Enterprise tier. Also reads AGENTVERIF_API_KEY env var."
+    required: false
+    default: ""
+  fail_on_unsigned:
+    description: "Fail the build if agent is unsigned (verify mode only)"
+    required: false
+    default: "true"
+
+outputs:
+  license_id:
+    description: "Generated license ID (sign mode)"
+  status:
+    description: "Verification status: VERIFIED, UNREGISTERED, UNSIGNED, MODIFIED, REVOKED"
+  zip_hash:
+    description: "SHA256 hash of the agent package"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install agentverif-sign
+      shell: bash
+      run: pip install agentverif-sign --quiet
+
+    - name: Sign agent
+      if: inputs.mode == 'sign'
+      shell: bash
+      env:
+        AGENTVERIF_API_KEY: ${{ inputs.api_key }}
+      run: |
+        SIGN_OUTPUT=$(agentverif-sign sign "${{ inputs.agent_zip }}" \
+          --tier "${{ inputs.tier }}" \
+          --offline)
+
+        LICENSE_ID=$(echo "$SIGN_OUTPUT" | grep "^License:" | awk '{print $2}')
+        ZIP_HASH=$(echo "$SIGN_OUTPUT" | grep "^Hash:" | awk '{print $2}')
+
+        echo "license_id=$LICENSE_ID" >> $GITHUB_OUTPUT
+        echo "zip_hash=$ZIP_HASH" >> $GITHUB_OUTPUT
+        echo "status=SIGNED" >> $GITHUB_OUTPUT
+
+        echo "## ✅ agentverif — Agent Signed" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
+        echo "|-------|-------|" >> $GITHUB_STEP_SUMMARY
+        echo "| License ID | \`$LICENSE_ID\` |" >> $GITHUB_STEP_SUMMARY
+        echo "| Tier | ${{ inputs.tier }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Hash | \`${ZIP_HASH:0:20}...\` |" >> $GITHUB_STEP_SUMMARY
+        echo "| Verify | https://verify.agentverif.com/?id=$LICENSE_ID |" >> $GITHUB_STEP_SUMMARY
+
+    - name: Verify agent
+      if: inputs.mode == 'verify'
+      shell: bash
+      run: |
+        OUTPUT=$(agentverif-sign verify "${{ inputs.agent_zip }}" \
+          --offline --json 2>/dev/null) || true
+        if [ -z "$OUTPUT" ]; then
+          OUTPUT='{"status":"UNSIGNED"}'
+        fi
+
+        STATUS=$(echo "$OUTPUT" | python3 -c "
+        import json,sys
+        print(json.load(sys.stdin).get('status','UNSIGNED'))
+        ")
+
+        echo "status=$STATUS" >> $GITHUB_OUTPUT
+
+        if [ "$STATUS" = "MODIFIED" ]; then
+          echo "## 🔴 agentverif — MODIFIED" >> $GITHUB_STEP_SUMMARY
+          echo "This agent was modified after signing. Build failed." >> $GITHUB_STEP_SUMMARY
+          exit 1
+        elif [ "$STATUS" = "REVOKED" ]; then
+          echo "## 🔴 agentverif — REVOKED" >> $GITHUB_STEP_SUMMARY
+          exit 1
+        elif [ "$STATUS" = "UNSIGNED" ] && [ "${{ inputs.fail_on_unsigned }}" = "true" ]; then
+          echo "## 🚫 agentverif — UNSIGNED" >> $GITHUB_STEP_SUMMARY
+          echo "Agent is not certified. Certify free at agentverif.com" >> $GITHUB_STEP_SUMMARY
+          exit 1
+        elif [ "$STATUS" = "VERIFIED" ]; then
+          echo "## ✅ agentverif — VERIFIED" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "## ⚠️ agentverif — $STATUS" >> $GITHUB_STEP_SUMMARY
+        fi
