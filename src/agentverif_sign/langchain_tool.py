@@ -76,16 +76,27 @@ def run_verify(
                 f"\u26a0\ufe0f UNREGISTERED \u2014 Offline mode. "
                 f"License ID noted but registry not checked.\nLicense: {license_id}"
             )
-        # Registry-only lookup: build a minimal offline check is not possible
-        # without the zip, so query the registry directly.
-        from agentverif_sign import client
+        import httpx
+        from agentverif_sign.models import VerifyResult
 
         try:
-            # We don't have the hash when given only a license_id;
-            # pass empty string — the server returns the stored status.
-            result = client.verify(license_id, "", "https://api.agentverif.com")
+            resp = httpx.get(
+                f"https://api.agentverif.com/verify/{license_id}",
+                timeout=5.0,
+            )
+            resp.raise_for_status()
+            data = resp.json()
         except Exception as exc:
             return f"\u274c Registry error: {exc}"
+        result = VerifyResult(
+            status=data.get("status", "UNREGISTERED"),
+            license_id=license_id,
+            tier=data.get("tier"),
+            badge=None,
+            message=data.get("message", ""),
+            offline=False,
+            verify_url=f"https://verify.agentverif.com/{license_id}",
+        )
 
     icon = status_icons.get(result.status, "?")
     parts = [f"{icon} {result.status} \u2014 {result.message}"]
