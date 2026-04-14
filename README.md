@@ -1,11 +1,8 @@
-# agentverif — Let's Encrypt for AI Agents
+# AgentVerif — Let's Encrypt for AI Agents
 
-[![CI](https://github.com/trusthandoff/agentverif/actions/workflows/ci.yml/badge.svg)](https://github.com/trusthandoff/agentverif/actions/workflows/ci.yml)
-[![Publish](https://github.com/trusthandoff/agentverif/actions/workflows/publish.yml/badge.svg)](https://github.com/trusthandoff/agentverif/actions/workflows/publish.yml)
-[![PyPI version](https://img.shields.io/pypi/v/agentverif-sign.svg)](https://pypi.org/project/agentverif-sign/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![X (Twitter)](https://img.shields.io/badge/follow-%40agentverif-000000?logo=x&logoColor=white)](https://x.com/agentverif)
-[![Moltbook](https://img.shields.io/badge/Moltbook-agentverif-7B2FFF?logoColor=white)](https://www.moltbook.com/u/agentverif)
+<div align="center">
+[![CI](https://github.com/trusthandoff/agentverif/actions/workflows/ci.yml/badge.svg)](https://github.com/trusthandoff/agentverif/actions/workflows/ci.yml) [![Publish](https://github.com/trusthandoff/agentverif/actions/workflows/publish.yml/badge.svg)](https://github.com/trusthandoff/agentverif/actions/workflows/publish.yml) [![PyPI version](https://img.shields.io/pypi/v/agentverif-sign.svg)](https://pypi.org/project/agentverif-sign/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![X (Twitter)](https://img.shields.io/badge/follow-%40agentverif-000000?logo=x&logoColor=white)](https://x.com/agentverif) [![Moltbook](https://img.shields.io/badge/Moltbook-agentverif-7B2FFF?logoColor=white)](https://www.moltbook.com/u/agentverif)
+</div>
 
 [English] | [中文](README.zh.md)
 
@@ -28,10 +25,14 @@ Auto-block bad agents before execution.
 
 > The 2026 reality: one poisoned agent can destroy your
 > company or reputation overnight.
-> agentverif makes verification as automatic and inevitable
+> AgentVerif makes verification as automatic and inevitable
 > as HTTPS.
 
 ---
+
+```bash
+pip install agentverif-sign
+```
 
 ## Quick start
 
