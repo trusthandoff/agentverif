@@ -1,28 +1,36 @@
-<div align="center">
+# agentverif — AI Agent 的 Let's Encrypt
 
-<a href="https://agentverif.com"><img src="https://raw.githubusercontent.com/trusthandoff/agentverif/main/logo.svg" alt="AgentVerif" width="80" height="92" /></a>
-
-<h1>AgentVerif</h1>
-
-<p>✅ Sell verified agents. Buyers trust verified packages. Unsigned agents get ignored. Add verification in seconds. <a href="https://agentverif.com">agentverif.com</a></p>
-
-<a href="https://github.com/trusthandoff/agentverif/actions/workflows/ci.yml"><img src="https://github.com/trusthandoff/agentverif/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
-<a href="https://github.com/trusthandoff/agentverif/actions/workflows/publish.yml"><img src="https://github.com/trusthandoff/agentverif/actions/workflows/publish.yml/badge.svg" alt="Publish" /></a>
-<a href="https://pypi.org/project/agentverif-sign/"><img src="https://img.shields.io/pypi/v/agentverif-sign.svg" alt="PyPI 版本" /></a>
-<a href="https://x.com/agentverif"><img src="https://img.shields.io/badge/follow-%40agentverif-000000?logo=x&logoColor=white" alt="X (Twitter)" /></a>
-<a href="https://www.moltbook.com/u/agentverif"><img src="https://img.shields.io/badge/Moltbook-agentverif-7B2FFF?logoColor=white" alt="Moltbook" /></a>
-
-</div>
+[![CI](https://github.com/trusthandoff/agentverif/actions/workflows/ci.yml/badge.svg)](https://github.com/trusthandoff/agentverif/actions/workflows/ci.yml)
+[![Publish](https://github.com/trusthandoff/agentverif/actions/workflows/publish.yml/badge.svg)](https://github.com/trusthandoff/agentverif/actions/workflows/publish.yml)
+[![PyPI 版本](https://img.shields.io/pypi/v/agentverif-sign.svg)](https://pypi.org/project/agentverif-sign/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![X (Twitter)](https://img.shields.io/badge/follow-%40agentverif-000000?logo=x&logoColor=white)](https://x.com/agentverif)
+[![Moltbook](https://img.shields.io/badge/Moltbook-agentverif-7B2FFF?logoColor=white)](https://www.moltbook.com/u/agentverif)
 
 [English](README.md) | [中文]
 
 ---
 
-**agentverif-sign** 是 AI Agent 分发的 SSL 证书。供应商签名，买家验证，注册表是唯一可信来源。
+30 秒完成签名。随处可验证。未签名或被篡改的
+Agent 默认被拒绝执行——包括被 Claude 拒绝。
 
-```bash
-pip install agentverif-sign
-```
+**供应商：** 销售可信 Agent，转化率更高，
+抵御盗用与篡改。  
+**买家与运行时**（Claude、Cursor、LangChain 等）：
+在执行前自动拦截有问题的 Agent。
+
+🔴 **立即上线** — MCP 服务器公开可用。Claude 用户今天即可连接：
+`https://mcp.agentverif.com`
+
+[免费锁定您的第一个 Agent →](https://agentverif.com) ·
+[在线体验验证](https://verify.agentverif.com) ·
+[GitHub Action](https://github.com/trusthandoff/agentverif/tree/main/github-action)
+
+> 2026 年的现实：一个被污染的 Agent 可以在一夜之间
+> 毁掉您的公司或声誉。
+> agentverif 让验证像 HTTPS 一样自动且不可避免。
+
+---
 
 ## 快速开始
 
