@@ -132,6 +132,29 @@ def run_sign(zip_path: str, tier: str = "indie") -> str:
     if not zip_path.endswith(".zip"):
         return f"\u274c File must be a .zip: {zip_path}"
 
+    # Scan before signing
+    try:
+        import httpx
+        with open(zip_path, "rb") as f:
+            resp = httpx.post(
+                "https://api.agentverif.com/scan",
+                files={"file": ("agent.zip", f, "application/zip")},
+                timeout=30.0
+            )
+        resp.raise_for_status()
+        scan = resp.json()
+        score = scan.get("score", 0)
+        if not scan.get("passed", False):
+            violations = scan.get("violations", [])
+            msgs = [v.get("message", "") for v in violations[:3]]
+            details = "\n".join(f"  • {m}" for m in msgs) if msgs else ""
+            return (
+                f"❌ Scan failed ({score}/100) — agent not certified.\n"
+                f"Fix these issues before signing:\n{details}"
+            )
+    except Exception as e:
+        return f"❌ Scan error: {str(e)}"
+
     result = subprocess.run(
         ["agentverif-sign", "sign", zip_path, "--tier", tier, "--offline"],
         capture_output=True,
