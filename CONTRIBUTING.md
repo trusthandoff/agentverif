@@ -34,7 +34,22 @@ git clone https://github.com/trusthandoff/agentverif
 cd agentverif
 pip install -e ".[crypto]"
 pip install -r requirements-dev.txt
-pytest tests/
+.venv/bin/python -m pytest tests/ -v
+```
+
+> **Note:** always use the project virtualenv (`.venv/bin/python`), not system
+> `python3`. Dependencies like `slowapi` are only installed in `.venv`.
+> A `Makefile` shortcut is available: `make test`.
+
+## Production service files
+
+The live systemd service files at `/etc/systemd/system/` are NOT automatically
+updated when `systemd/` files in this repo change. After editing
+`systemd/agentverif-api.service` or `systemd/agentverif-mcp.service`, sync manually:
+
+```bash
+cp systemd/agentverif-api.service /etc/systemd/system/agentverif-api.service
+systemctl daemon-reload && systemctl restart agentverif-api
 ```
 
 ## Guidelines

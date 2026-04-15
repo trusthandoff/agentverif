@@ -129,10 +129,10 @@ def test_server_py_violations_include_cwe():
 
 
 def test_server_py_fix_field_non_empty():
-    """The 'fix' field must fall back to OWASP URL, never empty."""
+    """The explanation field must fall back to OWASP URL, never empty."""
     content = (_ROOT / "api" / "server.py").read_text()
     assert "owasp.org" in content
-    assert '"fix"' in content
+    assert '"explanation"' in content
 
 
 # ---------------------------------------------------------------------------
@@ -179,11 +179,10 @@ def test_scan_endpoint_returns_200_with_violations():
     assert v["title"] == "Prompt Injection"
     assert v["explanation"] == "Sanitize all dynamic values before prompt construction."
     assert v["cwe"] == "CWE-20"
-    assert v["fix"] == "Sanitize all dynamic values before prompt construction."
 
 
 def test_scan_endpoint_fix_falls_back_to_owasp_url():
-    """fix field must be OWASP URL when explanation is empty."""
+    """explanation must be OWASP URL when scanner explanation is empty."""
     from fastapi.testclient import TestClient
 
     mod = _import_api_server()
@@ -214,8 +213,8 @@ def test_scan_endpoint_fix_falls_back_to_owasp_url():
 
     data = resp.json()
     v = data["violations"][0]
-    assert v["fix"]  # non-empty
-    assert "owasp.org" in v["fix"]
+    assert v["explanation"]  # non-empty
+    assert "owasp.org" in v["explanation"]
 
 
 # ---------------------------------------------------------------------------

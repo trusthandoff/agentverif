@@ -277,7 +277,6 @@ async def scan_agent(request: Request, file: UploadFile = File(...)):
                 "id": f.get("id"),
                 "title": f.get("title"),
                 "explanation": f.get("explanation") or _OWASP_LLM_REF,
-                "fix": f.get("explanation") or _OWASP_LLM_REF,
                 "cwe": f.get("cwe"),
                 "owasp": f.get("owasp"),
                 "severity": f.get("severity"),

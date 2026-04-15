@@ -41,14 +41,14 @@ def run_verify(
 
     Args:
         license_id: The license ID embedded in a signed package
-                    (e.g. ``"INDIE-a1b2c3"``).
+                    (e.g. ``"AC-84F2-91AB"``).
         zip_path: Local filesystem path to a signed ``.zip`` agent package.
         offline: When ``True`` skips the remote registry check.
 
     Returns:
         A one-line human-readable status string, e.g.::
 
-            "✅ VERIFIED — Signature valid. Tier: pro | ID: INDIE-a1b2c3"
+            "✅ VERIFIED — Signature valid. Tier: pro | ID: AC-84F2-91AB"
     """
     if not license_id and not zip_path:
         return "Error: supply license_id or zip_path"
