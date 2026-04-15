@@ -10,22 +10,26 @@ Endpoints:
 
 from __future__ import annotations
 
+import asyncio
 import contextlib
 import hashlib
 import hmac
 import json
 import os
 import sqlite3
+import tempfile
 from datetime import UTC, datetime
 from typing import Annotated
 
-from fastapi import FastAPI, Header, HTTPException, Request
+from pathlib import Path as FilePath
+from fastapi import FastAPI, Header, HTTPException, Request, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import JSONResponse
 
 # ---------------------------------------------------------------------------
 # App setup
@@ -238,6 +242,61 @@ def health() -> dict:
         "version": "0.1.0",
         "timestamp": _now_utc(),
     }
+
+
+_OWASP_LLM_REF = "https://owasp.org/www-project-top-10-for-large-language-model-applications/"
+
+
+@app.post("/scan", tags=["scan"])
+async def scan_agent(file: UploadFile = File(...)):
+    from scanner import Scanner
+
+    with tempfile.NamedTemporaryFile(suffix=".zip", delete=False) as tmp:
+        content = await file.read()
+        tmp.write(content)
+        tmp_path = tmp.name
+
+    try:
+        scanner = Scanner()
+        loop = asyncio.get_event_loop()
+        try:
+            result = await asyncio.wait_for(
+                loop.run_in_executor(None, lambda: scanner.scan_zip(FilePath(tmp_path))),
+                timeout=25.0,
+            )
+        except asyncio.TimeoutError:
+            return JSONResponse(
+                status_code=408,
+                content={"error": "Scan timeout", "score": None, "passed": False},
+            )
+        score = result["score"]
+        findings = result.get("findings", [])
+        violations = [
+            {
+                "id": f.get("id"),
+                "title": f.get("title"),
+                "explanation": f.get("explanation") or _OWASP_LLM_REF,
+                "fix": f.get("explanation") or _OWASP_LLM_REF,
+                "cwe": f.get("cwe"),
+                "owasp": f.get("owasp"),
+                "severity": f.get("severity"),
+                "file": f.get("file"),
+                "line": f.get("line"),
+                "code_snippet": f.get("code_snippet"),
+                "diff": f.get("diff"),
+            }
+            for f in findings
+            if f.get("severity") in ("critical", "warning")
+        ]
+        return {
+            "score": score,
+            "passed": score >= 70,
+            "violations": violations,
+            "files_analyzed": result.get("files_analyzed", 0),
+            "tier": "indie",
+        }
+    finally:
+        os.unlink(tmp_path)
 
 
 @app.post("/register", tags=["registry"])

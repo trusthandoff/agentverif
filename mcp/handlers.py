@@ -7,8 +7,10 @@ returns a helpful message instead.
 
 from __future__ import annotations
 
+import asyncio
 import os
 import re
+import tempfile
 
 import httpx
 
@@ -206,3 +208,78 @@ async def handle_verify_agent(license_id: str) -> str:
         f"⚠️ Unknown certificate status: {r.status}\n"
         f"Please verify manually at https://verify.agentverif.com/?id={norm}"
     )
+
+
+async def handle_scan_agent(zip_url: str) -> str:
+    """Scan an AI agent ZIP against OWASP LLM Top 10. Always returns a human-readable string."""
+    scan_url = os.getenv("AGENTVERIF_SCAN_URL", "https://api.agentverif.com/scan")
+    tmp_path: str | None = None
+
+    try:
+        # Download the ZIP
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            try:
+                resp = await client.get(zip_url)
+                resp.raise_for_status()
+            except httpx.TimeoutException:
+                return "⏳ ZIP download timed out. Check the URL and try again."
+            except httpx.HTTPStatusError as exc:
+                return f"❌ Failed to download ZIP: HTTP {exc.response.status_code}"
+            except httpx.RequestError as exc:
+                return f"❌ Failed to download ZIP: {exc}"
+
+        with tempfile.NamedTemporaryFile(suffix=".zip", delete=False) as tmp:
+            tmp.write(resp.content)
+            tmp_path = tmp.name
+
+        # scan_zip is synchronous/blocking — run in executor
+        from agentverif_sign.scanner import scan_zip
+
+        loop = asyncio.get_event_loop()
+        result = await loop.run_in_executor(
+            None, lambda: scan_zip(tmp_path, scan_url)
+        )
+
+        # Format markdown response
+        verdict = "PASS ✅" if result.passed else "REFUSED 🔴"
+        lines = [f"## Scan Result: Score {result.score}/100 — {verdict}"]
+
+        if result.source == "offline_fallback":
+            lines.append("")
+            lines.append(
+                "⚠️ WARNING: scan API was unreachable. This result is NOT verified."
+            )
+
+        if not result.passed:
+            lines.append("")
+            lines.append("### Violations (fix required before signing):")
+            for i, v in enumerate(result.violations, 1):
+                title = v.get("title", "Unknown")
+                owasp = v.get("owasp", "")
+                severity = v.get("severity", "")
+                file_ref = v.get("file", "")
+                line_num = v.get("line", "")
+                explanation = v.get("explanation", v.get("title", ""))
+                snippet = v.get("code_snippet", "")
+                lines.append("")
+                lines.append(f"**{i}. {title}**")
+                lines.append(
+                    f"   OWASP: {owasp} | Severity: {severity} | {file_ref}:{line_num}"
+                )
+                lines.append(f"   Fix: {explanation}")
+                if snippet:
+                    lines.append(f"   Code: `{snippet}`")
+        else:
+            lines.append("")
+            lines.append("Ready to sign at sign.agentverif.com")
+
+        return "\n".join(lines)
+
+    except Exception as exc:
+        return f"❌ Scan error: {exc}"
+    finally:
+        if tmp_path:
+            try:
+                os.unlink(tmp_path)
+            except OSError:
+                pass

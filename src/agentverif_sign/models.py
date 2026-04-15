@@ -20,7 +20,12 @@ class SignatureRecord:
     zip_hash: str
     manifest_hash: str
     scan_passed: bool
-    signature: str | None
+    # scan_source values:
+    #   "real"             = genuine API response received
+    #   "offline_fallback" = API unreachable, score assumed 100 — NOT VERIFIED
+    #   "skipped"          = no scan performed
+    scan_source: str = "real"
+    signature: str | None = None
     license_type: str = "single_use"
     transferable: bool = False
     max_activations: int | None = None
@@ -47,6 +52,7 @@ class SignatureRecord:
             zip_hash=data["zip_hash"],
             manifest_hash=data["manifest_hash"],
             scan_passed=data["scan_passed"],
+            scan_source=data.get("scan_source", "real"),
             signature=data.get("signature"),
             license_type=data.get("license_type", "single_use"),
             transferable=data.get("transferable", False),
@@ -82,6 +88,7 @@ class ScanResult:
     passed: bool
     violations: list[dict] = field(default_factory=list)
     tier: str = "indie"
+    source: str = "real"
 
     def to_dict(self) -> dict:
         return asdict(self)

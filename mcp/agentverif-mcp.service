@@ -10,6 +10,7 @@ ExecStart=/root/agentverif/.venv/bin/uvicorn server:app \
 Restart=always
 RestartSec=10
 Environment=AGENTVERIF_API_URL=http://localhost:8090
+Environment=AGENTVERIF_SCAN_URL=https://api.agentverif.com/scan
 StandardOutput=journal
 StandardError=journal
 SyslogIdentifier=agentverif-mcp

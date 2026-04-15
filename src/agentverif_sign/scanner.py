@@ -39,16 +39,26 @@ def scan_zip(zip_path: str, scan_url: str) -> ScanResult:
             passed=score >= _MIN_SCORE,
             violations=violations,
             tier=tier,
+            source="real",
         )
     except requests.exceptions.ConnectionError:
-        logger.debug("Scanner unreachable — assuming scan passed (offline mode)")
-        return ScanResult(score=100, passed=True, violations=[], tier="indie")
+        logging.warning(
+            "scan API unreachable — SIGNATURE.json will contain "
+            "scan_source='offline_fallback'. This package has NOT been scanned."
+        )
+        return ScanResult(score=100, passed=True, violations=[], tier="indie", source="offline_fallback")
     except requests.exceptions.Timeout:
-        logger.debug("Scanner timed out — assuming scan passed (offline mode)")
-        return ScanResult(score=100, passed=True, violations=[], tier="indie")
+        logging.warning(
+            "scan API unreachable — SIGNATURE.json will contain "
+            "scan_source='offline_fallback'. This package has NOT been scanned."
+        )
+        return ScanResult(score=100, passed=True, violations=[], tier="indie", source="offline_fallback")
     except requests.exceptions.HTTPError as exc:
-        logger.debug("Scanner returned %s — assuming scan passed (offline mode)", exc.response.status_code if exc.response is not None else "non-2xx")
-        return ScanResult(score=100, passed=True, violations=[], tier="indie")
+        logging.warning(
+            "scan API unreachable — SIGNATURE.json will contain "
+            "scan_source='offline_fallback'. This package has NOT been scanned."
+        )
+        return ScanResult(score=100, passed=True, violations=[], tier="indie", source="offline_fallback")
 
 
 def list_zip_files(zip_path: str) -> list[str]:

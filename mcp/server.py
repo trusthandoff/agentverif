@@ -88,6 +88,32 @@ async def verify_agent(
     return await handlers.handle_verify_agent(license_id)
 
 
+@mcp.tool(
+    name="scan_agent",
+    description=(
+        "Scan an AI agent ZIP against OWASP LLM Top 10 before signing. "
+        "Accepts a public URL to the ZIP. Returns score, violations with "
+        "explanations and actionable fixes. Score below 70 = refused. "
+        "Run this BEFORE sign_agent."
+    ),
+    annotations=ToolAnnotations(
+        title="Scan Agent for Security Issues",
+        readOnlyHint=True,
+        destructiveHint=False,
+        idempotentHint=False,
+        openWorldHint=True,
+    ),
+)
+async def scan_agent(
+    zip_url: Annotated[
+        str,
+        Field(description="Public URL to the agent ZIP file to scan"),
+    ],
+) -> str:
+    """Scan an AI agent ZIP against OWASP LLM Top 10 before signing."""
+    return await handlers.handle_scan_agent(zip_url)
+
+
 # ---------------------------------------------------------------------------
 # Build the top-level ASGI app
 #
