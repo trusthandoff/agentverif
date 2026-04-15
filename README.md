@@ -10,6 +10,7 @@
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
   [![X (Twitter)](https://img.shields.io/badge/follow-%40agentverif-000000?logo=x&logoColor=white)](https://x.com/agentverif)
   [![Moltbook](https://img.shields.io/badge/Moltbook-agentverif-7B2FFF?logoColor=white)](https://www.moltbook.com/u/agentverif)
+  [![GitHub Marketplace](https://img.shields.io/badge/GitHub%20Marketplace-agentverif%20action-16a34a?style=flat-square&logo=github)](https://github.com/marketplace/actions/agentverif-ai-agent-certification)
 
 </div>
 
@@ -43,6 +44,31 @@ Auto-block bad agents before execution.
 pip install agentverif-sign
 ```
 
+## How it works
+
+Every agent goes through three steps:
+
+```
+SCAN → SIGN → VERIFY
+```
+
+**SCAN** — The agent ZIP is scanned against the OWASP LLM Top 10.
+Score below 70? Refused. No exceptions.
+
+**SIGN** — A cryptographic hash is generated. `SIGNATURE.json` is
+injected. A License ID is issued and registered.
+
+**VERIFY** — Buyers verify at [verify.agentverif.com](https://verify.agentverif.com)
+or via CLI. Tampered agents are flagged instantly.
+
+Three ways to run this workflow:
+
+| Method | Link |
+|--------|------|
+| Web UI (no install) | [sign.agentverif.com](https://sign.agentverif.com) |
+| CLI | `pip install agentverif-sign` |
+| GitHub Action | [GitHub Marketplace →](https://github.com/marketplace/actions/agentverif-ai-agent-certification) |
+
 ## Quick start
 
 **As a vendor — sign your agent:**
@@ -69,6 +95,10 @@ agentverif-sign verify ./agent.zip
 ## Commands
 
 ### `agentverif-sign sign <ZIP>`
+
+> **Note:** signing always runs a full OWASP LLM Top 10 scan first.
+> Packages scoring below 70 are refused before any signature is issued.
+> Use `--offline` to skip registry registration (scan still runs locally).
 
 Signs an agent ZIP package. Runs a security scan, generates `SIGNATURE.json`, and injects it into the zip.
 
@@ -316,3 +346,36 @@ Full docs: [agentverif.com/docs](https://agentverif.com/docs)
 [Contributing](CONTRIBUTING.md)
 
 Why: unsigned agents shouldn't be executed.
+
+---
+
+## GitHub Action
+
+Certify agents automatically in your CI/CD pipeline.
+Available on the [GitHub Marketplace](https://github.com/marketplace/actions/agentverif-ai-agent-certification).
+
+```yaml
+- uses: trusthandoff/agentverif@v1
+  with:
+    mode: sign          # scan runs automatically before signing
+    agent_zip: ./agent.zip
+    tier: indie
+```
+
+The Action runs the full `SCAN → SIGN → VERIFY` workflow.
+Set `fail_on_unsigned: "true"` to block unverified agents from deploying.
+
+---
+
+## Web UI
+
+No CLI required. Upload, scan, and sign directly at
+[sign.agentverif.com](https://sign.agentverif.com).
+Buyers verify at [verify.agentverif.com](https://verify.agentverif.com).
+
+---
+
+> 🛡️ **Be among the First 100 Founding Vendors.**
+> Get lifetime Pro free — worth €100/year, yours at zero cost forever.
+> 23 spots remaining. Once 100 vendors claim this, it's gone.
+> **[Claim your spot → agentverif.com/first100](https://agentverif.com/first100)**
