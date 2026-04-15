@@ -600,3 +600,86 @@ def test_scan_endpoint_timeout_never_returns_score_100():
         )
     data = resp.json()
     assert data.get("score") != 100
+
+
+# ---------------------------------------------------------------------------
+# FIX 9 — /register requires Bearer token auth (same as /revoke)
+# ---------------------------------------------------------------------------
+
+_VALID_REGISTER_PAYLOAD = {
+    "license_id": "AC-AB12-CD34",
+    "tier": "indie",
+    "zip_hash": "sha256:" + "a" * 64,
+    "file_list": ["agent.py"],
+    "issued_at": "2026-04-15T00:00:00Z",
+}
+
+
+def test_register_no_auth_returns_401():
+    """POST /register without Authorization header must return 401."""
+    from fastapi.testclient import TestClient
+
+    mod = _import_api_server()
+    client = TestClient(mod.app, raise_server_exceptions=False)
+    resp = client.post("/register", json=_VALID_REGISTER_PAYLOAD)
+    assert resp.status_code == 401, f"Expected 401, got {resp.status_code}"
+
+
+def test_register_wrong_key_returns_401():
+    """POST /register with wrong Bearer token must return 401."""
+    from fastapi.testclient import TestClient
+
+    mod = _import_api_server()
+    client = TestClient(mod.app, raise_server_exceptions=False)
+    resp = client.post(
+        "/register",
+        json=_VALID_REGISTER_PAYLOAD,
+        headers={"Authorization": "Bearer wrong-key-totally-fake"},
+    )
+    assert resp.status_code == 401, f"Expected 401, got {resp.status_code}"
+
+
+def test_register_malformed_auth_returns_401():
+    """POST /register with malformed auth (no Bearer prefix) must return 401."""
+    from fastapi.testclient import TestClient
+
+    mod = _import_api_server()
+    client = TestClient(mod.app, raise_server_exceptions=False)
+    resp = client.post(
+        "/register",
+        json=_VALID_REGISTER_PAYLOAD,
+        headers={"Authorization": "not-bearer-format"},
+    )
+    assert resp.status_code == 401
+
+
+def test_register_correct_key_returns_200():
+    """POST /register with correct Bearer token must succeed."""
+    from fastapi.testclient import TestClient
+
+    test_key = "test-api-key-for-register"
+    mod = _import_api_server()
+    with patch.object(mod, "_EXPECTED_KEY", test_key):
+        client = TestClient(mod.app, raise_server_exceptions=False)
+        resp = client.post(
+            "/register",
+            json=_VALID_REGISTER_PAYLOAD,
+            headers={"Authorization": f"Bearer {test_key}"},
+        )
+    assert resp.status_code == 200, f"Expected 200, got {resp.status_code}: {resp.text}"
+    assert resp.json().get("license_id") == "AC-AB12-CD34"
+
+
+def test_scan_endpoint_has_rate_limit_decorator():
+    """POST /scan must have a rate limit decorator (10/minute)."""
+    content = (_ROOT / "api" / "server.py").read_text()
+    lines = content.split("\n")
+    for i, line in enumerate(lines):
+        if "async def scan_agent" in line:
+            context = "\n".join(lines[max(0, i - 4) : i])
+            assert "limiter" in context or "limit" in context, (
+                f"No @limiter.limit decorator found before scan_agent:\n{context}"
+            )
+            break
+    else:
+        pytest.fail("scan_agent function not found in server.py")

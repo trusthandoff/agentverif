@@ -248,7 +248,8 @@ _OWASP_LLM_REF = "https://owasp.org/www-project-top-10-for-large-language-model-
 
 
 @app.post("/scan", tags=["scan"])
-async def scan_agent(file: UploadFile = File(...)):
+@limiter.limit("10/minute")
+async def scan_agent(request: Request, file: UploadFile = File(...)):
     from scanner import Scanner
 
     with tempfile.NamedTemporaryFile(suffix=".zip", delete=False) as tmp:
@@ -301,8 +302,27 @@ async def scan_agent(file: UploadFile = File(...)):
 
 @app.post("/register", tags=["registry"])
 @limiter.limit("10/minute")
-def register(request: Request, req: RegisterRequest) -> dict:
-    """Register a signed package. Called by the agentverif-sign CLI."""
+def register(
+    request: Request,
+    req: RegisterRequest,
+    authorization: str | None = Header(None),
+) -> dict:
+    """Internal endpoint — called only after a successful scan+sign.
+
+    Never expose to clients directly. Requires the same Bearer token
+    as /revoke. Unauthenticated calls are refused with 401.
+    """
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="API key required")
+    api_key = authorization.removeprefix("Bearer ").strip()
+    if not api_key:
+        raise HTTPException(status_code=401, detail="API key required")
+    if not _EXPECTED_KEY or not hmac.compare_digest(
+        hashlib.sha256(api_key.encode()).digest(),
+        hashlib.sha256(_EXPECTED_KEY.encode()).digest(),
+    ):
+        raise HTTPException(status_code=401, detail="Invalid API key")
+
     file_list_json = json.dumps(req.file_list)
     file_count = len(req.file_list)
 

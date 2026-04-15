@@ -192,3 +192,7 @@ def badge_cmd(license_id: str, fmt: str, tier: str, expires_at: str | None) -> N
 
     badge = render_badge(tier, license_id=license_id, expires_at=expires_at, fmt=fmt)
     click.echo(badge)
+
+
+if __name__ == "__main__":
+    main()

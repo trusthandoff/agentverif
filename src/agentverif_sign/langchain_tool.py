@@ -7,7 +7,7 @@ Usage::
 
     from agentverif_sign.langchain_tool import verify_tool
 
-    result = verify_tool.invoke({"license_id": "INDIE-abc123"})
+    result = verify_tool.invoke({"license_id": "AC-84F2-91AB"})
     # or
     result = verify_tool.invoke({"zip_path": "/path/to/agent.zip"})
 

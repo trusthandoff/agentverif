@@ -317,7 +317,7 @@ See [`github-action/README.md`](github-action/README.md) for full docs.
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `AGENTVERIF_API_KEY` | — | Pro/Enterprise API key |
-| `AGENTVERIF_SIGN_URL` | `https://sign.agentverif.com` | Registry URL |
+| `AGENTVERIF_SIGN_URL` | `https://api.agentverif.com` | Registry URL |
 | `AGENTVERIF_SCAN_URL` | `https://api.agentverif.com/scan` | Scanner URL |
 | `AGENTVERIF_OFFLINE` | — | Set to any value to skip all registry calls |
 

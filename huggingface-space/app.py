@@ -4,7 +4,7 @@ import os
 import shutil
 
 
-def sign_agent(zip_file, tier="indie"):
+def sign_agent(zip_file, tier="indie"):  # tier fixed to indie — see UI note below
     if zip_file is None:
         return "❌ No file uploaded", None
 
@@ -100,15 +100,16 @@ Upload your agent ZIP → get back a certified, tamper-proof package.
                 label="Upload agent ZIP",
                 file_types=[".zip"]
             )
-            tier_input = gr.Dropdown(
-                choices=["indie", "pro", "enterprise"],
-                value="indie",
-                label="Signing tier"
-            )
+            gr.Markdown("**Tier:** Indie (free) — hash-signed, no registry")
+            tier_input = gr.Textbox(value="indie", visible=False)
             sign_btn = gr.Button(
                 "🔒 Sign my agent →",
                 variant="primary",
                 size="lg"
+            )
+            gr.Markdown(
+                "**Pro & Enterprise:** use the CLI → "
+                "`agentverif-sign sign ./agent.zip`"
             )
 
         with gr.Column(scale=1):

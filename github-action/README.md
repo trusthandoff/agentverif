@@ -86,3 +86,11 @@ jobs:
 ## Free tier
 Indie plan is free forever.
 Sign up at agentverif.com
+
+## Limitations
+
+This action verifies hash-level integrity for all tiers.
+Registry-level checks (revocation status, public listing)
+require Pro tier via the CLI.
+REVOKED licenses appear as UNREGISTERED in offline mode.
+For registry operations: use `agentverif-sign` CLI directly.

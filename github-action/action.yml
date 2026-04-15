@@ -48,6 +48,11 @@ runs:
       env:
         AGENTVERIF_API_KEY: ${{ inputs.api_key }}
       run: |
+        # Note: this action uses --offline mode.
+        # Hash-level tamper detection works for all tiers.
+        # Registry operations (revocation checks, public listing)
+        # require Pro tier via CLI: agentverif-sign sign ./agent.zip
+        # See: https://agentverif.com/docs
         SIGN_OUTPUT=$(agentverif-sign sign "${{ inputs.agent_zip }}" \
           --tier "${{ inputs.tier }}" \
           --offline 2>&1)

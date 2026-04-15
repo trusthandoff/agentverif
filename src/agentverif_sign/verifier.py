@@ -32,7 +32,7 @@ def extract_signature(zip_path: str) -> SignatureRecord | None:
 def verify_zip(
     zip_path: str,
     offline: bool = False,
-    sign_url: str = "https://sign.agentverif.com",
+    sign_url: str = "https://api.agentverif.com",
 ) -> VerifyResult:
     """Verify a signed zip and return a VerifyResult."""
     from agentverif_sign.badges import render_badge
