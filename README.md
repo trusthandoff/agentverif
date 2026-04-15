@@ -223,16 +223,20 @@ verify agents before execution.
 ```
 
 ### What it does
-Once connected, Claude automatically calls `verify_agent`
-whenever you mention running, installing, or trusting an AI agent.
 
-| Status | Meaning |
-|--------|---------|
-| ✅ VERIFIED | Certified, safe to execute |
-| ⚠️ UNREGISTERED | Signed locally, not in public registry |
-| 🚫 UNSIGNED | No certificate, unknown risk |
-| 🔴 TAMPERED | Modified after signing — do not execute |
-| 🔴 REVOKED | Licence cancelled by issuer — do not execute |
+Two tools, full SCAN → SIGN → VERIFY workflow:
+
+| Tool | When Claude calls it | Returns |
+|------|---------------------|---------|
+| `scan_agent` | "scan this agent ZIP" | OWASP score 0–100, violations, fixes |
+| `verify_agent` | "run / install / trust this agent" | VERIFIED / TAMPERED / UNSIGNED + hash |
+
+**Workflow:**
+1. Vendor: Claude calls `scan_agent(zip_url)` — score ≥ 70 required to sign
+2. Vendor: signs at [sign.agentverif.com](https://sign.agentverif.com)
+3. Buyer: Claude calls `verify_agent(license_id)` — instant tamper check
+
+Connect: `https://mcp.agentverif.com`
 
 ### Examples
 

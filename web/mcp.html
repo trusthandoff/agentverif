@@ -520,6 +520,23 @@
           </p>
         </header>
 
+        <div aria-label="Three-step process" style="display:flex;align-items:center;justify-content:center;gap:12px;margin:0 0 40px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:10px;background:var(--accent);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 22px;">
+            <span style="font-size:1.0625rem;font-weight:800;color:var(--primary);letter-spacing:-0.01em;">SCAN</span>
+            <span style="font-size:0.8125rem;color:var(--text-muted);">OWASP LLM Top 10</span>
+          </div>
+          <span style="font-size:1.375rem;color:var(--text-muted);font-weight:600;" aria-hidden="true">&rarr;</span>
+          <div style="display:flex;align-items:center;gap:10px;background:var(--accent);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 22px;">
+            <span style="font-size:1.0625rem;font-weight:800;color:var(--primary);letter-spacing:-0.01em;">SIGN</span>
+            <span style="font-size:0.8125rem;color:var(--text-muted);">License + hash</span>
+          </div>
+          <span style="font-size:1.375rem;color:var(--text-muted);font-weight:600;" aria-hidden="true">&rarr;</span>
+          <div style="display:flex;align-items:center;gap:10px;background:var(--accent);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 22px;">
+            <span style="font-size:1.0625rem;font-weight:800;color:var(--primary);letter-spacing:-0.01em;">VERIFY</span>
+            <span style="font-size:0.8125rem;color:var(--text-muted);">Registry check</span>
+          </div>
+        </div>
+
         <div class="grid-3">
 
           <article class="step-card">
@@ -701,6 +718,56 @@ Ask the vendor to certify free:
     </section>
 
     <!-- =====================================================
+         SCAN EXAMPLES — 2 CARDS
+         ===================================================== -->
+    <section id="scan-examples" class="section section-alt" aria-labelledby="scan-examples-heading">
+      <div class="container">
+        <header class="section-header centered">
+          <span class="section-tag">Scan</span>
+          <h2 class="section-title" id="scan-examples-heading">Scan before you sign</h2>
+          <p class="section-subtitle">
+            Claude calls <code style="font-family:var(--font-mono);font-size:0.84rem;background:var(--accent);color:var(--primary-dark);padding:1px 5px;border-radius:3px;">scan_agent</code> to check for OWASP LLM Top 10 violations before any certificate is issued.
+          </p>
+        </header>
+
+        <div class="examples-grid" style="grid-template-columns:repeat(2,1fr);">
+
+          <!-- Scan refused -->
+          <div class="example-card" role="region" aria-label="Example: Scan refused">
+            <div class="example-label">Scan refused &mdash; score below 70</div>
+            <div class="example-body">
+              <p class="example-user">"Scan this agent: https://example.com/agent.zip"</p>
+              <code class="example-response"><span class="cli-err">## Scan Result: Score 45/100 — REFUSED 🔴</span>
+
+<span class="cli-warn">LLM01 — Prompt injection via user_input (critical)</span>
+Sanitise all user-supplied strings before
+passing to the LLM context.
+
+<span class="cli-warn">LLM06 — Sensitive data in logs (warning)</span>
+Remove PII from debug logging.
+
+<span style="color:#64748b;">Score below 70 — signing refused.</span></code>
+            </div>
+          </div>
+
+          <!-- Scan passed -->
+          <div class="example-card" role="region" aria-label="Example: Scan passed">
+            <div class="example-label">Scan passed &mdash; ready to sign</div>
+            <div class="example-body">
+              <p class="example-user">"Scan this agent: https://example.com/safe-agent.zip"</p>
+              <code class="example-response"><span class="cli-cmd">## Scan Result: Score 88/100 — PASS ✅</span>
+
+No critical or warning violations found.
+
+<span style="color:#64748b;">Ready to sign at sign.agentverif.com</span></code>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
          STATUS REFERENCE TABLE
          ===================================================== -->
     <section id="statuses" class="section section-alt" aria-labelledby="status-heading">
@@ -745,6 +812,42 @@ Ask the vendor to certify free:
                 <td><span class="status-danger">🔴 REVOKED</span></td>
                 <td>Licence cancelled by issuer</td>
                 <td class="status-danger">Do NOT execute</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         TOOLS REFERENCE TABLE
+         ===================================================== -->
+    <section id="tools" class="section" aria-labelledby="tools-heading">
+      <div class="container">
+        <header class="section-header centered">
+          <span class="section-tag">Tools</span>
+          <h2 class="section-title" id="tools-heading">Available MCP tools</h2>
+          <p class="section-subtitle">Both tools are available as soon as you connect.</p>
+        </header>
+        <div class="status-table-wrap">
+          <table class="status-table" aria-label="MCP tools reference">
+            <thead>
+              <tr>
+                <th>Tool</th>
+                <th>When Claude calls it</th>
+                <th>What it returns</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="status-safe">scan_agent</span></td>
+                <td>You ask to scan an agent ZIP URL</td>
+                <td>Score 0&ndash;100, OWASP violations with explanations and fixes</td>
+              </tr>
+              <tr>
+                <td><span class="status-safe">verify_agent</span></td>
+                <td>You mention running, installing, or trusting an AI agent</td>
+                <td>VERIFIED / UNREGISTERED / UNSIGNED / TAMPERED / REVOKED &plus; hash check</td>
               </tr>
             </tbody>
           </table>

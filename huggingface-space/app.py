@@ -7,7 +7,7 @@ import re
 
 def sign_agent(zip_file, tier="indie"):
     if zip_file is None:
-        return None, "❌ No file uploaded"
+        return "❌ No file uploaded", None
 
     with tempfile.TemporaryDirectory() as tmpdir:
         zip_path = os.path.join(tmpdir, "agent.zip")
@@ -27,7 +27,16 @@ def sign_agent(zip_file, tier="indie"):
         hash_match = re.search(r"Hash:\s+(sha256:[a-f0-9]+)", stdout)
 
         if result.returncode != 0 or not license_match:
-            return None, f"❌ Signing failed:\n{stdout}"
+            scan_fail = re.search(r"Scan failed \((\d+)/100\)", stdout)
+            if scan_fail:
+                score = scan_fail.group(1)
+                return (
+                    f"🔴 **Scan refused** — score {score}/100 (minimum 70 required)\n\n"
+                    f"Fix OWASP LLM Top 10 violations before signing:\n\n"
+                    f"```\n{stdout.strip()}\n```",
+                    None,
+                )
+            return f"❌ Signing failed:\n{stdout}", None
 
         license_id = license_match.group(1)
         zip_hash = hash_match.group(1)[:28] + "..." if hash_match else "N/A"
@@ -41,18 +50,30 @@ def sign_agent(zip_file, tier="indie"):
         output_path = os.path.join(output_dir, f"{license_id}.zip")
         shutil.copy(zip_path, output_path)
 
+        # Scan summary line
+        scan_score = re.search(r"[Ss]core[:\s]+(\d+)/100", stdout)
+        scan_line = (
+            f"\n**OWASP scan:** ✅ passed (score {scan_score.group(1)}/100)"
+            if scan_score else "\n**OWASP scan:** ✅ passed"
+        )
+        offline_warn = (
+            "\n\n⚠️ Scan API unreachable — result NOT verified by registry "
+            "(scan_source: offline_fallback)."
+            if "offline_fallback" in stdout else ""
+        )
+
         summary = f"""✅ **Agent signed successfully!**
 
 **License ID:** `{license_id}`
 **Tier:** {tier}
 **Hash:** `{zip_hash}`
-**Issuer:** agentverif.com
+**Issuer:** agentverif.com{scan_line}{offline_warn}
 
 🔗 Verify: https://verify.agentverif.com/?id={license_id}
 
 Download your signed ZIP below ↓"""
 
-        return output_path, summary
+        return summary, output_path
 
 with gr.Blocks(title="AgentVerif — Sign your AI Agent",
                theme=gr.themes.Soft()) as demo:
