@@ -50,10 +50,20 @@ runs:
       run: |
         SIGN_OUTPUT=$(agentverif-sign sign "${{ inputs.agent_zip }}" \
           --tier "${{ inputs.tier }}" \
-          --offline)
+          --offline 2>&1)
+        SIGN_EXIT=$?
 
         LICENSE_ID=$(echo "$SIGN_OUTPUT" | grep "^License:" | awk '{print $2}')
         ZIP_HASH=$(echo "$SIGN_OUTPUT" | grep "^Hash:" | awk '{print $2}')
+
+        if [ "$SIGN_EXIT" != "0" ]; then
+          echo "## ❌ agentverif — Scan/Sign Failed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "$SIGN_OUTPUT" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          exit 1
+        fi
 
         echo "license_id=$LICENSE_ID" >> $GITHUB_OUTPUT
         echo "zip_hash=$ZIP_HASH" >> $GITHUB_OUTPUT

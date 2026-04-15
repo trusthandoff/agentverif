@@ -1,4 +1,4 @@
-"""Backend API client for sign.agentverif.com."""
+"""Backend API client for api.agentverif.com."""
 
 from __future__ import annotations
 
@@ -80,7 +80,7 @@ def verify(license_id: str, zip_hash: str, sign_url: str) -> VerifyResult:
     data = response.json()
     status = data.get("status", "UNREGISTERED")
     tier = data.get("tier")
-    verify_url = f"https://verify.agentverif.com/{license_id}"
+    verify_url = f"https://verify.agentverif.com/?id={license_id}"
     badge = render_badge(tier, license_id) if tier else None
     return VerifyResult(
         status=status,

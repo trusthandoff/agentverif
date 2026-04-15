@@ -1,9 +1,8 @@
 import gradio as gr
-import subprocess
 import tempfile
 import os
 import shutil
-import re
+
 
 def sign_agent(zip_file, tier="indie"):
     if zip_file is None:
@@ -13,67 +12,76 @@ def sign_agent(zip_file, tier="indie"):
         zip_path = os.path.join(tmpdir, "agent.zip")
         shutil.copy(zip_file.name, zip_path)
 
-        result = subprocess.run(
-            ["agentverif-sign", "sign", zip_path,
-             "--tier", tier, "--offline"],
-            capture_output=True, text=True, cwd=tmpdir
-        )
+        scan_url = os.getenv("AGENTVERIF_SCAN_URL", "https://api.agentverif.com/scan")
 
-        # Parse license ID and hash from CLI stdout
-        # CLI outputs: "License: AC-XXXX-XXXX" and "Hash: sha256:..."
-        stdout = result.stdout + result.stderr
+        # Step 1 — Scan
+        from agentverif_sign.scanner import scan_zip
+        scan_result = scan_zip(zip_path, scan_url)
 
-        license_match = re.search(r"License:\s+([\w-]+)", stdout)
-        hash_match = re.search(r"Hash:\s+(sha256:[a-f0-9]+)", stdout)
+        if not scan_result.passed:
+            lines = [
+                f"🔴 **Scan refused** — score: {scan_result.score}/100 "
+                f"(minimum 70 required)\n",
+                "Fix OWASP LLM Top 10 violations before signing:\n",
+                "**Violations:**",
+            ]
+            for i, v in enumerate(scan_result.violations, 1):
+                owasp = v.get("owasp", "?")
+                severity = v.get("severity", "?")
+                title = v.get("title", v.get("id", "Unknown violation"))
+                explanation = v.get("explanation", "")
+                fix = v.get("fix", explanation)
+                lines.append(f"\n**{i}. [{owasp} · {severity}] {title}**")
+                if explanation:
+                    lines.append(f"   {explanation}")
+                if fix and fix != explanation:
+                    lines.append(f"   Fix: {fix}")
 
-        if result.returncode != 0 or not license_match:
-            scan_fail = re.search(r"Scan failed \((\d+)/100\)", stdout)
-            if scan_fail:
-                score = scan_fail.group(1)
-                return (
-                    f"🔴 **Scan refused** — score {score}/100 (minimum 70 required)\n\n"
-                    f"Fix OWASP LLM Top 10 violations before signing:\n\n"
-                    f"```\n{stdout.strip()}\n```",
-                    None,
+            offline_warn = ""
+            if scan_result.source == "offline_fallback":
+                offline_warn = (
+                    "\n\n⚠️ Warning: scan API unreachable — result not verified "
+                    "by registry (scan_source: offline_fallback)."
                 )
-            return f"❌ Signing failed:\n{stdout}", None
 
-        license_id = license_match.group(1)
-        zip_hash = hash_match.group(1)[:28] + "..." if hash_match else "N/A"
+            return "\n".join(lines) + offline_warn, None
 
-        # Output signed zip path
-        signed_path = os.path.join(tmpdir, "agent_signed.zip")
-        shutil.copy(zip_path, signed_path)
+        # Step 2 — Sign directly (no subprocess, no double scan)
+        from agentverif_sign.signer import inject_signature, sign_zip
+        try:
+            record = sign_zip(zip_path, tier=tier, scan_result=scan_result)
+            inject_signature(zip_path, record)
+        except Exception as exc:
+            return f"❌ Signing failed: {exc}", None
 
-        # Move to a permanent temp location so Gradio can serve it
+        # Move signed zip to a persistent temp dir so Gradio can serve it
         output_dir = tempfile.mkdtemp()
-        output_path = os.path.join(output_dir, f"{license_id}.zip")
+        output_path = os.path.join(output_dir, f"{record.license_id}.zip")
         shutil.copy(zip_path, output_path)
 
-        # Scan summary line
-        scan_score = re.search(r"[Ss]core[:\s]+(\d+)/100", stdout)
-        scan_line = (
-            f"\n**OWASP scan:** ✅ passed (score {scan_score.group(1)}/100)"
-            if scan_score else "\n**OWASP scan:** ✅ passed"
-        )
+    offline_warn = ""
+    if scan_result.source == "offline_fallback":
         offline_warn = (
-            "\n\n⚠️ Scan API unreachable — result NOT verified by registry "
+            "\n\n⚠️ Warning: scan API unreachable — result NOT verified by registry "
             "(scan_source: offline_fallback)."
-            if "offline_fallback" in stdout else ""
         )
 
-        summary = f"""✅ **Agent signed successfully!**
+    zip_hash_short = record.zip_hash[:31] + "..." if record.zip_hash else "N/A"
 
-**License ID:** `{license_id}`
+    summary = f"""✅ **Agent signed successfully!**
+
+**License ID:** `{record.license_id}`
 **Tier:** {tier}
-**Hash:** `{zip_hash}`
-**Issuer:** agentverif.com{scan_line}{offline_warn}
+**Hash:** `{zip_hash_short}`
+**Issuer:** agentverif.com
+**OWASP scan:** ✅ passed — score: {scan_result.score}/100{offline_warn}
 
-🔗 Verify: https://verify.agentverif.com/?id={license_id}
+🔗 Verify: https://verify.agentverif.com/?id={record.license_id}
 
 Download your signed ZIP below ↓"""
 
-        return summary, output_path
+    return summary, output_path
+
 
 with gr.Blocks(title="AgentVerif — Sign your AI Agent",
                theme=gr.themes.Soft()) as demo:

@@ -95,7 +95,7 @@ def run_verify(
             badge=None,
             message=data.get("message", ""),
             offline=False,
-            verify_url=f"https://verify.agentverif.com/{license_id}",
+            verify_url=f"https://verify.agentverif.com/?id={license_id}",
         )
 
     icon = status_icons.get(result.status, "?")
@@ -120,8 +120,6 @@ def run_sign(zip_path: str, tier: str = "indie") -> str:
         Human-readable string with license ID, hash, verify URL
     """
     import os
-    import re
-    import subprocess
 
     if not zip_path:
         return "\u274c No ZIP path provided"
@@ -132,42 +130,37 @@ def run_sign(zip_path: str, tier: str = "indie") -> str:
     if not zip_path.endswith(".zip"):
         return f"\u274c File must be a .zip: {zip_path}"
 
-    # Scan before signing
+    # Step 1 — Scan
     from agentverif_sign.scanner import scan_zip
+
     scan_result = scan_zip(
         zip_path,
         os.getenv("AGENTVERIF_SCAN_URL", "https://api.agentverif.com/scan"),
     )
     if not scan_result.passed:
         msgs = [v.get("explanation", v.get("title", "")) for v in scan_result.violations[:3]]
-        details = "\n".join(f"  • {m}" for m in msgs) if msgs else ""
+        details = "\n".join(f"  \u2022 {m}" for m in msgs) if msgs else ""
         return (
-            f"❌ Scan failed ({scan_result.score}/100) — agent not certified.\n"
+            f"\u274c Scan failed ({scan_result.score}/100) \u2014 agent not certified.\n"
             f"Fix these issues before signing:\n{details}"
         )
 
-    result = subprocess.run(
-        ["agentverif-sign", "sign", zip_path, "--tier", tier, "--offline"],
-        capture_output=True,
-        text=True,
-    )
+    # Step 2 — Sign directly (no subprocess, no double scan)
+    from agentverif_sign.signer import inject_signature, sign_zip
 
-    stdout = result.stdout + result.stderr
-    license_match = re.search(r"License:\s+([\w-]+)", stdout)
-    hash_match = re.search(r"Hash:\s+(sha256:[a-f0-9]+)", stdout)
+    try:
+        record = sign_zip(zip_path, tier=tier, scan_result=scan_result)
+        inject_signature(zip_path, record)
+    except Exception as exc:
+        return f"\u274c Signing failed: {exc}"
 
-    if result.returncode != 0 or not license_match:
-        return f"\u274c Signing failed:\n{stdout.strip()}"
-
-    license_id = license_match.group(1)
-    zip_hash = (hash_match.group(1)[:28] + "...") if hash_match else "N/A"
-
+    zip_hash_short = (record.zip_hash[:28] + "...") if record.zip_hash else "N/A"
     return (
         f"\u2705 SIGNED \u2014 agentverif certified\n"
-        f"License: {license_id}\n"
+        f"License: {record.license_id}\n"
         f"Tier: {tier}\n"
-        f"Hash: {zip_hash}\n"
-        f"Verify: https://verify.agentverif.com/?id={license_id}"
+        f"Hash: {zip_hash_short}\n"
+        f"Verify: https://verify.agentverif.com/?id={record.license_id}"
     )
 
 

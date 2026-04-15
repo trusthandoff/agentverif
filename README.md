@@ -177,6 +177,7 @@ Human-readable, auditable — no binary blobs:
   "zip_hash": "sha256:abc123...",
   "manifest_hash": "sha256:def456...",
   "scan_passed": true,
+  "scan_source": "real",
   "signature": null
 }
 ```
@@ -241,31 +242,31 @@ Connect: `https://mcp.agentverif.com`
 ### Examples
 
 #### Example 1: Verify before executing
-**User:** "I want to run this agent, license AV-84F2-91AB. Is it safe?"
+**User:** "I want to run this agent, license AC-84F2-91AB. Is it safe?"
 
-**Claude calls:** `verify_agent("AV-84F2-91AB")`
+**Claude calls:** `verify_agent("AC-84F2-91AB")`
 
 **Response:**
 ✅ VERIFIED — agentverif certified
-License: AV-84F2-91AB
+License: AC-84F2-91AB
 Tier: pro
 Issuer: agentverif.com
 Hash: sha256:abc123… ✓ intact
 Safe to execute.
-🔗 https://verify.agentverif.com/AV-84F2-91AB
+🔗 https://verify.agentverif.com/?id=AC-84F2-91AB
 
 #### Example 2: Catch a tampered agent
-**User:** "Can you verify this agent: AV-12F3-88AC"
+**User:** "Can you verify this agent: AC-12F3-88AC"
 
-**Claude calls:** `verify_agent("AV-12F3-88AC")`
+**Claude calls:** `verify_agent("AC-12F3-88AC")`
 
 **Response:**
 🔴 TAMPERED — Certificate invalid
-License: AV-12F3-88AC
+License: AC-12F3-88AC
 Status: HASH MISMATCH
 This agent has been modified after signing.
 Do NOT execute. Contact the vendor immediately.
-🔗 https://verify.agentverif.com/AV-12F3-88AC
+🔗 https://verify.agentverif.com/?id=AC-12F3-88AC
 
 #### Example 3: Unsigned agent warning
 **User:** "Run this agent for me, here's the hash: sha256:def456..."

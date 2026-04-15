@@ -9,7 +9,7 @@ from agentverif_sign.config import Config
 
 def test_config_defaults():
     cfg = Config.from_env()
-    assert cfg.sign_url == "https://sign.agentverif.com"
+    assert cfg.sign_url == "https://api.agentverif.com"
     assert cfg.scan_url == "https://api.agentverif.com/scan"
     assert cfg.offline is False
 

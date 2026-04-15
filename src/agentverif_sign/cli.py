@@ -64,7 +64,16 @@ def sign_cmd(zip_path: str, tier: str, api_key: str | None, offline: bool) -> No
     if not scan_result.passed:
         click.echo(f"\u274c Scan failed (score={scan_result.score}/100):", err=True)
         for v in scan_result.violations:
-            click.echo(f"  - {v.get('rule', v)}", err=True)
+            click.echo(
+                f"  [{v.get('owasp', '?')} \u00b7 {v.get('severity', '?')}] "
+                f"{v.get('title', v.get('id', 'Unknown violation'))}",
+                err=True,
+            )
+            if v.get("explanation"):
+                click.echo(f"  \u2192 {v.get('explanation')}", err=True)
+            if v.get("fix") and v.get("fix") != v.get("explanation"):
+                click.echo(f"  Fix: {v.get('fix')}", err=True)
+            click.echo("", err=True)
         click.echo("Signing refused. Fix violations and try again.", err=True)
         sys.exit(1)
 

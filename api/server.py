@@ -136,7 +136,7 @@ _FileItem = Annotated[str, Field(max_length=500)]
 
 
 class RegisterRequest(BaseModel):
-    license_id: str = Field(..., max_length=20, pattern=r"^AV-[A-Z0-9-]+$", description="License ID, e.g. AV-84F2-91AB")
+    license_id: str = Field(..., max_length=20, pattern=r"^AC-(?:ENT-)?[A-Z0-9]{4}-[A-Z0-9]{4}$", description="License ID, e.g. AC-84F2-91AB")
     tier: str = Field(..., description="indie | pro | enterprise")
     zip_hash: str = Field(..., description="sha256:<hex>")
     file_list: list[_FileItem] = Field(default_factory=list, max_length=1000)
@@ -156,12 +156,12 @@ class RegisterRequest(BaseModel):
 
 
 class RevokeRequest(BaseModel):
-    license_id: str = Field(..., max_length=20, pattern=r"^AV-[A-Z0-9-]+$")
+    license_id: str = Field(..., max_length=20, pattern=r"^AC-(?:ENT-)?[A-Z0-9]{4}-[A-Z0-9]{4}$")
     reason: str | None = Field(None, max_length=500)
 
 
 class VerifyBody(BaseModel):
-    license_id: str = Field(..., max_length=20, pattern=r"^AV-[A-Z0-9-]+$")
+    license_id: str = Field(..., max_length=20, pattern=r"^AC-(?:ENT-)?[A-Z0-9]{4}-[A-Z0-9]{4}$")
     zip_hash: str | None = None
     buyer_id: str | None = None
 
@@ -258,7 +258,7 @@ async def scan_agent(file: UploadFile = File(...)):
 
     try:
         scanner = Scanner()
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
         try:
             result = await asyncio.wait_for(
                 loop.run_in_executor(None, lambda: scanner.scan_zip(FilePath(tmp_path))),

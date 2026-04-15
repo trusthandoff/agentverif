@@ -336,50 +336,6 @@
       line-height: 1.6;
     }
 
-    /* ======== COUNTER BELOW FORM ======== */
-    .counter-wrap {
-      margin-top: 24px;
-      text-align: center;
-    }
-
-    .counter-line {
-      font-size: 1rem;
-      color: #9ca3af;
-      font-weight: 500;
-      margin: 0 0 10px;
-    }
-
-    .counter-num {
-      font-size: 1.8rem;
-      font-weight: 900;
-      color: #dc2626;
-      display: inline-block;
-      vertical-align: middle;
-      line-height: 1;
-    }
-
-    .progress-track {
-      background: #1e293b;
-      border-radius: 999px;
-      height: 8px;
-      max-width: 400px;
-      margin: 0 auto;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      background: #dc2626;
-      width: 77%;
-      height: 100%;
-      border-radius: 999px;
-      animation: progressPulse 2s ease-in-out infinite alternate;
-    }
-
-    @keyframes progressPulse {
-      from { opacity: 0.8; }
-      to   { opacity: 1; }
-    }
-
     /* ======== SECTION COMMONS ======== */
     .page-section {
       padding: 5rem 0;
@@ -825,16 +781,6 @@
 
             </div><!-- /.form-card -->
 
-            <!-- Live counter below form card -->
-            <div class="counter-wrap">
-              <p class="counter-line">
-                <span class="counter-num" id="counter-value">77</span>/100 founding vendors have claimed their spot
-              </p>
-              <div class="progress-track">
-                <div class="progress-fill" id="progress-fill"></div>
-              </div>
-            </div>
-
           </div><!-- /.hero-right -->
 
         </div><!-- /.hero-split -->
@@ -1096,30 +1042,6 @@
     (function() {
       var el = document.getElementById('spot-num');
       if (el) el.textContent = spotNum;
-    })();
-
-    // Live counter animation — starts at 77, increments randomly, stops at 99
-    (function() {
-      var counterValue = 77;
-      var counterEl = document.getElementById('counter-value');
-      var progressEl = document.getElementById('progress-fill');
-
-      function updateCounter() {
-        if (counterEl) counterEl.textContent = counterValue;
-        if (progressEl) progressEl.style.width = counterValue + '%';
-      }
-
-      function scheduleTick() {
-        if (counterValue >= 99) return;
-        var delay = Math.floor(Math.random() * (90000 - 30000 + 1)) + 30000;
-        setTimeout(function() {
-          counterValue++;
-          updateCounter();
-          scheduleTick();
-        }, delay);
-      }
-
-      scheduleTick();
     })();
 
     // Countdown timer — 5:00, shows modal at 0:00

@@ -676,13 +676,13 @@
           <div class="example-card" role="region" aria-label="Example: Verify before executing">
             <div class="example-label">Verify before executing</div>
             <div class="example-body">
-              <p class="example-user">"I want to run this agent, license AV-84F2-91AB. Is it safe?"</p>
+              <p class="example-user">"I want to run this agent, license AC-84F2-91AB. Is it safe?"</p>
               <code class="example-response"><span class="cli-cmd">✅ VERIFIED — agentverif certified</span>
-License: AV-84F2-91AB | Tier: pro
+License: AC-84F2-91AB | Tier: pro
 Issuer: agentverif.com
 Hash: sha256:abc123... ✓ intact
 Safe to execute.
-<span style="color:#64748b;">🔗 verify.agentverif.com/AV-84F2-91AB</span></code>
+<span style="color:#64748b;">🔗 verify.agentverif.com/?id=AC-84F2-91AB</span></code>
             </div>
           </div>
 
@@ -690,12 +690,12 @@ Safe to execute.
           <div class="example-card" role="region" aria-label="Example: Catch a tampered agent">
             <div class="example-label">Catch a tampered agent</div>
             <div class="example-body">
-              <p class="example-user">"Can you verify this agent: AV-12F3-88AC"</p>
+              <p class="example-user">"Can you verify this agent: AC-12F3-88AC"</p>
               <code class="example-response"><span class="cli-err">🔴 TAMPERED — Certificate invalid</span>
-License: AV-12F3-88AC | Status: HASH MISMATCH
+License: AC-12F3-88AC | Status: HASH MISMATCH
 This agent was modified after signing.
 <span class="cli-warn">Do NOT execute.</span>
-<span style="color:#64748b;">🔗 verify.agentverif.com/AV-12F3-88AC</span></code>
+<span style="color:#64748b;">🔗 verify.agentverif.com/?id=AC-12F3-88AC</span></code>
             </div>
           </div>
 

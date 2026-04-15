@@ -1,6 +1,6 @@
 """agentverif MCP Server — Streamable HTTP transport.
 
-Exposes a single MCP tool: verify_agent
+Exposes two MCP tools: scan_agent and verify_agent.
 /     — primary MCP endpoint (Claude.ai posts here)
 /mcp  — alias kept for backward compatibility
 /health — liveness probe
@@ -77,10 +77,10 @@ async def verify_agent(
         str,
         Field(
             description=(
-                "The agentverif license ID (format: AV-XXXX-XXXX or AC-XXXX-XXXX) "
+                "The agentverif license ID (format: AC-XXXX-XXXX or AC-ENT-XXXX-XXXX) "
                 "OR a SHA256 hash of the agent ZIP file"
             ),
-            pattern=r"^(A[A-Z]-[A-Z0-9]{4}-[A-Z0-9]{4}|sha256:[a-f0-9]{64})$",
+            pattern=r"^(AC-(?:ENT-)?[A-Z0-9]{4}-[A-Z0-9]{4}|sha256:[a-f0-9]{64})$",
         ),
     ],
 ) -> str:

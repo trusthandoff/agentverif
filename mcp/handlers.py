@@ -221,6 +221,7 @@ async def handle_scan_agent(zip_url: str) -> str:
             try:
                 resp = await client.get(zip_url)
                 resp.raise_for_status()
+                zip_bytes = resp.content  # capture inside context manager
             except httpx.TimeoutException:
                 return "⏳ ZIP download timed out. Check the URL and try again."
             except httpx.HTTPStatusError as exc:
@@ -229,13 +230,13 @@ async def handle_scan_agent(zip_url: str) -> str:
                 return f"❌ Failed to download ZIP: {exc}"
 
         with tempfile.NamedTemporaryFile(suffix=".zip", delete=False) as tmp:
-            tmp.write(resp.content)
+            tmp.write(zip_bytes)
             tmp_path = tmp.name
 
         # scan_zip is synchronous/blocking — run in executor
         from agentverif_sign.scanner import scan_zip
 
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
         result = await loop.run_in_executor(
             None, lambda: scan_zip(tmp_path, scan_url)
         )

@@ -84,7 +84,7 @@ def test_verify_success():
         result = client.verify("AC-1234-ABCD", "sha256:abc", "https://sign.agentverif.com")
     assert result.status == "VERIFIED"
     assert result.tier == "pro"
-    assert result.verify_url == "https://verify.agentverif.com/AC-1234-ABCD"
+    assert result.verify_url == "https://verify.agentverif.com/?id=AC-1234-ABCD"
 
 
 def test_verify_revoked():

@@ -77,7 +77,7 @@ jobs:
 ## SIGNATURE.json fields
 | Field | Type | Description |
 |-------|------|-------------|
-| `license_id` | string | Issued license ID (AV-/AC-XXXX-XXXX) |
+| `license_id` | string | Issued license ID (AC-XXXX-XXXX or AC-ENT-XXXX-XXXX) |
 | `zip_hash` | string | SHA256 of the agent ZIP |
 | `scan_passed` | bool | `true` if OWASP scan score ≥ 70 |
 | `scan_source` | string | `real` \| `offline_fallback` \| `skipped` |
