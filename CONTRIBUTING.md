@@ -32,8 +32,7 @@ Help build out the Pro tier features.
 ```bash
 git clone https://github.com/trusthandoff/agentverif
 cd agentverif
-pip install -e ".[crypto]"
-pip install -e ".[dev]"
+pip install -e ".[crypto,dev]"
 .venv/bin/python -m pytest tests/ -v
 ```
 
@@ -57,6 +56,13 @@ systemctl daemon-reload && systemctl restart agentverif-api
 - Add tests for new functionality
 - Follow existing code style (ruff enforced)
 - Open an issue before large changes
+
+## Verify your setup
+
+```bash
+agentverif-sign --version
+agentverif-sign sign --help
+```
 
 ## Contact
 hi@agentverif.com  

@@ -34,7 +34,18 @@ def verify_zip(
     offline: bool = False,
     sign_url: str = "https://api.agentverif.com",
 ) -> VerifyResult:
-    """Verify a signed zip and return a VerifyResult."""
+    """Verify a signed zip and return a VerifyResult.
+
+    Returns:
+        VerifyResult with `.status` in {"VERIFIED", "UNREGISTERED", "MODIFIED",
+        "REVOKED", "UNSIGNED"}.
+
+    Example::
+
+        result = verify_zip("agent.zip")
+        if result.status in ("VERIFIED", "UNREGISTERED"):
+            print("safe to run")
+    """
     from agentverif_sign.badges import render_badge
 
     # Step 1 — extract signature

@@ -99,3 +99,58 @@ def test_scan_zip_http_error_raises(tmp_zip: Path):
     with patch("requests.post", return_value=mock_resp):
         result = scanner.scan_zip(str(tmp_zip), "https://api.agentverif.com/scan")
     assert result.passed is True
+
+
+# ---------------------------------------------------------------------------
+# Retry logic (T1–T3)
+# ---------------------------------------------------------------------------
+
+
+def _make_http_error_resp(status_code: int):
+    """Return a mock response whose raise_for_status() raises HTTPError(status)."""
+    import requests as req
+
+    resp = MagicMock()
+    resp.status_code = status_code
+    err = req.exceptions.HTTPError(response=resp)
+    resp.raise_for_status.side_effect = err
+    return resp
+
+
+def test_scan_zip_retry_429_succeeds_on_third_attempt(tmp_zip: Path):
+    mock_ok = MagicMock()
+    mock_ok.json.return_value = {"score": 80, "violations": [], "tier": "indie"}
+    mock_ok.raise_for_status.return_value = None
+
+    with patch("requests.post", side_effect=[_make_http_error_resp(429), _make_http_error_resp(429), mock_ok]):
+        with patch("time.sleep") as mock_sleep:
+            result = scanner.scan_zip(str(tmp_zip), "https://api.agentverif.com/scan")
+
+    assert result.source == "real"
+    assert result.score == 80
+    assert result.passed is True
+    assert mock_sleep.call_count == 2
+
+
+def test_scan_zip_connection_error_immediate_fallback(tmp_zip: Path):
+    import requests as req
+
+    with patch("requests.post", side_effect=req.exceptions.ConnectionError("unreachable")):
+        with patch("time.sleep") as mock_sleep:
+            result = scanner.scan_zip(str(tmp_zip), "https://api.agentverif.com/scan")
+
+    assert result.source == "offline_fallback"
+    assert result.passed is True
+    assert mock_sleep.call_count == 0
+
+
+def test_scan_zip_503_all_retries_exhausted_fallback(tmp_zip: Path):
+    side_effects = [_make_http_error_resp(503)] * 3
+
+    with patch("requests.post", side_effect=side_effects):
+        with patch("time.sleep") as mock_sleep:
+            result = scanner.scan_zip(str(tmp_zip), "https://api.agentverif.com/scan")
+
+    assert result.source == "offline_fallback"
+    assert result.passed is True
+    assert mock_sleep.call_count == 2

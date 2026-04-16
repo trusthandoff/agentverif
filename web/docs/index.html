@@ -535,7 +535,7 @@
 
 <span class="comment"># Example JSON output</span>
 <span class="comment"># {</span>
-<span class="comment">#   "license_id": "AV-84F2-91AB",</span>
+<span class="comment">#   "license_id": "AC-84F2-91AB",</span>
 <span class="comment">#   "tier": "indie",</span>
 <span class="comment">#   "score": 87,</span>
 <span class="comment">#   "hash": "sha256:e3b0c44...",</span>
@@ -562,10 +562,10 @@
 <span class="cmd">agentverif-sign verify</span> ./agent.zip
 
 <span class="comment"># VERIFIED</span>
-<span class="comment"># License:  AV-84F2-91AB</span>
+<span class="comment"># License:  AC-84F2-91AB</span>
 <span class="comment"># Tier:     indie</span>
 <span class="comment"># Score:    87/100</span>
-<span class="comment"># Verify:   https://verify.agentverif.com/AV-84F2-91AB</span>
+<span class="comment"># Verify:   https://verify.agentverif.com/?id=AC-84F2-91AB</span>
 
 <span class="comment"># Also check registry (revocation, online record)</span>
 <span class="cmd">agentverif-sign verify</span> ./agent.zip <span class="flag">--registry</span>
@@ -590,7 +590,7 @@
           <p>Retrieve the badge string for a given License ID. Badge format depends on the tier the agent was signed under.</p>
 
           <div class="code-snippet">
-            <code><span class="cmd">agentverif-sign badge</span> <span class="str">AV-XXXX-XXXX</span></code>
+            <code><span class="cmd">agentverif-sign badge</span> <span class="str">AC-XXXX-XXXX</span></code>
           </div>
 
           <h3>Badge formats by tier</h3>
@@ -601,11 +601,11 @@
             </div>
             <div>
               <div class="badge-tier">Pro</div>
-              <div class="badge-sample">&#x2705; agentverif VERIFIED | AV-XXXX-XXXX</div>
+              <div class="badge-sample">&#x2705; agentverif VERIFIED | AC-XXXX-XXXX</div>
             </div>
             <div>
               <div class="badge-tier">Enterprise</div>
-              <div class="badge-sample">&#x1F512; agentverif ENTERPRISE CERTIFIED | AV-XXXX-XXXX | Ed25519</div>
+              <div class="badge-sample">&#x1F512; agentverif ENTERPRISE CERTIFIED | AC-XXXX-XXXX | Ed25519</div>
             </div>
           </div>
 
@@ -620,14 +620,14 @@
           <p>Revoke a previously issued license. Only available on Pro and Enterprise tiers. Revocation is permanent and immediate — all future registry checks will return <code>REVOKED</code>.</p>
 
           <div class="code-snippet">
-            <code><span class="cmd">agentverif-sign revoke</span> <span class="str">AV-XXXX-XXXX</span> [OPTIONS]</code>
+            <code><span class="cmd">agentverif-sign revoke</span> <span class="str">AC-XXXX-XXXX</span> [OPTIONS]</code>
           </div>
 
           <div class="code-snippet">
             <code><span class="comment"># Revoke with reason (recommended)</span>
-<span class="cmd">agentverif-sign revoke</span> AV-84F2-91AB <span class="flag">--reason</span> <span class="str">"compromised key"</span>
+<span class="cmd">agentverif-sign revoke</span> AC-84F2-91AB <span class="flag">--reason</span> <span class="str">"compromised key"</span>
 
-<span class="comment"># Confirmed. License AV-84F2-91AB is now REVOKED.</span>
+<span class="comment"># Confirmed. License AC-84F2-91AB is now REVOKED.</span>
 <span class="comment"># All verify --registry calls will return status: revoked.</span></code>
           </div>
 
@@ -690,26 +690,26 @@
         <!-- ===== BADGE EMBED ===== -->
         <section class="docs-section" id="badge-embed">
           <h2>README badge</h2>
-          <p>Add a verification badge to your agent&rsquo;s README. Replace <code>AV-XXXX-XXXX</code> with your License ID.</p>
+          <p>Add a verification badge to your agent&rsquo;s README. Replace <code>AC-XXXX-XXXX</code> with your License ID.</p>
 
           <h3>Markdown</h3>
           <div class="code-snippet">
-            <code>[![agentverif certified](https://img.shields.io/badge/agentverif-VERIFIED-16a34a?style=flat-square&logo=data:image/svg+xml;base64,...)](https://verify.agentverif.com/AV-XXXX-XXXX)</code>
+            <code>[![agentverif certified](https://img.shields.io/badge/agentverif-VERIFIED-16a34a?style=flat-square&logo=data:image/svg+xml;base64,...)](https://verify.agentverif.com/?id=AC-XXXX-XXXX)</code>
           </div>
 
           <h3>Plain text (for README or agent manifest)</h3>
           <div class="code-snippet">
-            <code>&#x2705; agentverif VERIFIED | AV-XXXX-XXXX
-Verify: https://verify.agentverif.com/AV-XXXX-XXXX</code>
+            <code>&#x2705; agentverif VERIFIED | AC-XXXX-XXXX
+Verify: https://verify.agentverif.com/?id=AC-XXXX-XXXX</code>
           </div>
 
           <h3>JSON-LD (for agent metadata files)</h3>
           <div class="code-snippet">
             <code>{
   <span class="str">"agentverif"</span>: {
-    <span class="str">"license_id"</span>: <span class="str">"AV-XXXX-XXXX"</span>,
+    <span class="str">"license_id"</span>: <span class="str">"AC-XXXX-XXXX"</span>,
     <span class="str">"tier"</span>: <span class="str">"pro"</span>,
-    <span class="str">"verify_url"</span>: <span class="str">"https://verify.agentverif.com/AV-XXXX-XXXX"</span>
+    <span class="str">"verify_url"</span>: <span class="str">"https://verify.agentverif.com/?id=AC-XXXX-XXXX"</span>
   }
 }</code>
           </div>

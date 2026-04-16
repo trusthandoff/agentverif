@@ -53,6 +53,15 @@ def test_sign_success(runner, fresh_zip):
     assert "verify.agentverif.com" in result.output
 
 
+def test_sign_offline_fallback_warning_visible(runner, fresh_zip):
+    offline_scan = ScanResult(score=100, passed=True, violations=[], tier="indie", source="offline_fallback")
+    with patch("agentverif_sign.scanner.scan_zip", return_value=offline_scan):
+        result = runner.invoke(main, ["sign", str(fresh_zip), "--offline"])
+    assert result.exit_code == 0
+    assert "WARNING" in result.output
+    assert "NOT scanned" in result.output or "offline_fallback" in result.output
+
+
 def test_sign_scan_failure_exits_1(runner, fresh_zip):
     with patch("agentverif_sign.scanner.scan_zip", return_value=_mock_scan_fail()):
         result = runner.invoke(main, ["sign", str(fresh_zip), "--offline"])

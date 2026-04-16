@@ -128,6 +128,7 @@ agentverif-sign badge AC-84F2-91AB --format text|html|markdown|svg [--tier indie
   "zip_hash": "sha256:abc123...",
   "manifest_hash": "sha256:def456...",
   "scan_passed": true,
+  "scan_source": "real",
   "signature": null
 }
 ```
@@ -259,7 +260,7 @@ jobs:
 | 变量 | 默认值 | 说明 |
 |------|--------|------|
 | `AGENTVERIF_API_KEY` | — | Pro/Enterprise API 密钥 |
-| `AGENTVERIF_SIGN_URL` | `https://sign.agentverif.com` | 注册表 URL |
+| `AGENTVERIF_SIGN_URL` | `https://api.agentverif.com` | 注册表 URL |
 | `AGENTVERIF_SCAN_URL` | `https://api.agentverif.com/scan` | 扫描器 URL |
 | `AGENTVERIF_OFFLINE` | — | 设置任意值以跳过所有注册表调用 |
 

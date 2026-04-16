@@ -61,6 +61,15 @@ def sign_cmd(zip_path: str, tier: str, api_key: str | None, offline: bool) -> No
         click.echo(f"\u274c Scan error: {exc}", err=True)
         sys.exit(1)
 
+    if scan_result.source == "offline_fallback":
+        click.echo(
+            "\u26a0  WARNING: Scan API was unreachable — "
+            "this agent was NOT scanned against OWASP LLM Top 10.\n"
+            "   Certificate will show scan_source=offline_fallback.\n"
+            "   Buyers can verify this in SIGNATURE.json.",
+            err=True,
+        )
+
     if not scan_result.passed:
         click.echo(f"\u274c Scan failed (score={scan_result.score}/100):", err=True)
         click.echo(f"  Need 70 to pass. Fix the top violation to gain up to 25 points.", err=True)

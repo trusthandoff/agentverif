@@ -363,5 +363,5 @@ Buyers verify at [verify.agentverif.com](https://verify.agentverif.com).
 
 > 🛡️ **Be among the First 100 Founding Vendors.**
 > Get lifetime Pro free — worth €100/year, yours at zero cost forever.
-> 23 spots remaining. Once 100 vendors claim this, it's gone.
+> Limited founding spots available.
 > **[Claim your spot → agentverif.com/first100](https://agentverif.com/first100)**
