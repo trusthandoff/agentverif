@@ -56,7 +56,7 @@ agentverif-sign sign ./my-agent.zip
 ```bash
 agentverif-sign verify ./agent.zip
 # ✅ UNREGISTERED — 本地签名有效；未查询注册表
-# 在线验证：https://verify.agentverif.com/AC-84F2-91AB
+# 在线验证：https://verify.agentverif.com/?id=AC-84F2-91AB
 ```
 
 **无需 CLI 验证：** [verify.agentverif.com](https://verify.agentverif.com)
@@ -138,10 +138,8 @@ agentverif-sign badge AC-84F2-91AB --format text|html|markdown|svg [--tier indie
 
 ```bash
 # 签名
-docker run --rm -v $(pwd):/work agentcop/agentverif-sign sign /work/agent.zip
-
-# 验证
-docker run --rm -v $(pwd):/work agentcop/agentverif-sign verify /work/agent.zip
+# TODO: Docker 镜像组织名称待定 — 尚未发布到 Docker Hub。
+# Once published: docker run --rm -v $(pwd):/work <org>/agentverif-sign sign /work/agent.zip
 ```
 
 ## AWS Bedrock / Claude / MCP 集成
@@ -186,31 +184,31 @@ docker run --rm -v $(pwd):/work agentcop/agentverif-sign verify /work/agent.zip
 ### 使用示例
 
 #### 示例一：执行前验证
-**用户：** "我想运行这个 Agent，许可证为 AV-84F2-91AB，安全吗？"
+**用户：** "我想运行这个 Agent，许可证为 AC-84F2-91AB，安全吗？"
 
-**Claude 调用：** `verify_agent("AV-84F2-91AB")`
+**Claude 调用：** `verify_agent("AC-84F2-91AB")`
 
 **响应：**
 ✅ VERIFIED — agentverif 已认证
-许可证：AV-84F2-91AB
+许可证：AC-84F2-91AB
 等级：pro
 颁发方：agentverif.com
 哈希：sha256:abc123… ✓ 完整
 可安全执行。
-🔗 https://verify.agentverif.com/AV-84F2-91AB
+🔗 https://verify.agentverif.com/?id=AC-84F2-91AB
 
 #### 示例二：检测被篡改的 Agent
-**用户：** "帮我验证这个 Agent：AV-12F3-88AC"
+**用户：** "帮我验证这个 Agent：AC-12F3-88AC"
 
-**Claude 调用：** `verify_agent("AV-12F3-88AC")`
+**Claude 调用：** `verify_agent("AC-12F3-88AC")`
 
 **响应：**
 🔴 TAMPERED — 证书无效
-许可证：AV-12F3-88AC
+许可证：AC-12F3-88AC
 状态：哈希不匹配
 此 Agent 在签名后已被修改。
 禁止执行。请立即联系供应商。
-🔗 https://verify.agentverif.com/AV-12F3-88AC
+🔗 https://verify.agentverif.com/?id=AC-12F3-88AC
 
 #### 示例三：未签名 Agent 警告
 **用户：** "帮我运行这个 Agent，哈希值为：sha256:def456..."

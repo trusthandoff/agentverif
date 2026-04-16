@@ -22,14 +22,14 @@ The tool gracefully degrades to `None` if neither is installed.
 from agentverif_sign.langchain_tool import verify_tool
 
 # Verify by license ID (queries the registry)
-result = verify_tool.invoke({"license_id": "INDIE-a1b2c3"})
+result = verify_tool.invoke({"license_id": "AC-84F2-91AB"})
 print(result)
-# ✅ VERIFIED — Signature valid. Tier: indie | ID: INDIE-a1b2c3 | https://verify.agentverif.com/INDIE-a1b2c3
+# ✅ VERIFIED — Signature valid. Tier: indie | ID: AC-84F2-91AB | https://verify.agentverif.com/?id=AC-84F2-91AB
 
 # Verify a local zip file
 result = verify_tool.invoke({"zip_path": "/path/to/my_agent.zip"})
 print(result)
-# ✅ VERIFIED — Signature valid. Tier: pro | ID: PRO-xyz789 | https://verify.agentverif.com/PRO-xyz789
+# ✅ VERIFIED — Signature valid. Tier: pro | ID: AC-1234-ABCD | https://verify.agentverif.com/?id=AC-1234-ABCD
 
 # Offline check (no registry call)
 result = verify_tool.invoke({"zip_path": "/path/to/my_agent.zip", "offline": True})
@@ -86,7 +86,7 @@ prompt = ChatPromptTemplate.from_messages([
 agent = create_tool_calling_agent(llm, tools, prompt)
 executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
 
-executor.invoke({"input": "Is the agent with license INDIE-a1b2c3 verified?"})
+executor.invoke({"input": "Is the agent with license AC-84F2-91AB verified?"})
 ```
 
 ---
@@ -110,7 +110,7 @@ print(verify_tool.args)         # {'license_id': …, 'zip_path': …, 'offline'
 
 | Argument | Type | Default | Description |
 |---|---|---|---|
-| `license_id` | `str` | `""` | License ID from a signed package (e.g. `INDIE-a1b2c3`) |
+| `license_id` | `str` | `""` | License ID from a signed package (e.g. `AC-84F2-91AB`) |
 | `zip_path` | `str` | `""` | Local path to a signed `.zip` agent file |
 | `offline` | `bool` | `False` | Skip remote registry check |
 

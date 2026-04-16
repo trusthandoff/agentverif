@@ -33,7 +33,7 @@ Help build out the Pro tier features.
 git clone https://github.com/trusthandoff/agentverif
 cd agentverif
 pip install -e ".[crypto]"
-pip install -r requirements-dev.txt
+pip install -e ".[dev]"
 .venv/bin/python -m pytest tests/ -v
 ```
 

@@ -30,12 +30,9 @@ def sign_agent(zip_file, tier="indie"):  # tier fixed to indie — see UI note b
                 severity = v.get("severity", "?")
                 title = v.get("title", v.get("id", "Unknown violation"))
                 explanation = v.get("explanation", "")
-                fix = v.get("fix", explanation)
                 lines.append(f"\n**{i}. [{owasp} · {severity}] {title}**")
                 if explanation:
                     lines.append(f"   {explanation}")
-                if fix and fix != explanation:
-                    lines.append(f"   Fix: {fix}")
 
             offline_warn = ""
             if scan_result.source == "offline_fallback":

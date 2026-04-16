@@ -80,23 +80,6 @@
 
     .accent-red { color: #dc2626; }
 
-    /* ======== URGENCY PILL ======== */
-    .urgency-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(220,38,38,0.15);
-      color: #dc2626;
-      border: 1.5px solid rgba(220,38,38,0.4);
-      border-radius: 999px;
-      padding: 5px 14px;
-      font-weight: 700;
-      font-size: 0.82rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 28px;
-    }
-
     /* ======== SECTION 1: HERO ======== */
     .hero-section {
       background: #0d1117;
@@ -150,79 +133,6 @@
       padding: 3rem;
       border: 2px solid #374151;
       box-shadow: 0 8px 40px rgba(0,0,0,0.4);
-    }
-
-    /* Countdown */
-    .countdown-label-top {
-      font-size: 0.78rem;
-      font-weight: 700;
-      color: #9ca3af;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-      text-align: center;
-    }
-
-    .countdown-boxes {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-
-    .countdown-unit {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .countdown-box {
-      background: #0d1117;
-      border: 1px solid #374151;
-      border-radius: 8px;
-      padding: 8px 16px;
-      font-size: 2.5rem;
-      font-weight: 900;
-      font-variant-numeric: tabular-nums;
-      font-family: 'Courier New', Courier, monospace;
-      color: #dc2626;
-      min-width: 72px;
-      text-align: center;
-      letter-spacing: 0.02em;
-    }
-
-    .countdown-unit-label {
-      font-size: 0.65rem;
-      font-weight: 700;
-      color: #9ca3af;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
-
-    .countdown-sep {
-      font-size: 2.5rem;
-      font-weight: 900;
-      color: #dc2626;
-      margin-bottom: 20px;
-      align-self: center;
-      font-family: 'Courier New', Courier, monospace;
-    }
-
-    .form-divider {
-      height: 1px;
-      background: #2d3748;
-      margin: 0 0 20px;
-    }
-
-    /* Spot badge */
-    .spot-badge {
-      display: block;
-      font-size: 1.5rem;
-      font-weight: 900;
-      color: #dc2626;
-      margin-bottom: 20px;
     }
 
     /* Form inputs */
@@ -310,19 +220,6 @@
       font-size: 0.75rem;
       font-weight: 400;
       opacity: 0.8;
-    }
-
-    /* Social ticker */
-    .dark-ticker {
-      color: #9ca3af;
-      font-size: 0.8rem;
-      text-align: center;
-      margin-top: 12px;
-      min-height: 22px;
-    }
-
-    #social-proof-text {
-      transition: opacity 0.3s ease;
     }
 
     /* Success msg */
@@ -539,43 +436,6 @@
     }
     .shake { animation: shake 0.35s ease; }
 
-    /* ======== TIMER MODAL ======== */
-    #timer-modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.8);
-      z-index: 9999;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .timer-modal-card {
-      background: #1a1f2e;
-      border: 1px solid #374151;
-      border-radius: 12px;
-      padding: 40px;
-      max-width: 420px;
-      width: 90%;
-      text-align: center;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-    }
-
-    .timer-modal-card h3 {
-      font-size: 1.25rem;
-      font-weight: 800;
-      color: #ffffff;
-      margin-bottom: 12px;
-      letter-spacing: -0.025em;
-    }
-
-    .timer-modal-card p {
-      font-size: 0.9375rem;
-      color: #9ca3af;
-      line-height: 1.6;
-      margin-bottom: 24px;
-    }
-
     /* ======== FOOTER ======== */
     .site-footer {
       background: #0a0a0b !important;
@@ -717,7 +577,6 @@
 
           <!-- LEFT: copy -->
           <div class="hero-left">
-            <span class="urgency-pill">&#x26A1; 23 SPOTS REMAINING</span>
             <h1 id="hero-heading" class="hero-h1">
               Be Among the <em>First 100 Vendors</em> to<br>
               <u>Certify</u> Their AI Agent.
@@ -739,24 +598,7 @@
           <div class="hero-right">
             <div class="form-card" id="claim">
 
-              <!-- Countdown integrated at top -->
-              <p class="countdown-label-top">&#x23F1; HURRY! Offer expires in:</p>
-              <div class="countdown-boxes">
-                <div class="countdown-unit">
-                  <div class="countdown-box" id="countdown-min">05</div>
-                  <span class="countdown-unit-label">MIN</span>
-                </div>
-                <div class="countdown-sep">:</div>
-                <div class="countdown-unit">
-                  <div class="countdown-box" id="countdown-sec">00</div>
-                  <span class="countdown-unit-label">SEC</span>
-                </div>
-              </div>
-
-              <div class="form-divider"></div>
-
-              <!-- Spot badge -->
-              <span class="spot-badge">You&rsquo;ll be founding vendor #<span id="spot-num">78</span></span>
+              <p style="font-size:1.25rem;font-weight:800;color:#fff;margin-bottom:20px;text-align:center;">Join as a Founding Vendor</p>
 
               <!-- Form -->
               <form id="claim-form" novalidate>
@@ -773,11 +615,6 @@
               </form>
 
               <div id="success-msg" class="success-msg"></div>
-
-              <!-- Social proof ticker -->
-              <div class="dark-ticker" aria-live="polite">
-                <span id="social-proof-text"></span>
-              </div>
 
             </div><!-- /.form-card -->
 
@@ -1005,15 +842,6 @@
     </div>
   </footer>
 
-  <!-- Timer expired modal -->
-  <div id="timer-modal" role="dialog" aria-modal="true" aria-labelledby="timer-modal-title">
-    <div class="timer-modal-card">
-      <h3 id="timer-modal-title">No spots available right now.</h3>
-      <p>We&rsquo;re processing current signups. Try again in a few minutes.</p>
-      <button type="button" id="timer-try-again" class="btn btn-primary">Try again</button>
-    </div>
-  </div>
-
   <script>
     // EmailJS init
     emailjs.init('16bCAh-LM8QW8aWWp');
@@ -1035,84 +863,6 @@
           toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
         });
       }
-    })();
-
-    // Spot number — random 74–82, set on page load
-    var spotNum = Math.floor(Math.random() * (82 - 74 + 1)) + 74;
-    (function() {
-      var el = document.getElementById('spot-num');
-      if (el) el.textContent = spotNum;
-    })();
-
-    // Countdown timer — 5:00, shows modal at 0:00
-    var timerExpired = false;
-    var timeLeft = 300;
-    var timerInterval = null;
-    var countdownMin = document.getElementById('countdown-min');
-    var countdownSec = document.getElementById('countdown-sec');
-    var timerModal = document.getElementById('timer-modal');
-
-    function formatCountdown(s) {
-      var m = Math.floor(s / 60);
-      var sec = s % 60;
-      if (countdownMin) countdownMin.textContent = (m < 10 ? '0' : '') + m;
-      if (countdownSec) countdownSec.textContent = (sec < 10 ? '0' : '') + sec;
-    }
-
-    function startTimer() {
-      if (timerInterval) clearInterval(timerInterval);
-      timerExpired = false;
-      timerInterval = setInterval(function() {
-        timeLeft--;
-        formatCountdown(timeLeft);
-        if (timeLeft <= 0) {
-          clearInterval(timerInterval);
-          timerInterval = null;
-          if (countdownMin) countdownMin.textContent = '00';
-          if (countdownSec) countdownSec.textContent = '00';
-          timerExpired = true;
-          if (timerModal) timerModal.style.display = 'flex';
-        }
-      }, 1000);
-    }
-
-    startTimer();
-
-    (function() {
-      var tryAgainBtn = document.getElementById('timer-try-again');
-      if (tryAgainBtn) {
-        tryAgainBtn.addEventListener('click', function() {
-          if (timerModal) timerModal.style.display = 'none';
-          timeLeft = 300;
-          formatCountdown(timeLeft);
-          startTimer();
-        });
-      }
-    })();
-
-    // Social proof ticker — cycles every 3000ms with fade
-    (function() {
-      var items = [
-        'Pedro from Brazil claimed a spot 4 minutes ago',
-        'Alex from Germany claimed a spot 12 minutes ago',
-        'Wei from China claimed a spot 23 minutes ago',
-        'Sarah from UK claimed a spot 1 minute ago',
-        'Marcus from Netherlands claimed a spot 7 minutes ago',
-        'Priya from India claimed a spot 2 minutes ago'
-      ];
-      var el = document.getElementById('social-proof-text');
-      if (!el) return;
-      var idx = 0;
-      el.textContent = items[0];
-      el.style.opacity = '1';
-      setInterval(function() {
-        el.style.opacity = '0';
-        setTimeout(function() {
-          idx = (idx + 1) % items.length;
-          el.textContent = items[idx];
-          el.style.opacity = '1';
-        }, 300);
-      }, 3000);
     })();
 
     // Claim form submission
@@ -1152,13 +902,7 @@
           return;
         }
 
-        // 3. Check timer
-        if (timerExpired) {
-          if (timerModal) timerModal.style.display = 'flex';
-          return;
-        }
-
-        // 4. Disable button immediately (prevent double submit)
+        // 3. Disable button immediately (prevent double submit)
         if (btn) { btn.disabled = true; btn.textContent = 'Submitting\u2026'; }
 
         // 5. Send EmailJS
@@ -1171,7 +915,7 @@
           // 6. Success — replace form with confirmation
           if (form) form.style.display = 'none';
           if (successEl) {
-            successEl.innerHTML = '&#x2705; Spot claimed. You\'re founding vendor #' + spotNum + '.<br>We\'ll be in touch at ' + email + '.';
+            successEl.innerHTML = '&#x2705; Spot claimed. You\'re a Founding Vendor.<br>We\'ll be in touch at ' + email + '.';
             successEl.style.display = 'block';
           }
         }).catch(function() {

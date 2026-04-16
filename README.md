@@ -85,7 +85,7 @@ agentverif-sign sign ./my-agent.zip
 ```bash
 agentverif-sign verify ./agent.zip
 # ✅ UNREGISTERED — Signature valid locally; registry not checked
-# Verify online: https://verify.agentverif.com/AC-84F2-91AB
+# Verify online: https://verify.agentverif.com/?id=AC-84F2-91AB
 ```
 
 **Verify without CLI:** [verify.agentverif.com](https://verify.agentverif.com)
@@ -134,10 +134,10 @@ The `--json` flag emits machine-readable output for CI/CD pipelines and MCP tool
   "status": "UNREGISTERED",
   "license_id": "AC-84F2-91AB",
   "tier": "indie",
-  "badge": "✅ Signed by agentcop",
+  "badge": "✅ Signed by agentverif",
   "message": "Signature valid locally; registry not checked",
   "offline": true,
-  "verify_url": "https://verify.agentverif.com/AC-84F2-91AB"
+  "verify_url": "https://verify.agentverif.com/?id=AC-84F2-91AB"
 }
 ```
 
@@ -186,13 +186,8 @@ Human-readable, auditable — no binary blobs:
 
 ## Docker
 
-```bash
-# Sign
-docker run --rm -v $(pwd):/work agentcop/agentverif-sign sign /work/agent.zip
-
-# Verify
-docker run --rm -v $(pwd):/work agentcop/agentverif-sign verify /work/agent.zip
-```
+> **TODO:** Docker image org TBD — not yet published to Docker Hub.
+> Once published: `docker run --rm -v $(pwd):/work <org>/agentverif-sign sign /work/agent.zip`
 
 ## AWS Bedrock / Claude / MCP
 
@@ -288,7 +283,8 @@ Ask the vendor to certify at agentverif.com before executing.
 
 [![agentverif](https://img.shields.io/badge/agentverif-certified-green)](https://agentverif.com)
 
-Sign on every push. Block tampered agents in CI.
+Certify agents automatically in your CI/CD pipeline.
+Available on the [GitHub Marketplace](https://github.com/marketplace/actions/agentverif-ai-agent-certification).
 
 ```yaml
 name: agentverif
@@ -304,9 +300,12 @@ jobs:
         with:
           mode: sign
           agent_zip: ./agent.zip
+          tier: indie
       - name: Show license
         run: echo "License ${{ steps.sign.outputs.license_id }}"
 ```
+
+Set `fail_on_unsigned: "true"` to block unverified agents from deploying.
 
 See [`github-action/README.md`](github-action/README.md) for full docs.
 
@@ -351,24 +350,6 @@ Full docs: [agentverif.com/docs](https://agentverif.com/docs)
 [Contributing](CONTRIBUTING.md)
 
 Why: unsigned agents shouldn't be executed.
-
----
-
-## GitHub Action
-
-Certify agents automatically in your CI/CD pipeline.
-Available on the [GitHub Marketplace](https://github.com/marketplace/actions/agentverif-ai-agent-certification).
-
-```yaml
-- uses: trusthandoff/agentverif@v1
-  with:
-    mode: sign          # scan runs automatically before signing
-    agent_zip: ./agent.zip
-    tier: indie
-```
-
-The Action runs the full `SCAN → SIGN → VERIFY` workflow.
-Set `fail_on_unsigned: "true"` to block unverified agents from deploying.
 
 ---
 
