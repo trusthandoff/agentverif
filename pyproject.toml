@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "agentverif-sign"
-version = "0.1.2"
+version = "0.2.0"
 description = "✅ Sell verified agents. Buyers trust verified packages. Unsigned agents get ignored. Add verification in seconds."
 readme = "README.md"
 license = { text = "MIT" }

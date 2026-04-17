@@ -32,7 +32,7 @@ Help build out the Pro tier features.
 ```bash
 git clone https://github.com/trusthandoff/agentverif
 cd agentverif
-pip install -e ".[crypto,dev]"
+pip install -e ".[crypto,dev,api]"
 .venv/bin/python -m pytest tests/ -v
 ```
 

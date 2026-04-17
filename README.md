@@ -84,7 +84,7 @@ agentverif-sign sign ./my-agent.zip
 
 ```bash
 agentverif-sign verify ./agent.zip
-# ✅ UNREGISTERED — Signature valid locally; registry not checked
+# ⚠ UNREGISTERED — Signature valid locally; registry not checked
 # Verify online: https://verify.agentverif.com/?id=AC-84F2-91AB
 ```
 
