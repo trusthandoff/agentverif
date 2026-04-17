@@ -139,7 +139,7 @@ def verify_cmd(zip_path: str, offline: bool, output_json: bool) -> None:
         "MODIFIED": "🔴",
         "REVOKED": "\u274c",
         "UNSIGNED": "\u274c",
-        "EXPIRED": "\u23f0",
+        "EXPIRED": "⏰",
     }
     icon = status_icons.get(result.status, "?")
     click.echo(f"{icon} {result.status} — {result.message}")

@@ -38,7 +38,8 @@ def verify_zip(
 
     Returns:
         VerifyResult with `.status` in {"VERIFIED", "UNREGISTERED", "MODIFIED",
-        "REVOKED", "UNSIGNED"}.
+        "REVOKED", "UNSIGNED", "EXPIRED"}.
+        EXPIRED — license has passed its expires_at date (registry-side check only).
 
     Example::
 

@@ -941,3 +941,53 @@ def test_expired_via_post_verify():
     data = verify.json()
     assert data["status"] == "EXPIRED", f"Expected EXPIRED via POST, got {data.get('status')}"
     assert data["valid"] is False
+
+
+def test_expired_response_has_complete_fields():
+    """EXPIRED response must include scan_source, badge, issued_at, issuer."""
+    from fastapi.testclient import TestClient
+
+    mod = _import_api_server()
+    _insert_license(mod, "AC-EXFLD-001", "pro", "sha256:" + "b" * 64,
+                    "2020-01-01T00:00:00Z", "2020-06-01T00:00:00Z")
+
+    client = TestClient(mod.app, raise_server_exceptions=False)
+    data = client.get("/verify/AC-EXFLD-001").json()
+
+    assert data["status"] == "EXPIRED"
+    for field in ("scan_source", "badge", "issued_at", "issuer", "verify_url"):
+        assert field in data, f"EXPIRED response missing field: {field}"
+
+
+def test_expired_before_redistribution_blocked():
+    """EXPIRED must take priority over REDISTRIBUTION_BLOCKED via POST /verify."""
+    from fastapi.testclient import TestClient
+
+    mod = _import_api_server()
+    import json as _json
+    # Insert expired single_use license with a known buyer_id
+    with mod._get_conn() as conn:
+        conn.execute(
+            """INSERT OR REPLACE INTO licenses
+               (license_id, tier, zip_hash, file_list, file_count,
+                issued_at, expires_at, issuer, issuer_version,
+                license_type, transferable, max_activations, buyer_id, scan_source)
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+            ("AC-EXRD-0001", "indie", "sha256:" + "c" * 64, _json.dumps([]), 0,
+             "2020-01-01T00:00:00Z", "2020-06-01T00:00:00Z",
+             "agentverif.com", None,
+             "single_use", 0, None, "original-buyer-abc", "real"),
+        )
+        conn.commit()
+
+    client = TestClient(mod.app, raise_server_exceptions=False)
+    # POST /verify with a different buyer_id — expired takes priority
+    verify = client.post(
+        "/verify",
+        json={"license_id": "AC-EXRD-0001", "buyer_id": "wrong-buyer-xyz"},
+    )
+    data = verify.json()
+    assert data["status"] == "EXPIRED", (
+        f"Expected EXPIRED (not REDISTRIBUTION_BLOCKED), got {data.get('status')}"
+    )
+    assert data["valid"] is False

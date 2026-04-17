@@ -199,6 +199,28 @@ def _row_to_verify_response(row: sqlite3.Row, buyer_id: str | None = None) -> di
     scan_source = row["scan_source"] if "scan_source" in row_keys else "real"
     expires_at = row["expires_at"]
 
+    # Expiry check runs first — a fundamental fact that overrides all other status logic.
+    if expires_at:
+        try:
+            expiry_dt = datetime.fromisoformat(expires_at.replace("Z", "+00:00"))
+            if expiry_dt < datetime.now(UTC):
+                return {
+                    "valid": False,
+                    "status": "EXPIRED",
+                    "license_id": row["license_id"],
+                    "tier": row["tier"],
+                    "license_type": license_type,
+                    "badge": _badge(row["tier"], row["license_id"]),
+                    "issued_at": row["issued_at"],
+                    "expires_at": expires_at,
+                    "issuer": row["issuer"],
+                    "scan_source": scan_source,
+                    "message": "This license has expired. Contact the vendor to renew.",
+                    "verify_url": f"https://verify.agentverif.com/?id={row['license_id']}",
+                }
+        except (ValueError, AttributeError):
+            pass  # malformed expires_at — treat as no expiry
+
     # License-type specific status / message
     if license_type == "single_use" and buyer_id and stored_buyer and buyer_id != stored_buyer:
         return {
@@ -210,22 +232,6 @@ def _row_to_verify_response(row: sqlite3.Row, buyer_id: str | None = None) -> di
             "message": "⚠ SINGLE USE LICENSE — redistribution blocked",
             "verify_url": f"https://verify.agentverif.com/?id={row['license_id']}",
         }
-
-    if expires_at:
-        try:
-            expiry_dt = datetime.fromisoformat(expires_at.replace("Z", "+00:00"))
-            if expiry_dt < datetime.now(UTC):
-                return {
-                    "valid": False,
-                    "status": "EXPIRED",
-                    "license_id": row["license_id"],
-                    "tier": row["tier"],
-                    "expires_at": expires_at,
-                    "message": "This license has expired. Contact the vendor to renew.",
-                    "verify_url": f"https://verify.agentverif.com/?id={row['license_id']}",
-                }
-        except (ValueError, AttributeError):
-            pass  # malformed expires_at — treat as no expiry
 
     if license_type == "multi_use" and max_act is not None:
         remaining = max_act - (act_count or 0)
@@ -417,14 +423,20 @@ def verify_get(request: Request, license_id: str) -> dict:
         raise HTTPException(status_code=404, detail="License not found")
 
     if row["revoked"]:
+        row_keys = row.keys()
         return {
             "valid": False,
             "status": "REVOKED",
             "license_id": license_id,
             "tier": row["tier"],
+            "badge": _badge(row["tier"], license_id),
+            "issued_at": row["issued_at"],
+            "issuer": row["issuer"],
+            "scan_source": row["scan_source"] if "scan_source" in row_keys else "real",
             "revoked_at": row["revoked_at"],
             "revoked_reason": row["revoked_reason"],
             "message": row["revoked_reason"] or "Certificate revoked by issuer.",
+            "verify_url": f"https://verify.agentverif.com/?id={license_id}",
         }
 
     return _row_to_verify_response(row)
@@ -442,14 +454,20 @@ def verify_post(request: Request, body: VerifyBody) -> dict:
         raise HTTPException(status_code=404, detail="License not found")
 
     if row["revoked"]:
+        row_keys = row.keys()
         return {
             "valid": False,
             "status": "REVOKED",
             "license_id": license_id,
             "tier": row["tier"],
+            "badge": _badge(row["tier"], license_id),
+            "issued_at": row["issued_at"],
+            "issuer": row["issuer"],
+            "scan_source": row["scan_source"] if "scan_source" in row_keys else "real",
             "revoked_at": row["revoked_at"],
             "revoked_reason": row["revoked_reason"],
             "message": row["revoked_reason"] or "Certificate revoked by issuer.",
+            "verify_url": f"https://verify.agentverif.com/?id={license_id}",
         }
 
     return _row_to_verify_response(row, buyer_id=body.buyer_id)

@@ -17,6 +17,7 @@ htmlcov/
 *.egg
 
 # SQLite database files
+*.db
 api/agentverif.db
 api/agentverif.db-shm
 api/agentverif.db-wal
