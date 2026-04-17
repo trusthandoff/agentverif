@@ -537,15 +537,19 @@ def test_handle_scan_agent_tempfile_removed_on_scan_exception():
 # ---------------------------------------------------------------------------
 
 
-def test_api_service_has_agentverif_api_key():
+def test_api_service_uses_environment_file():
+    """API service must use EnvironmentFile (no plaintext key inline)."""
     svc = (_ROOT / "systemd" / "agentverif-api.service").read_text()
-    assert "AGENTVERIF_API_KEY" in svc
+    assert "EnvironmentFile=" in svc, "Service must reference an EnvironmentFile"
+    assert "AGENTVERIF_API_KEY=" not in svc, "API key must not be inline in service file"
 
 
 def test_api_service_has_agentverif_scan_url():
+    """Scan URL must be referenced — either inline or via EnvironmentFile path."""
     svc = (_ROOT / "systemd" / "agentverif-api.service").read_text()
-    assert "AGENTVERIF_SCAN_URL" in svc
-    assert "api.agentverif.com/scan" in svc
+    # With EnvironmentFile approach the service file points to the env file;
+    # the scan URL lives there, not inline. Check EnvironmentFile is set.
+    assert "EnvironmentFile=" in svc or "AGENTVERIF_SCAN_URL" in svc
 
 
 def test_mcp_service_has_agentverif_scan_url():
@@ -852,3 +856,88 @@ def test_register_stores_scan_source_real():
         verify = client.get("/verify/AC-W3T0-0002")
         data = verify.json()
         assert data.get("scan_source") == "real"
+
+
+# ---------------------------------------------------------------------------
+# FIX W1 — expires_at enforcement
+# ---------------------------------------------------------------------------
+
+
+def _insert_license(mod, license_id, tier, zip_hash, issued_at, expires_at=None):
+    """Insert a test license directly into the DB, bypassing the rate-limited /register."""
+    import json as _json
+    with mod._get_conn() as conn:
+        conn.execute(
+            """INSERT OR REPLACE INTO licenses
+               (license_id, tier, zip_hash, file_list, file_count,
+                issued_at, expires_at, issuer, issuer_version,
+                license_type, transferable, max_activations, buyer_id, scan_source)
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+            (license_id, tier, zip_hash, _json.dumps([]), 0,
+             issued_at, expires_at, "agentverif.com", None,
+             "single_use", 0, None, None, "real"),
+        )
+        conn.commit()
+
+
+def test_expired_license_returns_expired_status():
+    """Licenses with past expires_at must return status=EXPIRED, valid=False."""
+    from fastapi.testclient import TestClient
+
+    mod = _import_api_server()
+    _insert_license(mod, "AC-EXPR-0010", "indie", "sha256:" + "e" * 64,
+                    "2020-01-01T00:00:00Z", "2020-06-01T00:00:00Z")
+
+    client = TestClient(mod.app, raise_server_exceptions=False)
+    verify = client.get("/verify/AC-EXPR-0010")
+    assert verify.status_code == 200
+    data = verify.json()
+    assert data["status"] == "EXPIRED", f"Expected EXPIRED, got {data.get('status')}"
+    assert data["valid"] is False
+    assert "expires_at" in data
+    assert "renew" in data.get("message", "").lower()
+
+
+def test_future_expiry_returns_verified():
+    """Licenses with future expires_at must return status=VERIFIED."""
+    from fastapi.testclient import TestClient
+
+    mod = _import_api_server()
+    _insert_license(mod, "AC-FUTR-0010", "pro", "sha256:" + "f" * 64,
+                    "2026-01-01T00:00:00Z", "2099-01-01T00:00:00Z")
+
+    client = TestClient(mod.app, raise_server_exceptions=False)
+    verify = client.get("/verify/AC-FUTR-0010")
+    data = verify.json()
+    assert data["status"] != "EXPIRED", "Future expiry must not trigger EXPIRED"
+    assert data["valid"] is True
+
+
+def test_null_expiry_never_expires():
+    """Licenses with expires_at=None must never return EXPIRED."""
+    from fastapi.testclient import TestClient
+
+    mod = _import_api_server()
+    _insert_license(mod, "AC-NULL-0010", "indie", "sha256:" + "9" * 64,
+                    "2026-01-01T00:00:00Z", None)
+
+    client = TestClient(mod.app, raise_server_exceptions=False)
+    verify = client.get("/verify/AC-NULL-0010")
+    data = verify.json()
+    assert data["status"] != "EXPIRED", "Null expires_at must not trigger EXPIRED"
+    assert data["valid"] is True
+
+
+def test_expired_via_post_verify():
+    """POST /verify must also return EXPIRED for past expires_at."""
+    from fastapi.testclient import TestClient
+
+    mod = _import_api_server()
+    _insert_license(mod, "AC-EXPP-0010", "indie", "sha256:" + "a" * 64,
+                    "2021-01-01T00:00:00Z", "2021-06-01T00:00:00Z")
+
+    client = TestClient(mod.app, raise_server_exceptions=False)
+    verify = client.post("/verify", json={"license_id": "AC-EXPP-0010"})
+    data = verify.json()
+    assert data["status"] == "EXPIRED", f"Expected EXPIRED via POST, got {data.get('status')}"
+    assert data["valid"] is False

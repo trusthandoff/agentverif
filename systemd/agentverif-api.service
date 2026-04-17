@@ -14,10 +14,8 @@ StandardOutput=journal
 StandardError=journal
 SyslogIdentifier=agentverif-api
 
-# Environment
-Environment=AGENTVERIF_DB=/root/agentverif/api/agentverif.db
-Environment=AGENTVERIF_API_KEY=5be8d4bbd1727c127cbccbc020664f5d244e0519b8fb61daae4423a5dcb36f21
-Environment=AGENTVERIF_SCAN_URL=https://api.agentverif.com/scan
+# Environment (secrets in mode-600 file, not inline)
+EnvironmentFile=/etc/agentverif/api.env
 
 # Security hardening
 NoNewPrivileges=true

@@ -37,7 +37,7 @@ def main(debug: bool) -> None:
     help="Signing tier",
 )
 @click.option("--api-key", envvar="AGENTVERIF_API_KEY", default=None, help="API key")
-@click.option("--offline", is_flag=True, default=False, help="Skip registry")
+@click.option("--offline", is_flag=True, default=False, help="Skip registry registration (scan still runs)")
 def sign_cmd(zip_path: str, tier: str, api_key: str | None, offline: bool) -> None:
     """Sign an agent ZIP package."""
     from agentverif_sign import client as registry_client
@@ -118,7 +118,7 @@ def sign_cmd(zip_path: str, tier: str, api_key: str | None, offline: bool) -> No
 
 @main.command("verify")
 @click.argument("zip_path", metavar="ZIP")
-@click.option("--offline", is_flag=True, default=False, help="Skip registry check")
+@click.option("--offline", is_flag=True, default=False, help="Skip registry check (local hash verification still runs)")
 @click.option("--json", "output_json", is_flag=True, default=False, help="JSON output")
 def verify_cmd(zip_path: str, offline: bool, output_json: bool) -> None:
     """Verify a signed agent ZIP package."""
@@ -139,6 +139,7 @@ def verify_cmd(zip_path: str, offline: bool, output_json: bool) -> None:
         "MODIFIED": "🔴",
         "REVOKED": "\u274c",
         "UNSIGNED": "\u274c",
+        "EXPIRED": "\u23f0",
     }
     icon = status_icons.get(result.status, "?")
     click.echo(f"{icon} {result.status} — {result.message}")
@@ -188,7 +189,7 @@ def revoke_cmd(license_id: str, api_key: str) -> None:
 @click.option(
     "--tier",
     type=click.Choice(["indie", "pro", "enterprise"]),
-    default="pro",
+    default="pro",  # Note: defaults to 'pro' to show the most complete badge format. Use --tier indie for the free tier badge.
     show_default=True,
 )
 @click.option("--expires-at", default=None, help="Expiry date (ISO format)")

@@ -15,3 +15,10 @@ venv/
 .coverage
 htmlcov/
 *.egg
+
+# SQLite database files
+api/agentverif.db
+api/agentverif.db-shm
+api/agentverif.db-wal
+*.db-shm
+*.db-wal

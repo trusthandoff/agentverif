@@ -197,6 +197,7 @@ def _row_to_verify_response(row: sqlite3.Row, buyer_id: str | None = None) -> di
     act_count = row["activation_count"] if "activation_count" in row_keys else 0
     stored_buyer = row["buyer_id"] if "buyer_id" in row_keys else None
     scan_source = row["scan_source"] if "scan_source" in row_keys else "real"
+    expires_at = row["expires_at"]
 
     # License-type specific status / message
     if license_type == "single_use" and buyer_id and stored_buyer and buyer_id != stored_buyer:
@@ -209,6 +210,22 @@ def _row_to_verify_response(row: sqlite3.Row, buyer_id: str | None = None) -> di
             "message": "⚠ SINGLE USE LICENSE — redistribution blocked",
             "verify_url": f"https://verify.agentverif.com/?id={row['license_id']}",
         }
+
+    if expires_at:
+        try:
+            expiry_dt = datetime.fromisoformat(expires_at.replace("Z", "+00:00"))
+            if expiry_dt < datetime.now(UTC):
+                return {
+                    "valid": False,
+                    "status": "EXPIRED",
+                    "license_id": row["license_id"],
+                    "tier": row["tier"],
+                    "expires_at": expires_at,
+                    "message": "This license has expired. Contact the vendor to renew.",
+                    "verify_url": f"https://verify.agentverif.com/?id={row['license_id']}",
+                }
+        except (ValueError, AttributeError):
+            pass  # malformed expires_at — treat as no expiry
 
     if license_type == "multi_use" and max_act is not None:
         remaining = max_act - (act_count or 0)
@@ -229,7 +246,7 @@ def _row_to_verify_response(row: sqlite3.Row, buyer_id: str | None = None) -> di
         "badge": _badge(row["tier"], row["license_id"]),
         "message": message,
         "issued_at": row["issued_at"],
-        "expires_at": row["expires_at"],
+        "expires_at": expires_at,
         "file_count": row["file_count"],
         "issuer": row["issuer"],
         "scan_source": scan_source,
