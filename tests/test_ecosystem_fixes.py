@@ -242,7 +242,7 @@ def test_scan_result_source_offline_fallback_on_connection_error(
 
     from agentverif_sign.scanner import scan_zip
 
-    with caplog.at_level(logging.WARNING):
+    with caplog.at_level(logging.DEBUG):
         with patch(
             "requests.post", side_effect=req.exceptions.ConnectionError("unreachable")
         ):
@@ -255,12 +255,12 @@ def test_scan_result_source_offline_fallback_on_connection_error(
 
 
 def test_scan_result_source_offline_fallback_on_timeout(tmp_zip: Path, caplog):
-    """ScanResult.source == 'offline_fallback' on Timeout; warning logged."""
+    """ScanResult.source == 'offline_fallback' on Timeout; debug-logged."""
     import requests as req
 
     from agentverif_sign.scanner import scan_zip
 
-    with caplog.at_level(logging.WARNING):
+    with caplog.at_level(logging.DEBUG):
         with patch(
             "requests.post", side_effect=req.exceptions.Timeout("timed out")
         ):
@@ -271,14 +271,14 @@ def test_scan_result_source_offline_fallback_on_timeout(tmp_zip: Path, caplog):
 
 
 def test_scan_result_source_offline_fallback_on_http_error(tmp_zip: Path, caplog):
-    """ScanResult.source == 'offline_fallback' on HTTPError; warning logged."""
+    """ScanResult.source == 'offline_fallback' on HTTPError; debug-logged."""
     import requests as req
 
     from agentverif_sign.scanner import scan_zip
 
     mock_resp = MagicMock()
     mock_resp.raise_for_status.side_effect = req.exceptions.HTTPError("403")
-    with caplog.at_level(logging.WARNING):
+    with caplog.at_level(logging.DEBUG):
         with patch("requests.post", return_value=mock_resp):
             result = scan_zip(str(tmp_zip), "https://api.agentverif.com/scan")
 
@@ -682,3 +682,173 @@ def test_scan_endpoint_has_rate_limit_decorator():
             break
     else:
         pytest.fail("scan_agent function not found in server.py")
+
+
+# ---------------------------------------------------------------------------
+# FIX C1 — /scan returns 400 on non-ZIP input (not 500)
+# ---------------------------------------------------------------------------
+
+
+def test_scan_endpoint_returns_400_on_non_zip():
+    """POST /scan with a non-ZIP file must return 400, not 500."""
+    from fastapi.testclient import TestClient
+
+    mod = _import_api_server()
+    client = TestClient(mod.app, raise_server_exceptions=False)
+    resp = client.post(
+        "/scan",
+        files={"file": ("readme.md", b"not a zip file at all", "text/plain")},
+    )
+    assert resp.status_code == 400, f"Expected 400, got {resp.status_code}: {resp.text}"
+    data = resp.json()
+    assert data.get("passed") is False
+    assert "ZIP" in data.get("error", "") or "zip" in data.get("error", "").lower()
+
+
+def test_scan_endpoint_returns_400_error_shape():
+    """400 response must include passed=False and a meaningful error string."""
+    from fastapi.testclient import TestClient
+
+    mod = _import_api_server()
+    client = TestClient(mod.app, raise_server_exceptions=False)
+    resp = client.post(
+        "/scan",
+        files={"file": ("bad.zip", b"\x00\x01\x02\x03", "application/zip")},
+    )
+    assert resp.status_code == 400
+    data = resp.json()
+    assert "error" in data
+    assert data["passed"] is False
+
+
+# ---------------------------------------------------------------------------
+# FIX C2 — /register: ANY unauthenticated request returns 401 regardless of body
+# ---------------------------------------------------------------------------
+
+
+def test_register_malformed_id_no_auth_returns_401():
+    """Malformed license_id with no auth must return 401, not 422."""
+    from fastapi.testclient import TestClient
+
+    mod = _import_api_server()
+    client = TestClient(mod.app, raise_server_exceptions=False)
+    resp = client.post(
+        "/register",
+        json={"license_id": "FAKE-BAD", "zip_hash": "x"},
+    )
+    assert resp.status_code == 401, f"Expected 401, got {resp.status_code}: {resp.text}"
+
+
+def test_register_incomplete_body_no_auth_returns_401():
+    """Incomplete body (missing tier, issued_at) with no auth must return 401."""
+    from fastapi.testclient import TestClient
+
+    mod = _import_api_server()
+    client = TestClient(mod.app, raise_server_exceptions=False)
+    resp = client.post(
+        "/register",
+        json={"license_id": "AC-0000-0000", "zip_hash": "sha256:abc"},
+    )
+    assert resp.status_code == 401, f"Expected 401, got {resp.status_code}: {resp.text}"
+
+
+def test_register_empty_body_no_auth_returns_401():
+    """Empty body with no auth must return 401, not 422."""
+    from fastapi.testclient import TestClient
+
+    mod = _import_api_server()
+    client = TestClient(mod.app, raise_server_exceptions=False)
+    resp = client.post("/register", json={})
+    assert resp.status_code == 401, f"Expected 401, got {resp.status_code}: {resp.text}"
+
+
+def test_register_malformed_id_with_auth_returns_422():
+    """After auth, malformed license_id must return 422 (not 401 or 200)."""
+    from fastapi.testclient import TestClient
+
+    test_key = "test-api-key-for-register"
+    mod = _import_api_server()
+    with patch.object(mod, "_EXPECTED_KEY", test_key):
+        client = TestClient(mod.app, raise_server_exceptions=False)
+        resp = client.post(
+            "/register",
+            json={"license_id": "FAKE-BAD", "tier": "indie", "zip_hash": "sha256:abc", "issued_at": "2026-01-01T00:00:00Z"},
+            headers={"Authorization": f"Bearer {test_key}"},
+        )
+    assert resp.status_code == 422, f"Expected 422 after auth with bad id, got {resp.status_code}"
+
+
+# ---------------------------------------------------------------------------
+# FIX W2 — MODIFIED icon must be 🔴 in source
+# ---------------------------------------------------------------------------
+
+
+def test_modified_icon_is_red_circle():
+    """cli.py must use 🔴 for MODIFIED, not ⚠."""
+    content = (_ROOT / "src" / "agentverif_sign" / "cli.py").read_text()
+    assert "\U0001F534" in content or "🔴" in content, "🔴 not found in cli.py"
+    assert '"MODIFIED": "\\u26a0"' not in content, "Old ⚠ icon still present for MODIFIED"
+
+
+# ---------------------------------------------------------------------------
+# FIX W3 — scan_source stored and returned in /verify response
+# ---------------------------------------------------------------------------
+
+
+def test_register_stores_scan_source_offline_fallback():
+    """scan_source=offline_fallback must be stored and returned by /verify."""
+    from fastapi.testclient import TestClient
+
+    test_key = "test-api-key-w3"
+    mod = _import_api_server()
+    with patch.object(mod, "_EXPECTED_KEY", test_key):
+        client = TestClient(mod.app, raise_server_exceptions=False)
+
+        payload = {
+            "license_id": "AC-W3T0-0001",
+            "tier": "indie",
+            "zip_hash": "sha256:" + "b" * 64,
+            "issued_at": "2026-01-01T00:00:00Z",
+            "scan_source": "offline_fallback",
+        }
+        reg = client.post(
+            "/register",
+            json=payload,
+            headers={"Authorization": f"Bearer {test_key}"},
+        )
+        assert reg.status_code == 200, f"Register failed: {reg.text}"
+
+        verify = client.get("/verify/AC-W3T0-0001")
+        assert verify.status_code == 200, f"Verify failed: {verify.text}"
+        data = verify.json()
+        assert "scan_source" in data, "scan_source missing from /verify response"
+        assert data["scan_source"] == "offline_fallback", (
+            f"Expected offline_fallback, got {data.get('scan_source')}"
+        )
+
+
+def test_register_stores_scan_source_real():
+    """scan_source=real (default) must be stored and returned by /verify."""
+    from fastapi.testclient import TestClient
+
+    test_key = "test-api-key-w3b"
+    mod = _import_api_server()
+    with patch.object(mod, "_EXPECTED_KEY", test_key):
+        client = TestClient(mod.app, raise_server_exceptions=False)
+
+        payload = {
+            "license_id": "AC-W3T0-0002",
+            "tier": "pro",
+            "zip_hash": "sha256:" + "c" * 64,
+            "issued_at": "2026-01-01T00:00:00Z",
+        }
+        reg = client.post(
+            "/register",
+            json=payload,
+            headers={"Authorization": f"Bearer {test_key}"},
+        )
+        assert reg.status_code == 200
+
+        verify = client.get("/verify/AC-W3T0-0002")
+        data = verify.json()
+        assert data.get("scan_source") == "real"

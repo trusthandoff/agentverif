@@ -62,6 +62,32 @@ def test_sign_offline_fallback_warning_visible(runner, fresh_zip):
     assert "NOT scanned" in result.output or "offline_fallback" in result.output
 
 
+def test_sign_offline_fallback_single_warning_line(runner, fresh_zip):
+    """Exactly one warning line emitted — no raw logger duplication."""
+    offline_scan = ScanResult(score=100, passed=True, violations=[], tier="indie", source="offline_fallback")
+    with patch("agentverif_sign.scanner.scan_zip", return_value=offline_scan):
+        result = runner.invoke(main, ["sign", str(fresh_zip), "--offline"])
+    warning_lines = [
+        l for l in result.output.split("\n")
+        if l.strip() and any(
+            kw in l.lower() for kw in ["warning", "offline", "unreachable", "not scanned"]
+        )
+    ]
+    assert len(warning_lines) == 1, f"Expected 1 warning line, got {len(warning_lines)}: {warning_lines}"
+
+
+def test_verify_modified_shows_red_icon(runner, tmp_path):
+    """MODIFIED status must display 🔴, not ⚠."""
+    p = _signed_zip(tmp_path)
+    with zipfile.ZipFile(str(p), "a") as zf:
+        zf.writestr("extra.py", "evil()")
+    result = runner.invoke(main, ["verify", str(p), "--offline"])
+    assert result.exit_code == 1
+    assert "MODIFIED" in result.output
+    assert "\U0001F534" in result.output, "Expected 🔴 for MODIFIED"
+    assert "\u26a0 MODIFIED" not in result.output, "⚠ must not be used for MODIFIED"
+
+
 def test_sign_scan_failure_exits_1(runner, fresh_zip):
     with patch("agentverif_sign.scanner.scan_zip", return_value=_mock_scan_fail()):
         result = runner.invoke(main, ["sign", str(fresh_zip), "--offline"])

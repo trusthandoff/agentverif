@@ -63,10 +63,8 @@ def sign_cmd(zip_path: str, tier: str, api_key: str | None, offline: bool) -> No
 
     if scan_result.source == "offline_fallback":
         click.echo(
-            "\u26a0  WARNING: Scan API was unreachable — "
-            "this agent was NOT scanned against OWASP LLM Top 10.\n"
-            "   Certificate will show scan_source=offline_fallback.\n"
-            "   Buyers can verify this in SIGNATURE.json.",
+            "\u26a0  WARNING: scan API unreachable — agent NOT scanned "
+            "against OWASP LLM Top 10 (scan_source=offline_fallback in SIGNATURE.json)",
             err=True,
         )
 
@@ -138,7 +136,7 @@ def verify_cmd(zip_path: str, offline: bool, output_json: bool) -> None:
     status_icons = {
         "VERIFIED": "\u2705",
         "UNREGISTERED": "\u26a0",
-        "MODIFIED": "\u26a0",
+        "MODIFIED": "🔴",
         "REVOKED": "\u274c",
         "UNSIGNED": "\u274c",
     }

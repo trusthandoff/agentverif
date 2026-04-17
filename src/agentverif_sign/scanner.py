@@ -69,7 +69,7 @@ def scan_zip(zip_path: str, scan_url: str) -> ScanResult:
             last_exc = exc
             break
 
-    logger.warning(
+    logger.debug(
         "scan API unreachable after %d attempt(s) (%s) — "
         "SIGNATURE.json will contain scan_source='offline_fallback'. "
         "This package has NOT been scanned.",

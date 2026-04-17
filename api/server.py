@@ -16,8 +16,10 @@ import hashlib
 import hmac
 import json
 import os
+import re
 import sqlite3
 import tempfile
+import zipfile
 from datetime import UTC, datetime
 from typing import Annotated
 
@@ -118,6 +120,7 @@ def _init_db() -> None:
             "ALTER TABLE licenses ADD COLUMN max_activations INTEGER",
             "ALTER TABLE licenses ADD COLUMN activation_count INTEGER NOT NULL DEFAULT 0",
             "ALTER TABLE licenses ADD COLUMN buyer_id TEXT",
+            "ALTER TABLE licenses ADD COLUMN scan_source TEXT NOT NULL DEFAULT 'real'",
         ):
             with contextlib.suppress(sqlite3.OperationalError):
                 conn.execute(_col)
@@ -127,6 +130,7 @@ def _init_db() -> None:
 _init_db()
 
 _EXPECTED_KEY = os.environ.get("AGENTVERIF_API_KEY", "")
+_LICENSE_PATTERN = re.compile(r"^AC-(?:ENT-)?[A-Z0-9]{4}-[A-Z0-9]{4}$")
 
 # ---------------------------------------------------------------------------
 # Pydantic models
@@ -136,18 +140,21 @@ _FileItem = Annotated[str, Field(max_length=500)]
 
 
 class RegisterRequest(BaseModel):
-    license_id: str = Field(..., max_length=20, pattern=r"^AC-(?:ENT-)?[A-Z0-9]{4}-[A-Z0-9]{4}$", description="License ID, e.g. AC-84F2-91AB")
-    tier: str = Field(..., description="indie | pro | enterprise")
-    zip_hash: str = Field(..., description="sha256:<hex>")
+    # All fields optional so Pydantic never rejects the body before auth runs.
+    # Required fields (license_id, tier, zip_hash, issued_at) are validated
+    # inside the /register function body AFTER the auth check.
+    license_id: str | None = None
+    tier: str | None = None
+    zip_hash: str | None = None
     file_list: list[_FileItem] = Field(default_factory=list, max_length=1000)
-    issued_at: str = Field(..., description="ISO 8601 UTC timestamp")
+    issued_at: str | None = None
     expires_at: str | None = None
     issuer: str = "agentverif.com"
     issuer_version: str | None = None
-    # Additional fields the CLI sends; accepted but not all stored
     schema_version: str | None = None
     manifest_hash: str | None = None
     scan_passed: bool | None = None
+    scan_source: str = "real"
     signature: str | None = None
     license_type: str = "single_use"
     transferable: bool = False
@@ -189,6 +196,7 @@ def _row_to_verify_response(row: sqlite3.Row, buyer_id: str | None = None) -> di
     max_act = row["max_activations"] if "max_activations" in row_keys else None
     act_count = row["activation_count"] if "activation_count" in row_keys else 0
     stored_buyer = row["buyer_id"] if "buyer_id" in row_keys else None
+    scan_source = row["scan_source"] if "scan_source" in row_keys else "real"
 
     # License-type specific status / message
     if license_type == "single_use" and buyer_id and stored_buyer and buyer_id != stored_buyer:
@@ -224,6 +232,7 @@ def _row_to_verify_response(row: sqlite3.Row, buyer_id: str | None = None) -> di
         "expires_at": row["expires_at"],
         "file_count": row["file_count"],
         "issuer": row["issuer"],
+        "scan_source": scan_source,
         "verify_url": f"https://verify.agentverif.com/?id={row['license_id']}",
     }
 
@@ -264,6 +273,15 @@ async def scan_agent(request: Request, file: UploadFile = File(...)):
             result = await asyncio.wait_for(
                 loop.run_in_executor(None, lambda: scanner.scan_zip(FilePath(tmp_path))),
                 timeout=25.0,
+            )
+        except zipfile.BadZipFile:
+            return JSONResponse(
+                status_code=400,
+                content={
+                    "error": "Invalid file — must be a ZIP archive",
+                    "passed": False,
+                    "score": None,
+                },
             )
         except asyncio.TimeoutError:
             return JSONResponse(
@@ -322,6 +340,16 @@ def register(
     ):
         raise HTTPException(status_code=401, detail="Invalid API key")
 
+    # Field validation runs after auth so unauthenticated callers always get 401.
+    if not req.license_id or not _LICENSE_PATTERN.match(req.license_id):
+        raise HTTPException(status_code=422, detail="Invalid license_id format")
+    if not req.tier:
+        raise HTTPException(status_code=422, detail="Field required: tier")
+    if not req.zip_hash:
+        raise HTTPException(status_code=422, detail="Field required: zip_hash")
+    if not req.issued_at:
+        raise HTTPException(status_code=422, detail="Field required: issued_at")
+
     file_list_json = json.dumps(req.file_list)
     file_count = len(req.file_list)
 
@@ -332,8 +360,9 @@ def register(
                 INSERT OR REPLACE INTO licenses
                   (license_id, tier, zip_hash, file_list, file_count,
                    issued_at, expires_at, issuer, issuer_version,
-                   license_type, transferable, max_activations, buyer_id)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                   license_type, transferable, max_activations, buyer_id,
+                   scan_source)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     req.license_id,
@@ -349,6 +378,7 @@ def register(
                     int(req.transferable),
                     req.max_activations,
                     req.buyer_id,
+                    req.scan_source,
                 ),
             )
             conn.commit()
