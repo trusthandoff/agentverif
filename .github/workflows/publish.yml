@@ -20,7 +20,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
-        run: pip install -e ".[dev,crypto]"
+        run: pip install -e ".[crypto,dev,api]"
 
       - name: Run tests
         run: pytest --cov=agentverif_sign --cov-report=term-missing
