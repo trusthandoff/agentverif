@@ -85,7 +85,7 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 # Database
 # ---------------------------------------------------------------------------
 
-DB_PATH = os.getenv("AGENTVERIF_DB", "/root/agentverif/api/agentverif.db")
+DB_PATH = os.getenv("AGENTVERIF_DB", os.path.join(os.path.dirname(os.path.abspath(__file__)), "agentverif.db"))
 
 
 def _get_conn() -> sqlite3.Connection:
