@@ -593,9 +593,9 @@
         <div class="code-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:40px;">
 
           <!-- Sign your agent -->
-          <div>
+          <div style="min-height:280px;display:flex;flex-direction:column;">
             <p class="cli-label">Sign your agent</p>
-            <div class="cli-block">
+            <div class="cli-block" style="flex:1;">
               <code><span class="cli-cmd">from</span> agentverif_sign.langchain_tool <span class="cli-cmd">import</span> sign_tool
 
 <span class="cli-comment"># sign_tool is a LangChain StructuredTool</span>
@@ -612,9 +612,9 @@ print(result)
           </div>
 
           <!-- Verify before executing -->
-          <div>
+          <div style="min-height:280px;display:flex;flex-direction:column;">
             <p class="cli-label">Verify before executing</p>
-            <div class="cli-block">
+            <div class="cli-block" style="flex:1;">
               <code><span class="cli-cmd">from</span> agentverif_sign.langchain_tool <span class="cli-cmd">import</span> verify_tool
 
 <span class="cli-comment"># verify_tool is a LangChain StructuredTool</span>
@@ -667,12 +667,16 @@ graph.add_node(<span class="cli-cmd">"verify"</span>, verify_tool)</code>
           <h2 class="section-title" id="ci-heading">Every release. Automatically certified.</h2>
         </header>
 
-        <p style="max-width:640px;margin:24px auto 32px;text-align:center;color:var(--text-muted);font-size:1rem;line-height:1.8;font-weight:500;">
-          Every fork becomes a distribution point.<br>
-          Every contributor ships verified agents by default.<br>
-          Add this workflow and your repo becomes a node in the AgentVerif network.<br>
-          The standard spreads itself.
-        </p>
+        <p style="text-align:center; font-size:1.05rem;
+color:#6b7280; font-weight:600; line-height:2;
+margin-bottom:2rem;">
+  Every fork becomes a <strong style="color:#111827;">distribution point.</strong><br>
+  Every contributor ships <strong style="color:#111827;">verified agents</strong> by default.<br>
+  Add this workflow and your repo becomes a node in the
+  <strong style="color:#16a34a;">AgentVerif network.</strong><br>
+  The standard <em style="color:#111827; font-style:normal;
+  font-weight:900;">spreads itself.</em>
+</p>
 
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:32px 36px;">
           <div class="cli-block">
@@ -714,7 +718,7 @@ graph.add_node(<span class="cli-cmd">"verify"</span>, verify_tool)</code>
           <span class="section-tag">See It in Action</span>
           <h2 class="section-title" id="demo-heading">Claude auto-verifies before executing.</h2>
         </header>
-        <div style="text-align:center; margin:2rem 0;">
+        <div style="text-align:center; margin:2rem auto;">
           <img src="https://raw.githubusercontent.com/trusthandoff/agentverif/main/IMG_0733.gif"
                alt="agentverif in action — Claude MCP auto-verify"
                style="max-width:100%; border-radius:8px;">
@@ -745,22 +749,6 @@ graph.add_node(<span class="cli-cmd">"verify"</span>, verify_tool)</code>
           <strong style="color:rgba(255,255,255,0.75);">&ldquo;First 100: [Your License ID]&rdquo;</strong> &mdash;
           we feature you on the leaderboard and amplify in communities.
         </p>
-      </div>
-    </section>
-
-    <!-- ======================================================
-         SECTION 8 — FINAL CTA
-         ====================================================== -->
-    <section class="section-sm cta-section" aria-labelledby="cta-heading">
-      <div class="container">
-        <h2 class="section-title" id="cta-heading">Ship your first certified LangChain agent in 60 seconds.</h2>
-        <p class="section-subtitle" style="margin-bottom:32px;">
-          Free tier, no credit card required.
-        </p>
-        <div class="cta-btns">
-          <a href="https://github.com/trusthandoff/agentverif" class="btn btn-primary btn-lg" rel="noopener">Get started free &rarr;</a>
-          <a href="https://verify.agentverif.com" class="btn btn-secondary btn-lg">Verify a license &rarr;</a>
-        </div>
       </div>
     </section>
 
