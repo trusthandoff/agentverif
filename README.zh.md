@@ -5,9 +5,18 @@
 
   ✅ 销售经过验证的智能体。买家信任经过验证的包。未签名的智能体会被忽略。几秒内添加验证。agentverif.com
 
-  [![CI](https://github.com/trusthandoff/agentverif/actions/workflows/ci.yml/badge.svg)](https://github.com/trusthandoff/agentverif/actions/workflows/ci.yml)
-  [![PyPI version](https://img.shields.io/pypi/v/agentverif-sign.svg)](https://pypi.org/project/agentverif-sign/)
-  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+  [![PyPI version](https://img.shields.io/pypi/v/agentverif-sign?style=flat-square&color=16a34a)](https://pypi.org/project/agentverif-sign/)
+  [![CI](https://github.com/trusthandoff/agentverif/actions/workflows/ci.yml/badge.svg?style=flat-square)](https://github.com/trusthandoff/agentverif/actions/workflows/ci.yml)
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+  [![GitHub Marketplace](https://img.shields.io/badge/GitHub%20Marketplace-agentverif%20action-16a34a?style=flat-square&logo=github)](https://github.com/marketplace/actions/agentverif-ai-agent-certification)
+  [![Docker Pulls](https://img.shields.io/docker/pulls/agentverif/agentverif-sign?style=flat-square&logo=docker)](https://hub.docker.com/r/agentverif/agentverif-sign)
+
+</div>
+
+<div align="center">
+
+🛡️ **创始供应商计划** — 早期采用者免费获得 Pro 等级。  
+[**立即申请 → agentverif.com/first100**](https://agentverif.com/first100)
 
 </div>
 
@@ -62,6 +71,17 @@ agentverif-sign verify ./agent.zip
 **无需 CLI 验证：** [verify.agentverif.com](https://verify.agentverif.com)
 
 ---
+
+## 🎬 演示
+
+<div align="center">
+
+Claude 在执行 Agent 前自动进行验证——
+并拦截被篡改或不安全的 Agent。
+
+![agentverif MCP demo](https://raw.githubusercontent.com/trusthandoff/agentverif/main/IMG_0733.gif)
+
+</div>
 
 ## 命令
 
@@ -138,9 +158,17 @@ agentverif-sign badge AC-84F2-91AB --format text|html|markdown|svg [--tier indie
 ## Docker 使用
 
 ```bash
-# 签名
-# TODO: Docker 镜像组织名称待定 — 尚未发布到 Docker Hub。
-# Once published: docker run --rm -v $(pwd):/work <org>/agentverif-sign sign /work/agent.zip
+# 签名您的 Agent
+docker run --rm \
+  -v $(pwd):/work \
+  agentverif/agentverif-sign:latest \
+  sign /work/agent.zip
+
+# 验证已签名的 Agent
+docker run --rm \
+  -v $(pwd):/work \
+  agentverif/agentverif-sign:latest \
+  verify /work/agent.zip
 ```
 
 ## AWS Bedrock / Claude / MCP 集成
@@ -232,6 +260,11 @@ agentverif-sign badge AC-84F2-91AB --format text|html|markdown|svg [--tier indie
 [![agentverif](https://img.shields.io/badge/agentverif-certified-green)](https://agentverif.com)
 
 每次推送自动签名，CI 中阻止被篡改的 Agent。
+
+每个 fork 都成为一个分发节点。
+每位贡献者默认发布经过验证的 Agent。
+标准自我传播。
+AgentVerif 成为基础设施。
 
 ```yaml
 name: agentverif

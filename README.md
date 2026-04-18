@@ -13,8 +13,12 @@
 
 </div>
 
-> 🛡️ **Founding Vendor Program** — Pro tier free for early adopters.
-> [Claim your spot → agentverif.com/first100](https://agentverif.com/first100)
+<div align="center">
+
+🛡️ **Founding Vendor Program** — Pro tier free for early adopters.  
+[**Claim your spot → agentverif.com/first100**](https://agentverif.com/first100)
+
+</div>
 
 [English] | [中文](README.zh.md)
 
@@ -94,12 +98,16 @@ agentverif-sign verify ./agent.zip
 
 ---
 
-## Demo
+## 🎬 Demo
+
+<div align="center">
 
 Claude automatically verifies agents before executing them —
 and blocks tampered or unsafe ones.
 
 ![agentverif MCP demo](https://raw.githubusercontent.com/trusthandoff/agentverif/main/IMG_0733.gif)
+
+</div>
 
 ## Commands
 
@@ -311,6 +319,7 @@ Available on the [GitHub Marketplace](https://github.com/marketplace/actions/age
 Every fork becomes a distribution point.
 Every contributor ships verified agents by default.
 The standard spreads itself.
+AgentVerif becomes the infrastructure.
 
 ```yaml
 name: agentverif

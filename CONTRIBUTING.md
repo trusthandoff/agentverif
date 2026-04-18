@@ -21,7 +21,7 @@ Add new checks, improve scoring, add false positive detection.
 ### 3. Scanner and CLI contributions
 
 Help improve the Indie tier scanner and CLI.
-New OWASP rules, better violation messages,
+New [OWASP LLM Top 10](https://owasp.org/www-project-top-10-for-large-language-model-applications/) rules, better violation messages,
 and CLI improvements are always welcome.
 
 ### 4. Documentation
