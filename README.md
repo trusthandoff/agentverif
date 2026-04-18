@@ -15,8 +15,11 @@
 
 <div align="center">
 
-🛡️ **Founding Vendor Program** — Pro tier free for early adopters.  
-[**Claim your spot → agentverif.com/first100**](https://agentverif.com/first100)
+### 🛡️ Founding Vendor Program — Pro tier free for early adopters.
+**[Claim your spot → agentverif.com/first100](https://agentverif.com/first100)**
+
+Signed yours? Open an issue titled **"First 100: [Your License ID]"** —
+we feature you on the leaderboard and amplify in communities.
 
 </div>
 
@@ -98,14 +101,11 @@ agentverif-sign verify ./agent.zip
 
 ---
 
-## 🎬 Demo
+## 🎬 See it in action — Claude auto-verifies before executing
 
 <div align="center">
 
-Claude automatically verifies agents before executing them —
-and blocks tampered or unsafe ones.
-
-![agentverif MCP demo](https://raw.githubusercontent.com/trusthandoff/agentverif/main/IMG_0733.gif)
+![agentverif in action — Claude MCP auto-verify](https://raw.githubusercontent.com/trusthandoff/agentverif/main/IMG_0733.gif)
 
 </div>
 
@@ -318,8 +318,8 @@ Available on the [GitHub Marketplace](https://github.com/marketplace/actions/age
 
 Every fork becomes a distribution point.
 Every contributor ships verified agents by default.
+Add this workflow and your repo becomes a node in the AgentVerif network.
 The standard spreads itself.
-AgentVerif becomes the infrastructure.
 
 ```yaml
 name: agentverif
@@ -396,7 +396,14 @@ Buyers verify at [verify.agentverif.com](https://verify.agentverif.com).
 
 ---
 
-> 🛡️ **Be among the First 100 Founding Vendors.**
-> Get lifetime Pro free — worth €100/year, yours at zero cost forever.
-> Limited founding spots available.
-> **[Claim your spot → agentverif.com/first100](https://agentverif.com/first100)**
+<div align="center">
+
+### 🛡️ Be among the First 100 Founding Vendors.
+Get lifetime Pro free — worth €100/year, yours at zero cost forever.
+
+**[Claim your spot → agentverif.com/first100](https://agentverif.com/first100)**
+
+Signed yours? Open an issue titled **"First 100: [Your License ID]"** —
+we feature you on the leaderboard and amplify in communities.
+
+</div>
