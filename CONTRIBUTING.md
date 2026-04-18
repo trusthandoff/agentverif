@@ -18,9 +18,11 @@ Pattern to follow: `src/agentverif_sign/langchain_tool.py`
 The OWASP LLM Top 10 scanner is in `src/agentverif_sign/scanner.py`.
 Add new checks, improve scoring, add false positive detection.
 
-### 3. Registry contributions
-The registry API is in `api/server.py`.
-Help build out the Pro tier features.
+### 3. Scanner and CLI contributions
+
+Help improve the Indie tier scanner and CLI.
+New OWASP rules, better violation messages,
+and CLI improvements are always welcome.
 
 ### 4. Documentation
 - Framework-specific guides in `docs/`

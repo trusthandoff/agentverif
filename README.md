@@ -5,14 +5,16 @@
 
   ✅ Sell verified agents. Buyers trust verified packages. Unsigned agents get ignored. Add verification in seconds. agentverif.com
 
-  [![CI](https://github.com/trusthandoff/agentverif/actions/workflows/ci.yml/badge.svg)](https://github.com/trusthandoff/agentverif/actions/workflows/ci.yml)
-  [![PyPI version](https://img.shields.io/pypi/v/agentverif-sign.svg)](https://pypi.org/project/agentverif-sign/)
-  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-  [![X (Twitter)](https://img.shields.io/badge/follow-%40agentverif-000000?logo=x&logoColor=white)](https://x.com/agentverif)
-  [![Moltbook](https://img.shields.io/badge/Moltbook-agentverif-7B2FFF?logoColor=white)](https://www.moltbook.com/u/agentverif)
+  [![PyPI version](https://img.shields.io/pypi/v/agentverif-sign?style=flat-square&color=16a34a)](https://pypi.org/project/agentverif-sign/)
+  [![CI](https://github.com/trusthandoff/agentverif/actions/workflows/ci.yml/badge.svg?style=flat-square)](https://github.com/trusthandoff/agentverif/actions/workflows/ci.yml)
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
   [![GitHub Marketplace](https://img.shields.io/badge/GitHub%20Marketplace-agentverif%20action-16a34a?style=flat-square&logo=github)](https://github.com/marketplace/actions/agentverif-ai-agent-certification)
+  [![Docker Pulls](https://img.shields.io/docker/pulls/agentverif/agentverif-sign?style=flat-square&logo=docker)](https://hub.docker.com/r/agentverif/agentverif-sign)
 
 </div>
+
+> 🛡️ **Founding Vendor Program** — Pro tier free for early adopters.
+> [Claim your spot → agentverif.com/first100](https://agentverif.com/first100)
 
 [English] | [中文](README.zh.md)
 
@@ -91,6 +93,13 @@ agentverif-sign verify ./agent.zip
 **Verify without CLI:** [verify.agentverif.com](https://verify.agentverif.com)
 
 ---
+
+## Demo
+
+Claude automatically verifies agents before executing them —
+and blocks tampered or unsafe ones.
+
+![agentverif MCP demo](https://raw.githubusercontent.com/trusthandoff/agentverif/main/IMG_0733.gif)
 
 ## Commands
 
@@ -186,8 +195,21 @@ Human-readable, auditable — no binary blobs:
 
 ## Docker
 
-> **TODO:** Docker image org TBD — not yet published to Docker Hub.
-> Once published: `docker run --rm -v $(pwd):/work <org>/agentverif-sign sign /work/agent.zip`
+```bash
+# Sign your agent
+docker run --rm \
+  -v $(pwd):/work \
+  agentverif/agentverif-sign:latest \
+  sign /work/agent.zip
+
+# Verify a signed agent
+docker run --rm \
+  -v $(pwd):/work \
+  agentverif/agentverif-sign:latest \
+  verify /work/agent.zip
+```
+
+[agentverif/agentverif-sign on Docker Hub](https://hub.docker.com/r/agentverif/agentverif-sign)
 
 ## AWS Bedrock / Claude / MCP
 
@@ -285,6 +307,10 @@ Ask the vendor to certify at agentverif.com before executing.
 
 Certify agents automatically in your CI/CD pipeline.
 Available on the [GitHub Marketplace](https://github.com/marketplace/actions/agentverif-ai-agent-certification).
+
+Every fork becomes a distribution point.
+Every contributor ships verified agents by default.
+The standard spreads itself.
 
 ```yaml
 name: agentverif
