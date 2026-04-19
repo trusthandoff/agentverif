@@ -623,9 +623,9 @@
     }
     .why-sellers-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, 1fr);
       gap: 24px 32px;
-      max-width: 720px;
+      max-width: 100%;
       margin: 36px auto 0;
     }
     .why-sellers-item {
@@ -654,8 +654,9 @@
       font-size: 1rem;
       flex-shrink: 0;
     }
-    @media (max-width: 600px) {
-      .why-sellers-grid { grid-template-columns: 1fr; max-width: 400px; }
+    @media (max-width: 640px) {
+      .why-sellers-grid { grid-template-columns: 1fr; max-width: 100%; }
+      #how-it-works .grid-3 { grid-template-columns: 1fr !important; }
     }
 
     /* ---- Hero sublead ---- */
@@ -933,7 +934,7 @@ justify-content:center; margin:1rem 0;">
           </article>
         </div>
         <div class="theft-cta">
-          <a href="https://github.com/trusthandoff/agentverif" class="btn btn-primary btn-lg" rel="noopener">Lock your first agent free &rarr;</a>
+          <a href="https://agentverif.com/first100" class="btn btn-primary btn-lg">Lock your first agent free &rarr;</a>
         </div>
       </div>
     </section>
@@ -951,7 +952,7 @@ justify-content:center; margin:1rem 0;">
           </p>
         </header>
 
-        <div class="grid-3">
+        <div class="grid-3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;">
 
           <!-- Step 1 -->
           <article class="step-card">
@@ -1112,7 +1113,7 @@ justify-content:center; margin:1rem 0;">
       <div class="container">
         <h2 class="section-title" id="cta-heading">Ready to sell skills without watching copies eat your revenue?</h2>
         <div class="cta-btns">
-          <a href="https://agentverif.com/docs/" class="btn btn-primary btn-lg">Sign your first skill free &rarr;</a>
+          <a href="https://agentverif.com/first100" class="btn btn-primary btn-lg">Sign your first skill free &rarr;</a>
           <a href="https://verify.agentverif.com" class="btn btn-secondary btn-lg">Verify a license &rarr;</a>
         </div>
       </div>
