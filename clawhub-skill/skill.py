@@ -313,6 +313,24 @@ def cmd_verify(args: list[str]) -> None:
     target = args[0]
     offline = "--offline" in args
 
+    # verify_zip requires a zip file on disk; bare license IDs need the zip
+    if not os.path.isfile(target):
+        is_zip_arg = target.endswith(".zip")
+        print(json.dumps({
+            **AGENT_META,
+            "status": "UNSIGNED",
+            "license_id": None if is_zip_arg else target,
+            "message": (
+                f"File not found: {target}"
+                if is_zip_arg
+                else f"Pass the skill ZIP file to verify its embedded certificate. "
+                     f"Check online: https://verify.agentverif.com/?id={target}"
+            ),
+            "verify_url": f"https://verify.agentverif.com/?id={target}",
+            "offline": offline,
+        }, indent=2))
+        sys.exit(1)
+
     result = verify_zip(target, offline=offline)
 
     status = result.status
