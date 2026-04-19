@@ -1,7 +1,7 @@
 <div align="center">
   <img src="https://raw.githubusercontent.com/trusthandoff/agentverif/main/web/logo.svg" width="80" height="80" alt="AgentVerif">
 
-  # AgentVerif — AI 智能体的 Let's Encrypt
+  # AgentVerif — 为您销售的 Claude 技能提供验证与授权层
 
   ✅ 销售经过验证的智能体。买家信任经过验证的包。未签名的智能体会被忽略。几秒内添加验证。agentverif.com
 

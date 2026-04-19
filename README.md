@@ -1,7 +1,7 @@
 <div align="center">
   <img src="https://raw.githubusercontent.com/trusthandoff/agentverif/main/web/logo.svg" width="80" height="80" alt="AgentVerif">
 
-  # AgentVerif — Let's Encrypt for AI Agents
+  # AgentVerif — Verification + licensing layer for Claude skills you sell
 
   ✅ Sell verified agents. Buyers trust verified packages. Unsigned agents get ignored. Add verification in seconds. agentverif.com
 
