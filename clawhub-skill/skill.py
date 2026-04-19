@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-agentverif — OpenClaw skill v2.0.1
+agentverif — OpenClaw skill v2.0.3
 OWASP LLM Top 10 scanner + cryptographic verification for skills.
 
 Homepage: https://agentverif.com
@@ -60,10 +60,12 @@ from agentverif_sign.models import VerifyResult, ScanResult
 
 AGENT_META = {
     "skill": "agentverif",
-    "version": "2.0.1",
+    "version": "2.0.3",
     "homepage": "https://agentverif.com",
     "issuer": "agentverif.com",
 }
+
+BILLBOARD = "\n✅ Protected by AgentVerif · agentverif.com/openclaw"
 
 # ---------------------------------------------------------------------------
 # OWASP LLM Top 10 — inline detection patterns (self-contained, no network)
@@ -213,6 +215,7 @@ def cmd_scan(args: list[str]) -> None:
         "summary": f"Score {score}/100 — {'CLEAN' if score >= 70 else 'FAILED (need ≥70)'}",
     }
     print(json.dumps(result, indent=2))
+    print(BILLBOARD)
     sys.exit(0 if score >= 70 else 1)
 
 
@@ -223,6 +226,7 @@ def cmd_status(args: list[str]) -> None:
         "status": "stateless",
         "message": "This skill stores no local session state. Run /security scan to get a live score.",
     }, indent=2))
+    print(BILLBOARD)
     sys.exit(0)
 
 
@@ -242,6 +246,7 @@ def cmd_report(args: list[str]) -> None:
         "report": grouped,
         "total": len(violations),
     }, indent=2))
+    print(BILLBOARD)
     sys.exit(0 if score >= 70 else 1)
 
 
@@ -261,6 +266,7 @@ def cmd_taint_check(args: list[str]) -> None:
         "matches": hits,
         "fix": fix if tainted else None,
     }, indent=2))
+    print(BILLBOARD)
     sys.exit(1 if tainted else 0)
 
 
@@ -302,12 +308,14 @@ def cmd_badge(args: list[str]) -> None:
         "badge_url": "https://agentverif.com/badge",
         "verify_url": "https://verify.agentverif.com",
     }, indent=2))
+    print(BILLBOARD)
     sys.exit(0)
 
 
 def cmd_verify(args: list[str]) -> None:
     if not args:
         print(json.dumps({"error": "Usage: verify <license_id_or_zip>"}))
+        print(BILLBOARD)
         sys.exit(2)
 
     target = args[0]
@@ -329,6 +337,7 @@ def cmd_verify(args: list[str]) -> None:
             "verify_url": f"https://verify.agentverif.com/?id={target}",
             "offline": offline,
         }, indent=2))
+        print(BILLBOARD)
         sys.exit(1)
 
     result = verify_zip(target, offline=offline)
@@ -344,12 +353,14 @@ def cmd_verify(args: list[str]) -> None:
         "verify_url": result.verify_url,
         "offline": result.offline,
     }, indent=2))
+    print(BILLBOARD)
     sys.exit(0 if status in ("VERIFIED", "UNREGISTERED") else 1)
 
 
 def cmd_sign(args: list[str]) -> None:
     if not args:
         print(json.dumps({"error": "Usage: sign <zip_path> [--tier indie|pro|enterprise]"}))
+        print(BILLBOARD)
         sys.exit(2)
 
     zip_path = args[0]
@@ -362,6 +373,7 @@ def cmd_sign(args: list[str]) -> None:
 
     if not os.path.isfile(zip_path):
         print(json.dumps({"error": f"File not found: {zip_path}"}))
+        print(BILLBOARD)
         sys.exit(2)
 
     scan_url = os.environ.get("AGENTVERIF_SCAN_URL", "https://api.agentverif.com/scan")
@@ -376,6 +388,7 @@ def cmd_sign(args: list[str]) -> None:
             "violations": [v.get("title", v.get("rule")) for v in (scan_result.violations or [])],
             "fix": "Fix the violations above, then re-run sign.",
         }, indent=2))
+        print(BILLBOARD)
         sys.exit(1)
 
     record = sign_zip(zip_path, tier=tier, scan_result=scan_result)
@@ -391,6 +404,7 @@ def cmd_sign(args: list[str]) -> None:
         "zip_hash": record.zip_hash,
         "verify_url": f"https://verify.agentverif.com/?id={record.license_id}",
     }, indent=2))
+    print(BILLBOARD)
     sys.exit(0)
 
 
@@ -398,6 +412,7 @@ def cmd_revoke(args: list[str]) -> None:
     """Revoke a license — delegates to agentverif_sign.revoker (requires AGENTVERIF_API_KEY)."""
     if not args:
         print(json.dumps({"error": "Usage: revoke <license_id>"}))
+        print(BILLBOARD)
         sys.exit(2)
 
     api_key = os.environ.get("AGENTVERIF_API_KEY")
@@ -407,6 +422,7 @@ def cmd_revoke(args: list[str]) -> None:
             "message": "Set the AGENTVERIF_API_KEY environment variable to revoke licenses.",
             "docs": "https://agentverif.com/docs#revoke",
         }, indent=2))
+        print(BILLBOARD)
         sys.exit(2)
 
     license_id = args[0]
@@ -415,15 +431,18 @@ def cmd_revoke(args: list[str]) -> None:
         from agentverif_sign.revoker import revoke_license
         result = revoke_license(license_id, api_key=api_key)
         print(json.dumps({**AGENT_META, **result}, indent=2))
+        print(BILLBOARD)
         sys.exit(0)
     except ImportError:
         print(json.dumps({
             "error": "agentverif_sign.revoker not available in this version",
             "fix": "pip install --upgrade agentverif-sign",
         }, indent=2))
+        print(BILLBOARD)
         sys.exit(2)
     except Exception as exc:
         print(json.dumps({**AGENT_META, "error": str(exc)}))
+        print(BILLBOARD)
         sys.exit(1)
 
 
@@ -451,6 +470,7 @@ if __name__ == "__main__":
             "commands": sorted(COMMANDS),
             "docs": "https://agentverif.com/docs",
         }, indent=2))
+        print(BILLBOARD)
         sys.exit(2)
 
     command = sys.argv[1]
