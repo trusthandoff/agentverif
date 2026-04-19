@@ -1,18 +1,18 @@
 ---
 name: agentverif
-description: "OWASP LLM Top 10 security scanner + cryptographic verification for OpenClaw skills — detects prompt injection, credential leaks, and tampered packages before your agent runs them"
+description: "SCAN → SIGN → VERIFY. Certify your skill, detect tampering, revoke instantly. Full control over how your skill is distributed and run. Requires AGENTVERIF_API_KEY for revoke."
 homepage: https://agentverif.com
 user-invocable: true
 metadata: {
   "openclaw": {
-    "emoji": "🛡️",
+    "emoji": "✅",
     "badge": "✅ AgentVerif Certified",
     "requires": { "anyBins": ["python3", "python"] }
   }
 }
 ---
 
-# 🛡️ AgentVerif — OWASP Scan + Cryptographic Verification
+# ✅ AgentVerif — OWASP Scan + Cryptographic Verification
 
 **AgentVerif** is the trust layer for OpenClaw skills.
 Every skill you install or distribute is scanned against the
@@ -67,10 +67,12 @@ Revoke a license. Verification fails immediately for all buyers.
 Requires AGENTVERIF_API_KEY environment variable.
 
 ### /security status
-Agent trust score, active violations, session fingerprint.
+Reports that this skill is stateless — no local session data stored.
+Run `/security scan` to get a live score.
 
 ### /security report
 Full violation report grouped by severity (CRITICAL → ERROR → WARN).
+Reads from stdin — pipe session context or text to scan.
 
 ### /security taint-check <text>
 Check a string for LLM01 prompt injection. Exit 1 if tainted.
@@ -79,10 +81,34 @@ Check a string for LLM01 prompt injection. Exit 1 if tainted.
 Check agent output for LLM02 insecure patterns.
 
 ### /security diff <session1> <session2>
-Compare two scan sessions — highlight regressions.
+Not supported — this skill is stateless and stores no session history.
 
 ### /security badge
 Get your ✅ AgentVerif Certified badge for your skill listing.
+
+---
+
+## Privacy & data
+
+**Network calls:** `scan`, `sign`, and `verify` transmit
+data to `api.agentverif.com` via the `agentverif-sign`
+Python package:
+- `scan`: sends the skill ZIP for OWASP analysis
+- `sign`: sends the skill ZIP to generate a certificate
+- `verify`: sends the license ID to check registry status
+
+Do not scan or sign ZIPs containing secrets you cannot
+share with agentverif.com.
+
+**Local persistence:** This skill itself writes no local files.
+The `agentverif-sign` package may cache scan results —
+see its source at github.com/trusthandoff/agentverif.
+
+**API key:** `revoke` requires AGENTVERIF_API_KEY.
+Use a scoped key. Never store in plaintext. Rotate if exposed.
+
+**Source code:** All behavior is auditable at
+[github.com/trusthandoff/agentverif](https://github.com/trusthandoff/agentverif)
 
 ---
 

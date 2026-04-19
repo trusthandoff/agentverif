@@ -1,7 +1,7 @@
 {
   "name": "openclaw-skill-agentverif",
-  "version": "1.0.0",
-  "description": "OWASP LLM Top 10 scanner + cryptographic verification for OpenClaw skills",
+  "version": "2.0.1",
+  "description": "✅ SCAN → SIGN → VERIFY. Certify your skill, detect tampering, revoke instantly. Full control over how your skill is distributed and run.",
   "homepage": "https://agentverif.com",
   "license": "MIT",
   "openclaw": {
@@ -12,8 +12,14 @@
     "requires": {
       "anyBins": ["python3", "python"]
     },
-    "emoji": "🛡️",
+    "emoji": "✅",
     "badge": "✅ AgentVerif Certified",
+    "env": {
+      "AGENTVERIF_API_KEY": {
+        "required": false,
+        "description": "Required only for the revoke command."
+      }
+    },
     "commands": [
       "scan",
       "verify",
