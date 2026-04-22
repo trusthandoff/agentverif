@@ -20,6 +20,7 @@ class SignatureRecord:
     zip_hash: str
     manifest_hash: str
     scan_passed: bool
+    scan_score: int | None = None
     # scan_source values:
     #   "real"             = genuine API response received
     #   "offline_fallback" = API unreachable, score assumed 100 — NOT VERIFIED
@@ -52,6 +53,7 @@ class SignatureRecord:
             zip_hash=data["zip_hash"],
             manifest_hash=data["manifest_hash"],
             scan_passed=data["scan_passed"],
+            scan_score=data.get("scan_score"),
             scan_source=data.get("scan_source", "real"),
             signature=data.get("signature"),
             license_type=data.get("license_type", "single_use"),

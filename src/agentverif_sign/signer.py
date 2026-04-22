@@ -153,6 +153,7 @@ def sign_zip(
         zip_hash=zip_hash,
         manifest_hash=manifest_hash,
         scan_passed=scan_result.passed if scan_result else True,
+        scan_score=scan_result.score if scan_result else None,
         scan_source=scan_result.source if scan_result else "skipped",
         signature=signature,
         license_type=license_type,

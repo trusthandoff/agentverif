@@ -107,6 +107,7 @@ def sign_cmd(zip_path: str, tier: str, api_key: str | None, offline: bool) -> No
     click.echo(f"License: {record.license_id}")
     click.echo(f"Tier:    {record.tier}")
     click.echo(f"Hash:    {record.zip_hash}")
+    click.echo(f"Scan:    {record.scan_score}/100")
     click.echo(f"\nEmbed badge:\n{badge}")
     click.echo(f"\nVerify at: https://verify.agentverif.com/?id={record.license_id}")
 
@@ -143,6 +144,9 @@ def verify_cmd(zip_path: str, offline: bool, output_json: bool) -> None:
     }
     icon = status_icons.get(result.status, "?")
     click.echo(f"{icon} {result.status} — {result.message}")
+    record = verifier.extract_signature(zip_path)
+    if record is not None and record.scan_score is not None:
+        click.echo(f"Scan Score: {record.scan_score}/100")
     if result.badge:
         click.echo(f"\n{result.badge}")
     if result.verify_url:
